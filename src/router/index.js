@@ -660,6 +660,14 @@ export default new Router({
           meta:{title:['数据分析','人员画像','人员档案详情']},
           component: resolve => require(['@/components/YJYP/YP/LXSYP/RYHX_XQ'], resolve),
         },
+        //====================================新版人员画像详情===============================================
+        {
+          path: 'NewRyhx_xq',
+          name: 'NewRyhx_xq',
+          meta:{title:['数据分析','人员画像','人员档案详情']},
+          component: resolve => require(['@/components/YJYP/YP/LXSYP/NewRyhx_xq'], resolve),
+        },
+
         {
           path: 'RYHXGJCX',
           name: 'RYHXGJCX',
@@ -1132,11 +1140,19 @@ export default new Router({
           meta:{title:['系统管理','系统配置','流程监控']},
           component: resolve => require(['@/components/XTGL/XTSZ/LCJK'], resolve),
         },
+        //====================================二版自定义配置===============================================
         {
           path: 'CustomQuery',
           name: 'CustomQuery',
           meta:{title:['系统管理','系统配置','自定义配置']},
           component: resolve => require(['@/components/XTGL/XTSZ/CustomQuery'], resolve),
+        },
+        //====================================二版标签模型管理===============================================
+        {
+          path: 'LabelModelManagement',
+          name: 'LabelModelManagement',
+          meta:{title:['系统管理','系统配置','标签模型管理']},
+          component: resolve => require(['@/components/XTGL/XTSZ/LabelModelManagement'], resolve),
         },
         {
           path: 'YHSQ',
