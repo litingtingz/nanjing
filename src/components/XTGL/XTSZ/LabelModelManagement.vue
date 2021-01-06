@@ -7,11 +7,11 @@
           <el-row align="center" :gutter="2">
               <el-col  :sm="24" :md="12" :lg="8"  class="input-item">
                   <span class="input-text">名称：</span>
-                  <el-input placeholder="请输入名称" size="small" v-model="pd.MXLX" class="input-input"></el-input>
+                  <el-input placeholder="请输入名称" size="small" v-model="pd.mc" class="input-input"></el-input>
               </el-col>
               <el-col  :sm="24" :md="12" :lg="8"   class="input-item">
                   <span class="input-text">描述：</span>
-                  <el-input placeholder="请输入描述" size="small" v-model="pd.RULE_NAME" class="input-input"></el-input>
+                  <el-input placeholder="请输入描述" size="small" v-model="pd.mark" class="input-input"></el-input>
               </el-col>
           </el-row>
         </el-col>
@@ -45,14 +45,6 @@
               :label="lb.cm">
             </el-table-column>
           </template>
-          <!-- <el-table-column
-            prop="MXLX"
-            label="名称">
-          </el-table-column>
-          <el-table-column
-            prop="MXLX_NAME"
-            label="描述">
-          </el-table-column> -->
           <el-table-column
             label="操作" width="100">
             <template slot-scope="scope">
@@ -144,11 +136,11 @@
             <el-col :span="24"  class="yzform" data-scope="demo" data-name="MXLX" data-type="input"
              v-validate-easy="[['required']]">
               <span class="yy-input-text">名称：</span>
-              <el-input placeholder="请输入内容" size="small" v-model="form.MXLX" class="yy-input-input"></el-input>
+              <el-input placeholder="请输入内容" size="small" v-model="form.mc" class="yy-input-input"></el-input>
             </el-col>
             <el-col :span="24"  class="yzform">
               <span class="yy-input-text">描述：</span>
-              <el-input placeholder="请输入内容" size="small" v-model="form.MXLX_NAME"  id="mxmc"  class="yy-input-input"></el-input>
+              <el-input placeholder="请输入内容" size="small" v-model="form.mark"  id="mxmc"  class="yy-input-input"></el-input>
             </el-col>
             <el-col :span="24"  class="yzform">
               <span class="yy-input-text" style="vertical-align: top;">自定义项：</span>
@@ -156,7 +148,7 @@
                 <el-transfer
                 filterable
                 :filter-method="filterMethod"
-                v-model="form.custom"
+                v-model="form.tagIdList"
                 :render-content="renderFunc"
                 :props="propsData"
                 :data="$store.state.gjdq"
@@ -202,11 +194,11 @@ export default {
       pointData:[],//选中项
       lbDataAll:[//列表总数据===简表数据源
         {
-          dm:'MXLX',
+          dm:'mc',
           cm:'名称',
         },
         {
-          dm:'MXLX_NAME',
+          dm:'mark',
           cm:'描述',
         },
       ],
@@ -295,7 +287,7 @@ export default {
       };
       p.pd.sfyx = this.page+''
       this.$api.post(
-        this.Global.aport4 + "/warningSortRuleController/getResultListByParams",
+        this.Global.aport3 + "/api/tag/pageTagType",
         p,
         r => {
           this.tableData = r.data.resultList;
