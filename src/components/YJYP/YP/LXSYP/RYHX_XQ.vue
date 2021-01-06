@@ -253,9 +253,9 @@
              </el-table-column>
              <el-table-column
                label="操作" width="120">
-               <template slot-scope="scope">
-               <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="detailslzxx(scope.row)"></el-button>
-               </template>
+               <div slot-scope="scope">
+                <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="detailslzxx(scope.row)"></el-button>
+               </div>
              </el-table-column>
            </el-table>
           <div class="middle-foot">
@@ -327,9 +327,9 @@
               </el-table-column> -->
               <el-table-column
                 label="操作" width="120">
-                <template slot-scope="scope">
-                <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="detailscz(scope.row)"></el-button>
-                </template>
+                <div slot-scope="scope">
+                  <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="detailscz(scope.row)"></el-button>
+                </div>
               </el-table-column>
             </el-table>
           <div class="middle-foot">
@@ -387,9 +387,9 @@
              </el-table-column>
              <el-table-column
                label="操作" width="120">
-               <template slot-scope="scope">
-               <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="detailsasj(scope.row)"></el-button>
-               </template>
+               <div slot-scope="scope">
+                <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="detailsasj(scope.row)"></el-button>
+               </div>
              </el-table-column>
            </el-table>
           <div class="middle-foot">
@@ -447,9 +447,9 @@
             </el-table-column>
             <el-table-column
               label="操作" width="120">
-              <template slot-scope="scope">
-              <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="detailsMH(scope.row)"></el-button>
-              </template>
+              <div slot-scope="scope">
+                <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="detailsMH(scope.row)"></el-button>
+              </div>
             </el-table-column>
           </el-table>
           <div class="middle-foot">
@@ -503,9 +503,9 @@
            </el-table-column>
            <el-table-column
              label="操作" width="120">
-             <template slot-scope="scope">
-             <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="detailsdw(scope.row)"></el-button>
-             </template>
+             <div slot-scope="scope">
+              <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="detailsdw(scope.row)"></el-button>
+             </div>
            </el-table-column>
          </el-table>
           <div class="middle-foot">
@@ -559,9 +559,9 @@
           </el-table-column>
           <el-table-column
             label="操作" width="120">
-            <template slot-scope="scope">
-            <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="detailslxs(scope.row)"></el-button>
-            </template>
+            <div slot-scope="scope">
+              <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="detailslxs(scope.row)"></el-button>
+            </div>
           </el-table-column>
         </el-table>
         <div class="middle-foot">
@@ -615,9 +615,9 @@
              </el-table-column>
              <el-table-column
                label="操作" width="120">
-               <template slot-scope="scope">
-               <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="detailslxszx(scope.row)"></el-button>
-               </template>
+               <div slot-scope="scope">
+                  <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="detailslxszx(scope.row)"></el-button>
+               </div>
              </el-table-column>
            </el-table>
            <div class="middle-foot">
@@ -672,9 +672,9 @@
                    </el-table-column>
                    <el-table-column
                      label="操作" width="120">
-                     <template slot-scope="scope">
-                     <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="detailstbxx(scope.row)"></el-button>
-                     </template>
+                     <div slot-scope="scope">
+                        <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="detailstbxx(scope.row)"></el-button>
+                     </div>
                    </el-table-column>
                  </el-table>
                  <div class="middle-foot">

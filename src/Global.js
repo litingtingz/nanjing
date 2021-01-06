@@ -24,8 +24,8 @@ const aport11="http://10.33.72.145:9433";
 // const aport11="http://192.168.3.217:9433";
 
 // const aport6="api-es-fenxi";
-const aport6="http://10.33.72.217:9447";//孙
-// const aport6="http://192.168.3.217:9447";
+// const aport6="http://10.33.72.217:9447";//孙
+const aport6="http://192.168.3.217:9447";
 
 // const aport9="api-hbase";
 const aport9="http://10.33.72.144:9444";
