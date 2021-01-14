@@ -551,3 +551,7 @@
 .el-transfer-panel__list .el-transfer-panel__item.el-checkbox{
   display: block;
 }
+.home-cz-li{
+  display: flex;
+  
+}

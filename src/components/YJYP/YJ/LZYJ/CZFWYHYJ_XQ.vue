@@ -27,123 +27,310 @@
         </el-row>
       </div>
       <div class="mb-15">
-        <div class="yylbt mb-15">临住信息</div>
-        <el-row type="flex">
-          <el-col :span="22" class="br pr-20">
-            <el-row align="center"  :gutter="2">
-              <el-col  :sm="24" :md="12" :lg="12"   class="input-item">
-                 <span class="input-text">中文姓名：</span>
-                 <el-input placeholder="请输入内容" size="small" v-model="pd.ZWXM" class="input-input"></el-input>
-              </el-col>
-              <el-col  :sm="24" :md="12" :lg="12"   class="input-item">
-                 <span class="input-text">英文姓名：</span>
-                 <el-input placeholder="请输入内容" size="small" v-model="pd.YWXM" class="input-input"></el-input>
-              </el-col>
-                  <el-col  :sm="24" :md="12" :lg="12"  class="input-item">
-                      <span class="input-text">国家地区：</span>
-                      <el-select v-model="pd.GJDQ" filterable clearable default-first-option placeholder="请选择"  size="small" class="input-input">
-                        <el-option
-                          v-for="item in $store.state.gjdq"
-                          :key="item.dm"
-                          :label="item.dm+' - '+item.mc"
-                          :value="item.dm">
-                        </el-option>
-                      </el-select>
-                  </el-col>
-                  <el-col  :sm="24" :md="12" :lg="12"   class="input-item">
-                     <span class="input-text">证件号码：</span>
-                     <el-input placeholder="请输入内容" size="small" v-model="pd.ZJHM" class="input-input"></el-input>
-                  </el-col>
-
-            </el-row>
-           </el-col>
-          <el-col :span="2" class="down-btn-area">
-            <el-button type="success" size="small"  @click="CurrentPage=1;getList(CurrentPage,pageSize,pd)">查询</el-button>
-          </el-col>
-        </el-row>
-        <el-table
-          :data="tableData1"
-          border
-          style="width: 100%" class="stu-table mt-10">
-          <el-table-column
-          prop="ZWXM"
-          label="姓名">
-          <template slot-scope="scope">
-            <span>{{getXM(scope.row.ZWXM,scope.row.YWXM)}}</span>
-          </template>
-          </el-table-column>
-          <el-table-column
-          prop="XB_DESC"
-          label="性别">
-          </el-table-column>
-          <el-table-column
-          prop="GJDQ_DESC"
-          label="国家地区">
-          </el-table-column>
-          <el-table-column
-          prop="ZJZL_DESC"
-          label="证件种类">
-          </el-table-column>
-          <el-table-column
-          prop="BZHDZMC"
-          label="详细地址">
-          </el-table-column>
-          <el-table-column
-          prop="ZJHM"
-          label="证件号码">
-          </el-table-column>
-          <el-table-column
-          prop="YXQZ"
-          label="证件有效期">
-          </el-table-column>
-          <el-table-column
-          prop="QZZL_DESC"
-          label="签证种类">
-          </el-table-column>
-          <el-table-column
-          prop="QZHM"
-          label="签证号码">
-          </el-table-column>
-          <el-table-column
-          label="操作" width="80">
-          <template slot-scope="scope">
-          <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="details(scope.row)"></el-button>
-          </template>
-          </el-table-column>
-        </el-table>
-        <div class="middle-foot">
-           <div class="page-msg">
-             <div class="">
-           共{{TotalResult}}条记录
-             </div>
-             <div class="">
-               每页显示
-               <el-select v-model="pageSize" @change="pageSizeChange(pageSize)" placeholder="10" size="mini" class="page-select">
-                 <el-option
-                   v-for="item in options"
-                   :key="item.value"
-                   :label="item.label"
-                   :value="item.value">
-                 </el-option>
-               </el-select>
-               条
-             </div>
-             <div class="">
-               共{{Math.ceil(TotalResult/pageSize)}}页
-             </div>
-           </div>
-           <el-pagination
-             background
-             @current-change="handleCurrentChange"
-             :current-page:sync="CurrentPage"
-             :page-size="pageSize"
-             layout="prev, pager, next"
-             :total="TotalResult">
-           </el-pagination>
-         </div>
-
+        <div class="yylbt">临住信息</div>
+        <div class="stru-lal bb" id="box1" @click="con1=!con1">有案事件<i class="el-icon-d-caret"></i></div>
+        <div v-show="tableData1.data.length==0?(!con1):con1">
+          <el-table
+            :data="tableData1.data"
+            border
+            style="width: 100%" class="stu-table mt-10">
+            <el-table-column
+              prop="AJLB"
+              label="案件类别">
+            </el-table-column>
+            <el-table-column
+              prop="CQCS"
+              label="采取措施">
+            </el-table-column>
+            <el-table-column
+              prop="ZBDWMC"
+              label="主办单位">
+            </el-table-column>
+            <el-table-column
+              prop="AJDZMC"
+              label="案件地址">
+            </el-table-column>
+            <el-table-column
+              prop="BASJ"
+              label="报案时间">
+            </el-table-column>
+            <el-table-column
+              prop="SLSJ"
+              label="受理时间">
+            </el-table-column>
+            <el-table-column
+              prop="JYAQ"
+              label="简要案情">
+            </el-table-column>
+            <el-table-column
+              label="操作" width="80">
+              <template slot-scope="scope">
+                <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="details(scope.row)"></el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <div class="middle-foot">
+            <div class="page-msg">
+              <div class="">
+            共{{tableData1.TotalResult}}条记录
+              </div>
+              <div class="">
+                每页显示
+                <el-select v-model="tableData1.pageSize" @change="pageSizeChange(tableData1.pageSize,'tableData1')" placeholder="10" size="mini" class="page-select">
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+                条
+              </div>
+              <div class="">
+                共{{Math.ceil(tableData1.TotalResult/tableData1.pageSize)}}页
+              </div>
+            </div>
+            <el-pagination
+              background
+              @current-change="handleCurrentChange(tableData1.CurrentPage,'tableData1')"
+              :current-page.sync="tableData1.CurrentPage"
+              :page-size="tableData1.pageSize"
+              layout="prev, pager, next"
+              :total="tableData1.TotalResult">
+            </el-pagination>
+          </div>
+        </div>
+        <div class="stru-lal bb" id="box2" @click="con2=!con2">登记人多过多<i class="el-icon-d-caret"></i></div>
+        <div class="mt-10" v-show="tableData3.data.length==0?(!con2):con2">
+          <el-row type="flex">
+            <el-col :span="22" class="br pr-20">
+              <el-row align="center"  :gutter="2">
+                <el-col  :sm="24" :md="12" :lg="12"   class="input-item">
+                  <span class="input-text">中文姓名：</span>
+                  <el-input placeholder="请输入内容" size="small" v-model="tableData3.pd.ZWXM" class="input-input"></el-input>
+                </el-col>
+                <el-col  :sm="24" :md="12" :lg="12"   class="input-item">
+                  <span class="input-text">英文姓名：</span>
+                  <el-input placeholder="请输入内容" size="small" v-model="tableData3.pd.YWXM" class="input-input"></el-input>
+                </el-col>
+                    <el-col  :sm="24" :md="12" :lg="12"  class="input-item">
+                        <span class="input-text">国家地区：</span>
+                        <el-select v-model="tableData3.pd.GJDQ" filterable clearable default-first-option placeholder="请选择"  size="small" class="input-input">
+                          <el-option
+                            v-for="item in $store.state.gjdq"
+                            :key="item.dm"
+                            :label="item.dm+' - '+item.mc"
+                            :value="item.dm">
+                          </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col  :sm="24" :md="12" :lg="12"   class="input-item">
+                      <span class="input-text">证件号码：</span>
+                      <el-input placeholder="请输入内容" size="small" v-model="tableData3.pd.ZJHM" class="input-input"></el-input>
+                    </el-col>
+              </el-row>
+            </el-col>
+            <el-col :span="2" class="down-btn-area">
+              <el-button type="success" size="small"  @click="tableData3.CurrentPage=1;getList(tableData3.CurrentPage,tableData3.pageSize,tableData3.pd,'tableData3')">查询</el-button>
+            </el-col>
+          </el-row>
+          <el-table
+            :data="tableData3.data"
+            border
+            style="width: 100%" class="stu-table mt-10">
+            <el-table-column
+              prop="ZWXM"
+              label="姓名">
+              <div slot-scope="scope">
+                <span>{{getXM(scope.row.ZWXM,scope.row.YWXM)}}</span>
+              </div>
+            </el-table-column>
+            <el-table-column
+              prop="XB_DESC"
+              label="性别">
+            </el-table-column>
+            <el-table-column
+              prop="GJDQ_DESC"
+              label="国家地区">
+            </el-table-column>
+            <el-table-column
+              prop="ZJZL_DESC"
+              label="证件种类">
+            </el-table-column>
+            <el-table-column
+              prop="BZHDZMC"
+              label="详细地址">
+            </el-table-column>
+            <el-table-column
+              prop="ZJHM"
+              label="证件号码">
+            </el-table-column>
+            <el-table-column
+              prop="YXQZ"
+              label="证件有效期">
+            </el-table-column>
+            <el-table-column
+              prop="QZZL_DESC"
+              label="签证种类">
+            </el-table-column>
+            <el-table-column
+              prop="QZHM"
+              label="签证号码">
+            </el-table-column>
+            <el-table-column
+              label="操作" width="80">
+              <div slot-scope="scope">
+                <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="details(scope.row)"></el-button>
+              </div>
+            </el-table-column>
+          </el-table>
+          <div class="middle-foot">
+            <div class="page-msg">
+              <div class="">
+            共{{tableData3.TotalResult}}条记录
+              </div>
+              <div class="">
+                每页显示
+                <el-select v-model="tableData3.pageSize" @change="pageSizeChange(tableData3.pageSize,'tableData3')" placeholder="10" size="mini" class="page-select">
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+                条
+              </div>
+              <div class="">
+                共{{Math.ceil(tableData3.TotalResult/tableData3.pageSize)}}页
+              </div>
+            </div>
+            <el-pagination
+              background
+              @current-change="handleCurrentChange(tableData3.CurrentPage,'tableData3')"
+              :current-page.sync="tableData3.CurrentPage"
+              :page-size="tableData3.pageSize"
+              layout="prev, pager, next"
+              :total="tableData3.TotalResult">
+            </el-pagination>
+          </div>
+        </div>
+         <div class="stru-lal bb" id="box3" @click="con3=!con3">登记次数过多<i class="el-icon-d-caret"></i></div>
+        <div class="mt-10" v-show="tableData4.data.length==0?(!con3):con3">
+          <el-row type="flex">
+            <el-col :span="22" class="br pr-20">
+              <el-row align="center"  :gutter="2">
+                <el-col  :sm="24" :md="12" :lg="12"   class="input-item">
+                  <span class="input-text">中文姓名：</span>
+                  <el-input placeholder="请输入内容" size="small" v-model="tableData4.pd.ZWXM" class="input-input"></el-input>
+                </el-col>
+                <el-col  :sm="24" :md="12" :lg="12"   class="input-item">
+                  <span class="input-text">英文姓名：</span>
+                  <el-input placeholder="请输入内容" size="small" v-model="tableData4.pd.YWXM" class="input-input"></el-input>
+                </el-col>
+                    <el-col  :sm="24" :md="12" :lg="12"  class="input-item">
+                        <span class="input-text">国家地区：</span>
+                        <el-select v-model="tableData4.pd.GJDQ" filterable clearable default-first-option placeholder="请选择"  size="small" class="input-input">
+                          <el-option
+                            v-for="item in $store.state.gjdq"
+                            :key="item.dm"
+                            :label="item.dm+' - '+item.mc"
+                            :value="item.dm">
+                          </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col  :sm="24" :md="12" :lg="12"   class="input-item">
+                      <span class="input-text">证件号码：</span>
+                      <el-input placeholder="请输入内容" size="small" v-model="tableData4.pd.ZJHM" class="input-input"></el-input>
+                    </el-col>
+              </el-row>
+            </el-col>
+            <el-col :span="2" class="down-btn-area">
+              <el-button type="success" size="small"  @click="tableData4.CurrentPage=1;getList(tableData4.CurrentPage,tableData4.pageSize,tableData4.pd,'tableData4')">查询</el-button>
+            </el-col>
+          </el-row>
+          <el-table
+            :data="tableData4.data"
+            border
+            style="width: 100%" class="stu-table mt-10">
+            <el-table-column
+              prop="ZWXM"
+              label="姓名">
+              <div slot-scope="scope">
+                <span>{{getXM(scope.row.ZWXM,scope.row.YWXM)}}</span>
+              </div>
+            </el-table-column>
+            <el-table-column
+              prop="XB_DESC"
+              label="性别">
+            </el-table-column>
+            <el-table-column
+              prop="GJDQ_DESC"
+              label="国家地区">
+            </el-table-column>
+            <el-table-column
+              prop="ZJZL_DESC"
+              label="证件种类">
+            </el-table-column>
+            <el-table-column
+              prop="BZHDZMC"
+              label="详细地址">
+            </el-table-column>
+            <el-table-column
+              prop="ZJHM"
+              label="证件号码">
+            </el-table-column>
+            <el-table-column
+              prop="YXQZ"
+              label="证件有效期">
+            </el-table-column>
+            <el-table-column
+              prop="QZZL_DESC"
+              label="签证种类">
+            </el-table-column>
+            <el-table-column
+              prop="QZHM"
+              label="签证号码">
+            </el-table-column>
+            <el-table-column
+              label="操作" width="80">
+              <div slot-scope="scope">
+                <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="details(scope.row)"></el-button>
+              </div>
+            </el-table-column>
+          </el-table>
+          <div class="middle-foot">
+            <div class="page-msg">
+              <div class="">
+            共{{tableData4.TotalResult}}条记录
+              </div>
+              <div class="">
+                每页显示
+                <el-select v-model="tableData4.pageSize" @change="pageSizeChange(tableData4.pageSize,'tableData4')" placeholder="10" size="mini" class="page-select">
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+                条
+              </div>
+              <div class="">
+                共{{Math.ceil(tableData4.TotalResult/tableData4.pageSize)}}页
+              </div>
+            </div>
+            <el-pagination
+              background
+              @current-change="handleCurrentChange(tableData4.CurrentPage,'tableData4')"
+              :current-page.sync="tableData4.CurrentPage"
+              :page-size="tableData4.pageSize"
+              layout="prev, pager, next"
+              :total="tableData4.TotalResult">
+            </el-pagination>
+          </div>
+        </div>
       </div>
-
       <div class="stu-footerd">
         <div class="stu-titled">甄别结果</div>
         <el-row type="flex">
@@ -200,12 +387,11 @@
          </el-table-column>
          <el-table-column
          label="操作" width="80">
-         <template slot-scope="scope">
-         <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="anjDetail(scope.row)"></el-button>
-         </template>
+         <div slot-scope="scope">
+          <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="anjDetail(scope.row)"></el-button>
+         </div>
          </el-table-column>
        </el-table>
-
       </div>
        <div slot="footer" class="dialog-footer" v-else>
          <el-button @click="lzxxDialogVisible = false" size="small">取 消</el-button>
@@ -227,12 +413,36 @@ export default {
   components:{LZXX,ANSJ},
   data() {
     return {
+      
       asjDialogVisible:false,
       rybh:"",
       CurrentPage: 1,
       pageSize: 10,
       TotalResult: 0,
-      tableData1:[],
+      con1:true,
+      con2:true,
+      con3:true,
+      tableData1:{
+        data:[],
+        CurrentPage: 1,
+        pageSize: 3,
+        TotalResult: 0,
+        pd:{}
+      },
+      tableData3:{
+        data:[],
+        CurrentPage: 1,
+        pageSize: 3,
+        TotalResult: 0,
+        pd:{}
+      },
+      tableData4:{
+        data:[],
+        CurrentPage: 1,
+        pageSize: 3,
+        TotalResult: 0,
+        pd:{}
+      },
       tableData2:[],
       lzxxDialogVisible:false,
       row:{},
@@ -249,16 +459,16 @@ export default {
       pcl:{},
       pcl1:{},
       options:[{
+         value: 3,
+         label: "3"
+       },
+       {
+         value: 5,
+         label: "5"
+       },
+       {
          value: 10,
          label: "10"
-       },
-       {
-         value: 20,
-         label: "20"
-       },
-       {
-         value: 30,
-         label: "30"
        }
      ],
       detailsDialogVisible:false,
@@ -273,7 +483,9 @@ export default {
     this.baseData=this.row;
     this.getcwzxx(this.row.BZHDZID);
     this.leiType=this.$route.query.leiType;
-    this.getList(this.CurrentPage, this.pageSize, this.pd);
+    this.getList(this.tableData1.CurrentPage, this.tableData1.pageSize, this.tableData1.pd,'tableData1');
+    this.getList(this.tableData3.CurrentPage, this.tableData3.pageSize, this.tableData3.pd,'tableData3');
+    this.getList(this.tableData4.CurrentPage, this.tableData4.pageSize, this.tableData4.pd,'tableData4');
     // this.type=this.$route.query.type;
     if(this.row.CLZT=='0'){
       this.pm.CHANGE_RESON=this.row.CLJG
@@ -298,20 +510,19 @@ export default {
      this.withname=this.$store.state.uname;
   },
   methods: {
-    pageSizeChange(val) {
-      this.pageSize=val;
-      this.getList(this.CurrentPage, this.pageSize, this.pd);
-      console.log(`每页 ${val} 条`);
+    pageSizeChange(val,key) {
+      this[key].pageSize=val;
+      this.getList(this[key].CurrentPage, this[key].pageSize, this[key].pd,key);
     },
-    handleCurrentChange(val) {
-      this.CurrentPage=val;
-      this.getList(this.CurrentPage, this.pageSize, this.pd);
-      console.log(`当前页: ${val}`);
+    handleCurrentChange(val,key) {
+      this[key].CurrentPage=val;
+      this.getList(this[key].CurrentPage, this[key].pageSize, this[key].pd,key);
     },
     anjDetail(n){
       this.xid=n.RGUID+","+n.DTID;
       this.asjDialogVisible=true;
     },
+    //地址信息
     getcwzxx(n){
     this.pp.BZHDZID=n;
       let p = {
@@ -323,8 +534,8 @@ export default {
         });
     },
     //临住信息列表
-    getList(currentPage, showCount, pd){
-      if(this.leiType=='xz'){
+    getList(currentPage, showCount, pd,type){
+      if(this.leiType=='xz'){//暂时废弃
         pd.DZDTID=this.row.BZHDZID;
         pd.ZSRQ_Nokeyword=this.row.ZSRQ;
         let p = {
@@ -334,70 +545,102 @@ export default {
         };
         this.$api.post(this.Global.aport4+'/rentingHouseHiddenDangerWarning/getLinZhuListByDZDTIDAndZSRQ', p,
           r => {
-              this.tableData1=r.data.resultList;
-              this.TotalResult=r.data.totalResult;
+              this.tableData1.data=r.data.resultList;
+              this.tableData1.TotalResult=r.data.totalResult;
           });
       }else if(this.leiType=='zd'){
-        pd.DZDTID=this.row.BZHDZID;
-        let p = {
-          "currentPage":currentPage,
-          "showCount":showCount,
-          "pd":pd,
+        let p={
+          currentPage:currentPage,
+          showCount:showCount,
+          userCode:this.$store.state.uid,
+          userName:this.$store.state.uname,
+          orgJB:this.$store.state.juState,
+          orgCode:this.$store.state.orgid,
+          token:this.$store.state.token,
+          pd:pd
         };
-        this.$api.post(this.Global.aport4+'/focusRetingHouseWarningController/getLinZhuListByDZDTID', p,
+        let url='';
+        if(type=='tableData1'){//案事件
+          p.pd={
+            BASJ_DateRange:{
+              dataType:'date',
+              end:this.row.ZSRQ
+            },
+            AJDZMC:this.row.BZHDZMC
+          }
+          url="/api/roomController/listAsjByAjdzmcAndSlsj"
+        }else if(type=='tableData3'){//登记人数过多
+          p.pd.DZDTID=this.row.BZHDZID;
+          p.pd.ZSRQ_DateRange={
+            dataType:'date',
+            end:this.row.ZSRQ
+          }
+          p.pd.DTID=this.row.ZBXDATA
+          url="/api/roomController/listLzByDtid"
+        }else if(type=='tableData4'){//登记次数过多
+          p.pd.DZDTID=this.row.BZHDZID;
+          p.pd.ZSRQ_DateRange={
+            dataType:'date',
+            begin:this.row.ZSRQ,
+            end:this.row.ZSRQ
+          }
+          url="/api/roomController/listLzByDzdtidAndZsrq"
+        }
+        this.$api.post(this.Global.aport4+url, p,
           r => {
-              this.tableData1=r.data.resultList;
-              this.TotalResult=r.data.totalResult;
+              this[type].data=r.data.resultList;
+              this[type].TotalResult=r.data.totalResult;
           });
       }
     },
+    //确定
     chuli(){
-  if(this.$route.query.zdsh){
-    this.pcl1.YJID=this.row.YJID;
-    this.pcl1.SHZT=this.pm1.SHZT;
-    // this.pcl.CLDW=this.$store.state.orgname;
-    // this.pcl.CLR=this.withname;
-      let p = {
-        "pd": this.pcl1
-      };
-      this.$api.post(this.Global.aport4+'/fangWuWarningInfoController/saveSHZT', p,
-        r => {
-           if(r.success){
-             this.$message({
-               message: '保存成功',
-               type: 'success'
-             });
-            this.$router.go(-1)
-           }
+      if(this.$route.query.zdsh){
+        this.pcl1.YJID=this.row.YJID;
+        this.pcl1.SHZT=this.pm1.SHZT;
+        // this.pcl.CLDW=this.$store.state.orgname;
+        // this.pcl.CLR=this.withname;
+          let p = {
+            "pd": this.pcl1
+          };
+          this.$api.post(this.Global.aport4+'/fangWuWarningInfoController/saveSHZT', p,
+            r => {
+              if(r.success){
+                this.$message({
+                  message: '保存成功',
+                  type: 'success'
+                });
+                this.$router.go(-1)
+              }
 
-        })
-  }else{
-    if(this.pm.CHANGE_RESON=="" || this.pm.CHANGE_RESON==undefined)
-    {
-      this.$alert('甄别结果不能为空！', '提示', {
-        confirmButtonText: '确定',
-      });
-      return;
-    }
-    this.pcl.YJID=this.row.YJID;
-    this.pcl.CLJG=this.pm.CHANGE_RESON;
-    this.pcl.CLDW=this.$store.state.orgname;
-    this.pcl.CLR=this.withname;
-      let p = {
-        "pd": this.pcl
-      };
-      this.$api.post(this.Global.aport4+'/fangWuWarningInfoController/saveCLJG', p,
-        r => {
-           if(r.success){
-             this.$message({
-               message: '保存成功',
-               type: 'success'
-             });
-            this.$router.go(-1)
-           }
+            })
+      }else{
+        if(this.pm.CHANGE_RESON=="" || this.pm.CHANGE_RESON==undefined)
+        {
+          this.$alert('甄别结果不能为空！', '提示', {
+            confirmButtonText: '确定',
+          });
+          return;
+        }
+        this.pcl.YJID=this.row.YJID;
+        this.pcl.CLJG=this.pm.CHANGE_RESON;
+        this.pcl.CLDW=this.$store.state.orgname;
+        this.pcl.CLR=this.withname;
+          let p = {
+            "pd": this.pcl
+          };
+          this.$api.post(this.Global.aport4+'/fangWuWarningInfoController/saveCLJG', p,
+            r => {
+              if(r.success){
+                this.$message({
+                  message: '保存成功',
+                  type: 'success'
+                });
+                this.$router.go(-1)
+              }
 
-        })
-   }
+            })
+      }
 
     },
     details(n){
@@ -421,7 +664,6 @@ export default {
       }
     },
     getXM(zw,yw){
-
       if(zw!=undefined && yw!=undefined){
         return yw+"("+zw+")";
       }else if(zw!=undefined){
@@ -430,10 +672,8 @@ export default {
       else {
         return yw;
       }
-
     },
   }
-
 }
 </script>
 <style scoped>

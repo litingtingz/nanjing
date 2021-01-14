@@ -22,10 +22,10 @@
     </div>
     <div class="yycontent">
       <div class="ak-tabs">
-        <div class="ak-tab-item hand" :class="{'ak-checked':page==0}" @click="page=0;tabFnc(page)">
+        <div class="ak-tab-item hand" :class="{'ak-checked':page=='1'}" @click="page='1';tabFnc(page)">
           已启用
         </div>
-        <div class="ak-tab-item hand" :class="{'ak-checked':page==1}" @click="page=1;tabFnc(page)">
+        <div class="ak-tab-item hand" :class="{'ak-checked':page=='0'}" @click="page='0';tabFnc(page)">
           已停用
         </div>
       </div>
@@ -61,7 +61,7 @@
                   class="a-btn"
                   title="停用"
                   icon="el-icon-s-tools"
-                  v-if="scope.row.SFYX=='1'"
+                  v-if="scope.row.yx=='1'"
                   @click="reset(scope.row)"
                 ></el-button>
                 <el-button
@@ -69,7 +69,7 @@
                   class="a-btn"
                   title="启用"
                   icon="el-icon-setting"
-                  v-if="scope.row.SFYX=='0'"
+                  v-if="scope.row.yx=='0'"
                   @click="reset(scope.row)"
                 ></el-button>
               </div>
@@ -146,6 +146,7 @@
               <span class="yy-input-text" style="vertical-align: top;">自定义项：</span>
               <div class="transfer">
                 <el-transfer
+<<<<<<< HEAD
                 filterable
                 :filter-method="filterMethod"
                 v-model="form.tagIdList"
@@ -154,6 +155,16 @@
                 :data="$store.state.gjdq"
                 :titles="['可选择列', '已选择列']"
                 ></el-transfer>
+=======
+                  filterable
+                  :filter-method="filterMethod"
+                  v-model="form.tagIdList"
+                  :render-content="renderFunc"
+                  :props="xzpropsData"
+                  :data="xzLabelData"
+                  :titles="['可选择列', '已选择列']"
+                  ></el-transfer>
+>>>>>>> li
               </div>
             </el-col>
         </el-row>
@@ -180,13 +191,17 @@ export default {
   components:{Trans},
   data() {
     return {
-      page:0,
+      page:'1',
       renderFunc(h, option) {
-        return <span>{ option.dm } - { option.mc }</span>;
+        return <span>{ option.mc }</span>;
       },
       propsData:{
         key:'dm',
         label:'cm'
+      },
+      xzpropsData:{
+        key:'id',
+        label:'mc'
       },
       //简表开始
       timer:'',
@@ -215,6 +230,8 @@ export default {
       detailsDialogVisible: false,
       addsDialogVisible: false,
       dialogText: "新增",
+      dialogType:'',
+      xzLabelData:[],//标签简表数据源
       userCode: "",
       userName: "",
       orgCode: "",
@@ -239,7 +256,7 @@ export default {
   methods: {
     //穿梭框的自定义搜索
     filterMethod(query, item){
-      return (item.dm).toLowerCase().indexOf(query) > -1 || (item.dm).toUpperCase().indexOf(query) > -1 || item.mc.indexOf(query) > -1;
+      return (item.bm).toLowerCase().indexOf(query) > -1 || (item.bm).toUpperCase().indexOf(query) > -1 || item.mc.indexOf(query) > -1;
     },
     //===========================================================================简表开始==============================================
     jbFnc(){
@@ -278,6 +295,8 @@ export default {
       let p = {
         currentPage: currentPage,
         showCount: showCount,
+        orderBy:'id',
+        orderType:'asc',
         pd: pd,
         userCode: this.userCode,
         userName: this.userName,
@@ -285,7 +304,7 @@ export default {
         orgJB: this.juState,
         token: this.token
       };
-      p.pd.sfyx = this.page+''
+      p.pd.yx = this.page
       this.$api.post(
         this.Global.aport3 + "/api/tag/pageTagType",
         p,
@@ -302,11 +321,19 @@ export default {
     adds(n, i) {
       this.addsDialogVisible = true;
       this.V.$reset("demo");
+      this.$api.post(this.Global.aport3 + '/api/tag/listAllTag',{},r=>{
+        this.xzLabelData = r.data
+      })
       if (n != 0) {
-        this.form = Object.assign({}, i);
+        this.form = Object.assign({tagIdList:[]}, i);
         this.dialogText = "编辑";
+        this.dialogType = "edit"
+        this.$api.post(this.Global.aport3 + '/api/tag/listAllTag',{id:i.id},r=>{
+          this.form.tagIdList = r.data.map(item=>item.id)
+        })
       } else {
         this.dialogText = "新增";
+        this.dialogType = "xz"
         this.form = {};
       }
     },
@@ -317,17 +344,15 @@ export default {
     addItem(addForm) {
       this.V.$submit("demo", (canSumit, data) => {
         if (!canSumit) return;
-        this.form.CREATE_USER_ID = this.userCode;
-        this.form.CREATE_USER_NAME = this.userName;
-        this.form.orgCode = this.orgCode;
-        this.form.token = this.token;
+        let url = '';
+        this.dialogType == 'xz'?url='/api/tag/insertTagType':url='/api/tag/updateTagType'
         this.$api.post(
-          this.Global.aport4 + "/warningSortRuleController/saveOrUpdate",
+          this.Global.aport3 + url,
           this.form,
           r => {
             if (r.success) {
               this.$message({
-                message: "保存成功！",
+                message: "操作成功！",
                 type: "success"
               });
               this.addsDialogVisible = false;
@@ -344,18 +369,11 @@ export default {
     },
     reset(val) {
       let p = {
-        pd: {
-          ID: val.ID,
-          SFYX: val.SFYX == "1" ? "0" : "1" //无效是0，有效是1
-        },
-        userCode: this.userCode,
-        userName: this.userName,
-        orgCode: this.orgCode,
-        orgJB: this.juState,
-        token: this.token
+        id: val.id,
+        yx: val.yx == "1" ? "0" : "1" //无效是0，有效是1  
       };
       this.$api.post(
-        this.Global.aport4 + "/warningSortRuleController/updateSFYXByID",
+        this.Global.aport3 + "/api/tag/updateTagTypeYx",
         p,
         r => {
           if (r.success) {
