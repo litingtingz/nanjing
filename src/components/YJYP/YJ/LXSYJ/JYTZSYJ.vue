@@ -78,7 +78,6 @@
                     </el-option>
                   </el-select>
                 </el-col>
-
                 <el-col  :sm="24" :md="12" :lg="8"   class="input-item">
                   <span class="input-text">审核状态：</span>
                   <el-select v-model="pd.SHZT" placeholder="请选择"  filterable clearable default-first-option size="small" class="input-input">
@@ -90,8 +89,6 @@
                     </el-option>
                   </el-select>
                 </el-col>
-
-
           </el-row>
          </el-col>
         <el-col :span="2" class="down-btn-area">
@@ -102,7 +99,11 @@
     </div>
     <div class="yycontent">
        <div class="yylbt mb-15">预警信息列表</div>
-
+       <!-- 简表按钮 -->
+        <el-row class="mb-15">
+         <el-button type="primary"  size="small" @click="jbFnc" style="float:right;margin-top:-35px">简表</el-button>
+        </el-row>
+       <!-- 简表按钮 -->
       <el-table
            ref="multipleTable"
            :data="tableData"
@@ -116,7 +117,27 @@
              type="selection"
              width="50">
            </el-table-column>
-           <el-table-column
+
+          <!-- 循环生成动态表格 -->
+            <template v-for="(lb,i) in lbData">
+            <el-table-column
+              :key="i"
+              v-if="lb.xm"
+              :prop="lb.dm"
+              :label="lb.cm">
+             <template slot-scope="scope">
+               <span>{{getXM(scope.row.ZWXM,scope.row.YWXM)}}</span>
+             </template>
+            </el-table-column>
+            <el-table-column
+              :key="i"
+              v-else
+              :prop="lb.dm"
+              :label="lb.cm">
+            </el-table-column>
+          </template>
+
+           <!-- <el-table-column
              prop="ZWXM"
              label="姓名">
              <template slot-scope="scope">
@@ -166,7 +187,7 @@
            <el-table-column
              prop="CLZT_DESC"
              label="处理状态">
-           </el-table-column>
+           </el-table-column> -->
            <el-table-column
              label="操作" width="70">
              <template slot-scope="scope">
@@ -205,15 +226,89 @@
         </el-pagination>
       </div>
     </div>
+    <!--===================简表开始======================-->
+    <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+      <Trans
+        :key="timer"
+        :transData="lbDataAll"
+        :pointData="pointData"
+        @transSave="transSave"
+        @dialogCancel="jbDialogVisible=false"></Trans>
+    </el-dialog>
+    <!--===================简表结束======================-->
   </div>
-
 </template>
 <script>
 import AREA from '../../../common/area'
+import Trans from "@/components/common/Transfer.vue"
 export default {
-  components:{AREA},
+  components:{AREA,Trans},
   data() {
     return {
+      //简表开始
+      timer:'',
+      jbDialogVisible:false,
+      pointData:[],//选中项
+      lbDataAll:[//列表总数据===简表数据源
+        {
+          dm:'ZWXM',
+          cm:'姓名',
+          xm:true
+        },
+        {
+          dm:'XB_DESC',
+          cm:'性别',
+        },
+        {
+          dm:'GJDQ_DESC',
+          cm:'国家地区',
+        },
+        {
+          dm:'ZJZL_DESC',
+          cm:'证件种类',
+        },
+        {
+          dm:'ZJHM',
+          cm:'证件号码',
+        },
+        {
+          dm:'QZZL_DESC',
+          cm:'签证种类',
+        },
+        {
+          dm:'QZHM',
+          cm:'签证号码',
+        },
+        {
+          dm:'BJSJ',
+          cm:'预警时间',
+        },
+        {
+          dm:'SSFJ_DESC',
+          cm:'所属分局',
+        },
+        {
+          dm:'PCS_DESC',
+          cm:'所属派出所'
+        },
+        {
+          dm:'SHZT_DESC',
+          cm:'审核状态',
+        },
+        {
+          dm:'CLZT_DESC',
+          cm:'处理状态',
+          ct:true,
+        },
+        {
+          dm:'FJCLZT_DESC',
+          cm:'分局处理状态',
+          ju:true
+        },
+      ],
+      lbData:[],//列表简表动态加载数据====简表选中项
+      //简表结束
+
       areaPd:{},
       CurrentPage: 1,
       pageSize: 10,
@@ -238,7 +333,6 @@ export default {
     }
   },
   activated(){
-
     if(this.juState=='2'){//分局登录
       this.pd.FJ = this.orgCode;
       this.getPSC(this.pd.FJ);
@@ -253,6 +347,7 @@ export default {
   mounted() {
     if(this.Global.serviceState==0){this.$set(this.pd,'CLZT','CLZT_1')};
     if(this.Global.serviceState==1){this.$set(this.pd,'CLZT','1')};
+    this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
     this.$store.dispatch('getGjdq');
     this.$store.dispatch('getClzt');
     this.$store.dispatch('getShzt');
@@ -269,6 +364,28 @@ export default {
     titleShow(e,el){
       el.target.title = e.label;
     },
+    //=================================================简表开始=====================
+    jbFnc(){
+      this.timer = new Date().getTime();
+      this.jbDialogVisible = true
+    },
+    transSave(data){
+      this.pointData = [];
+      if(data.length == 0){
+        this.lbData = this.lbDataAll
+      }else{
+        this.lbDataAll.forEach(item =>{
+          data.forEach(jtem => {
+            if(item.dm == jtem){
+              this.pointData.push(item)
+            }
+          })
+        })
+        this.lbData = this.pointData;
+      }
+      this.jbDialogVisible = false;
+    },
+    //=================================================简表结束=====================
     getFj(){
       this.$api.post(this.Global.aport5+'/djbhl/getallfj',{},
        r =>{

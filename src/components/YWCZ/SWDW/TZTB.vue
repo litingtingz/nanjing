@@ -53,7 +53,10 @@
     </div>
     <div class="yycontent">
        <div class="yylbt mb-15">甄别信息列表</div>
-
+        <!-- 简表按钮 -->
+        <el-row class="mb-15">
+         <el-button type="primary"  size="small" @click="jbFnc" style="float:left;">简表</el-button>
+        </el-row>
       <el-table
            :data="tableData"
            border
@@ -65,7 +68,41 @@
              type="selection"
              width="55">
            </el-table-column> -->
-           <el-table-column
+
+            <!-- 循环生成动态表格 -->
+            <template v-for="(lb,i) in lbData">
+            <el-table-column
+              :key="i"
+              v-if="lb.dw"
+              :prop="lb.dm"
+              :label="lb.cm">
+             <template slot-scope="scope">
+               <el-popover
+                  placement="top-start"
+                  width="250"
+                  trigger="hover"
+                  :content="scope.row.JSDWMC">
+                  <span slot="reference">{{scope.row.JSDWMC | ellipsis}}</span>
+                </el-popover>
+             </template>
+            </el-table-column>
+            <el-table-column
+              :key="i"
+              v-else-if="lb.zt"
+              :prop="lb.dm"
+              :label="lb.cm">
+            <template slot-scope="scope">
+               <span>{{scope.row.SFYX=='1'?'已发送':'未发送'}}</span>
+             </template>
+            </el-table-column>
+            <el-table-column
+              :key="i"
+              v-else
+              :prop="lb.dm"
+              :label="lb.cm">
+            </el-table-column>
+          </template>
+           <!-- <el-table-column
              prop="BT"
              label="标题">
            </el-table-column>
@@ -96,7 +133,8 @@
              <template slot-scope="scope">
                <span>{{scope.row.SFYX=='1'?'已发送':'未发送'}}</span>
              </template>
-           </el-table-column>
+           </el-table-column> -->
+
            <el-table-column
              label="操作" width="70">
              <template slot-scope="scope">
@@ -285,13 +323,55 @@
         <el-button @click="" size="small" type="warning" @click="detailDialogVisible = false">返回</el-button>
       </div>
     </el-dialog>
+    <!--===================简表开始======================-->
+    <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+      <Trans
+        :key="timer"
+        :transData="lbDataAll"
+        :pointData="pointData"
+        @transSave="transSave"
+        @dialogCancel="jbDialogVisible=false"></Trans>
+    </el-dialog>
+    <!--===================简表结束======================-->  
   </div>
 </template>
 <script>
 // import {format} from '@/assets/js/date.js'
+import Trans from "@/components/common/Transfer.vue"
 export default {
+  components:{Trans},
   data() {
     return {
+       //简表开始
+      timer:'',
+      jbDialogVisible:false,
+      pointData:[],//选中项
+      lbDataAll:[//列表总数据===简表数据源
+        {
+          dm:'BT',
+          cm:'标题',
+        },
+        {
+          dm:'NR',
+          cm:'内容',
+        },
+        {
+          dm:'JSDWMC',
+          cm:'接收单位',
+          dw:true
+        },
+        {
+          dm:'CREATETIME',
+          cm:'创建时间'
+        },
+        {
+          dm:'SFYX',
+          cm:'发送状态',
+          zt:true
+        },
+      ],
+      lbData:[],//列表简表动态加载数据====简表选中项
+      //简表结束
       dwTypeList:[],
 
       CurrentPage: 1,
@@ -335,6 +415,7 @@ export default {
       },1000)
   },
   mounted() {
+    this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
     this.$store.dispatch('getGjdq');
     this.$store.dispatch('getClzt');
     this.$store.dispatch('getZjzl');
@@ -359,6 +440,28 @@ export default {
     }
   },
   methods: {
+    //=================================================简表开始=====================
+    jbFnc(){
+      this.timer = new Date().getTime();
+      this.jbDialogVisible = true
+    },
+    transSave(data){
+      this.pointData = [];
+      if(data.length == 0){
+        this.lbData = this.lbDataAll
+      }else{
+        this.lbDataAll.forEach(item =>{
+          data.forEach(jtem => {
+            if(item.dm == jtem){
+              this.pointData.push(item)
+            }
+          })
+        })
+        this.lbData = this.pointData;
+      }
+      this.jbDialogVisible = false;
+    },
+    //=================================================简表结束=====================
     dwCheckFun(n){
       if(n==true){
         this.$set(this.pd,'JSDWBH',[]);

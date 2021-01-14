@@ -133,17 +133,30 @@
             </el-row> -->
             <div class="yylbt mb-15">预警信息列表</div>
             <span class="t-red" style="display:inline-block;margin-bottom:10px">未核查：  {{hcCount}}</span>
+           <el-row class="mb-15">
+              <el-button type="primary"  size="small" @click="jbFnc" style="float:right;margin-top:-35px">简表</el-button>
+           </el-row>
             <el-table
                  ref="multipleTable"
                  :data="tableData"
                  border
                  style="width: 100%"
                  @selection-change="handleSelectionChange">
+                 <!-- 修改代码 -->
                  <!-- <el-table-column
                    type="selection"
                    width="55">
                  </el-table-column> -->
-                 <el-table-column
+                <!-- 循环生成动态表格 -->
+              <template v-for="(lb,i) in lbData">
+              <el-table-column
+                :key="i"
+                :prop="lb.dm"
+                :label="lb.cm"
+                :min-width="lb.width">
+              </el-table-column>
+            </template>
+              <!--   <el-table-column
                    prop="BT"
                    label="标题">
                  </el-table-column>
@@ -196,7 +209,7 @@
                    prop="HCCRJSJ"
                    label="出入境时间"
                    min-width="100">
-                 </el-table-column>
+                 </el-table-column> -->
                  <!-- <el-table-column
                    prop="ZJZLMC"
                    label="证件种类">
@@ -205,7 +218,7 @@
                    prop="ZJHM"
                    label="证件号码">
                  </el-table-column> -->
-                 <el-table-column
+                 <!-- <el-table-column
                    prop="HCSJ"
                    label="核查时间"
                    min-width="100">
@@ -219,7 +232,7 @@
                    prop="HCZJHM"
                    label="核查证件号码"
                    min-width="110">
-                 </el-table-column>
+                 </el-table-column> -->
                  <el-table-column
                    label="操作" width="70">
                    <template slot-scope="scope">
@@ -958,11 +971,24 @@
           </div>
      <!-- </div> -->
     </div>
+
+                 <!-- 简表开始 -->
+             <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+              <Trans
+                :key="timer"
+                :transData="lbDataAll"
+                :pointData="pointData"
+                @transSave="transSave"
+                @dialogCancel="jbDialogVisible=false"></Trans>
+            </el-dialog>
+            <!-- 简表结束 -->
   </div>
 
 </template>
 <script>
+import Trans from "@/components/common/Transfer.vue"
 export default {
+  components:{Trans},
   data() {
     return {
       CurrentPage: 1,
@@ -1024,9 +1050,87 @@ export default {
       tableData2: [],
       tableData3: [],
 
+      //简表开始
+      timer:'',
+      jbDialogVisible:false,
+      pointData:[],//选中项
+      lbDataAll:[//列表总数据===简表数据源
+        {
+          dm:'BT',
+          cm:'标题'
+        },
+        {
+          dm:'XM',
+          cm:'姓名',
+        },
+        {
+          dm:'XBMC',
+          cm:'性别',
+          width:'50'
+        },
+        {
+          dm:'CSRQ',
+          cm:'出生日期',
+        },
+        {
+          dm:'HKSZD',
+          cm:'户口所在地',
+          width:'100'
+        },
+        {
+          dm:'JTZZ',
+          cm:'家庭住址',
+        },
+        {
+          dm:'LXDH',
+          cm:'联系电话',
+        },
+        {
+          dm:'SFZH',
+          cm:'省份证号',
+        },
+        {
+          dm:'CRJBSMC',
+          cm:'出入境标识',
+          width:'100'
+        },
+        {
+          dm:'HCCRJKAMC',
+          cm:'出入境口岸',
+          width:'100'
+        },
+        {
+          dm:'HCWLGMC',
+          cm:'前往/来自国',
+          width:'100'
+        },
+        {
+          dm:'HCCRJSJ',
+          cm:'出入境时间',
+          width:'100'
+        },
+        {
+          dm:'HCSJ',
+          cm:'核查时间',
+          width:'100'
+        },
+        {
+          dm:'HCZJZLMC',
+          cm:'核查证件种类',
+          width:'110'
+        },
+        {
+          dm:'HCZJHM',
+          cm:'核查证件号码',
+          width:'110'
+        },
+      ],
+      lbData:[],//列表简表动态加载数据====简表选中项
+      //简表结束
     }
   },
   mounted() {
+    this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
     this.$store.dispatch('getXB');
     this.$store.dispatch('getGjdq');
     this.$store.dispatch('getXzqh');
@@ -1042,6 +1146,28 @@ export default {
     this.hcCountFun();
   },
   methods: {
+    //=================简表方法开始=====================
+    jbFnc(){
+      this.timer = new Date().getTime();
+      this.jbDialogVisible = true
+    },
+    transSave(data){
+      this.pointData = [];
+      if(data.length == 0){
+        this.lbData = this.lbDataAll
+      }else{
+        this.lbDataAll.forEach(item =>{
+          data.forEach(jtem => {
+            if(item.dm == jtem){
+              this.pointData.push(item)
+            }
+          })
+        })
+        this.lbData = this.pointData;
+      }
+      this.jbDialogVisible = false;
+    },
+    //======================简表方法结束========================
     getLable(t,val){
      // if(t==1){//行政区划
      //
@@ -1058,6 +1184,9 @@ export default {
      //    });
      //    this.editForm.QFJGMC = obj.mc;
      // }
+
+
+
 
      if(t==3){//性别
        let obj = {};

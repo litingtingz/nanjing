@@ -31,6 +31,9 @@
       <el-row class="mb-15">
         <el-button type="primary"  size="small" @click="adds(0,'');from={};">新增</el-button>
         </el-row>
+        <el-row class="mb-15">
+         <el-button type="primary"  size="small" @click="jbFnc" style="float:right;margin-top:-45px">简表</el-button>
+      </el-row>
       <el-table
            ref="multipleTable"
            :data="tableData"
@@ -41,7 +44,27 @@
              type="selection"
              width="55">
            </el-table-column> -->
-           <el-table-column
+
+
+            <!-- 循环生成动态表格 -->
+            <template v-for="(lb,i) in lbData">
+            <el-table-column
+              :key="i"
+              v-if="lb.zt"
+              :prop="lb.dm"
+              :label="lb.cm">
+              <template slot-scope="scope">
+              <span :class="{'yyred':scope.row.sfyx == '0','yyblue':scope.row.sfyx == '1'}">  {{scope.row.sfyx | fifterstatus}}</span>
+             </template>
+            </el-table-column>
+            <el-table-column
+              :key="i"
+              v-else
+              :prop="lb.dm"
+              :label="lb.cm">
+            </el-table-column>
+          </template>
+           <!-- <el-table-column
              prop="mc"
              label="角色名">
            </el-table-column>
@@ -67,7 +90,7 @@
            <el-table-column
              prop="cjsj"
              label="创建时间">
-           </el-table-column>
+           </el-table-column> -->
 
            <el-table-column
              label="操作" width="150">
@@ -294,13 +317,59 @@
     <el-button @click="yhDialogVisible = false" size="small">取 消</el-button>
   </div>
 </el-dialog>
-  </div>
 
+    <!--===================简表开始======================-->
+    <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+      <Trans
+        :key="timer"
+        :transData="lbDataAll"
+        :pointData="pointData"
+        @transSave="transSave"
+        @dialogCancel="jbDialogVisible=false"></Trans>
+    </el-dialog>
+    <!--===================简表结束======================-->
+  </div>
 </template>
 <script>
+import Trans from "@/components/common/Transfer.vue"
 export default {
+  components:{Trans},
   data() {
     return {
+
+      //简表开始
+      timer:'',
+      jbDialogVisible:false,
+      pointData:[],//选中项
+      lbDataAll:[//列表总数据===简表数据源
+        {
+          dm:'mc',
+          cm:'角色名',
+        },
+        {
+          dm:'ssdw.mc',
+          cm:'所属单位',
+        },
+        {
+          dm:'sfyx',
+          cm:'状态',
+          zt:true
+        },
+        {
+          dm:'cjr.mc',
+          cm:'创建人',
+        },
+        {
+          dm:'cjdw.mc',
+          cm:'创建单位'
+        },
+        {
+          dm:'cjsj',
+          cm:'创建时间'
+        }
+      ],
+      lbData:[],//列表简表动态加载数据====简表选中项
+      //简表结束
       CurrentPage: 1,
       pageSize: 10,
       TotalResult: 0,
@@ -351,10 +420,33 @@ export default {
   },
 
   mounted() {
+     this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
      this.getCompany();
      this.getList(this.CurrentPage, this.pageSize, this.pd);
   },
   methods: {
+      //=================================================简表开始=====================
+    jbFnc(){
+      this.timer = new Date().getTime();
+      this.jbDialogVisible = true
+    },
+    transSave(data){
+      this.pointData = [];
+      if(data.length == 0){
+        this.lbData = this.lbDataAll
+      }else{
+        this.lbDataAll.forEach(item =>{
+          data.forEach(jtem => {
+            if(item.dm == jtem){
+              this.pointData.push(item)
+            }
+          })
+        })
+        this.lbData = this.pointData;
+      }
+      this.jbDialogVisible = false;
+    },
+    //=================================================简表结束=====================
     selectfn(a,b){
       this.multipleSelection = a;
       this.dataSelection()

@@ -375,6 +375,11 @@
             </div>
         </div>
         <div v-else>
+            <!-- 简表按钮 -->
+            <el-row class="mb-15">
+              <el-button type="primary"  size="small" @click="jbFnc" style="float:right;margin-top:-44px;margin-right:30px">简表</el-button>
+            </el-row>
+            <!-- 简表按钮 -->
           <el-table
              ref="multipleTable"
              :data="tableData"
@@ -388,7 +393,16 @@
                type="selection"
                width="55">
              </el-table-column>
-             <el-table-column
+              <!-- 循环生成动态表格 -->
+            <template v-for="(lb,i) in lbData">
+            <el-table-column
+              :key="i"
+              :prop="lb.dm"
+              :label="lb.cm"
+              :min-width="lb.width">
+            </el-table-column>
+          </template>
+             <!-- <el-table-column
                prop="YWXM"
                label="英文姓名"
                min-width="100">
@@ -468,19 +482,19 @@
                prop="ZSXZ_DESC"
                label="住房类型"
                min-width="100">
-             </el-table-column>
+             </el-table-column> -->
              <el-table-column
                label="操作"
                width="70"
                fixed="right">
                <template slot-scope="scope">
-  <el-button
-    type="text"
-    class="a-btn"
-    title="详情"
-    icon="el-icon-document"
-    @click="details(scope.row)"
-  ></el-button>
+            <el-button
+              type="text"
+              class="a-btn"
+              title="详情"
+              icon="el-icon-document"
+              @click="details(scope.row)"
+            ></el-button>
 </template>
              </el-table-column>
          </el-table>
@@ -526,6 +540,16 @@
       </el-dialog>
     </div>
 
+      <!--===================简表开始======================-->
+      <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+        <Trans
+          :key="timer"
+          :transData="lbDataAll"
+          :pointData="pointData"
+          @transSave="transSave"
+          @dialogCancel="jbDialogVisible=false"></Trans>
+      </el-dialog>
+    <!--===================简表结束======================-->
       </div>
 
     </template>
@@ -533,8 +557,9 @@
 import { ToArray, sortByKey } from "@/assets/js/ToArray.js";
 import CZXX from "../../../common/czxx_xq";
 import AREAMS from "../../../common/areaMs";
+import Trans from "@/components/common/Transfer.vue"
 export default {
-  components: { CZXX, AREAMS },
+  components: { CZXX, AREAMS ,Trans},
   data() {
     return {
       areaPd: {},
@@ -711,10 +736,103 @@ export default {
       orgCode: "",
       orgName: "",
       token: "",
-      juState: ""
+      juState: "",
+
+
+      //简表开始
+      timer:'',
+      jbDialogVisible:false,
+      pointData:[],//选中项
+      lbDataAll:[//列表总数据===简表数据源
+        {
+          dm:'YWXM',
+          cm:'英文姓名',
+          width:'100',
+        },
+        {
+          dm:'XB_DESC',
+          cm:'性别',
+          width:'60'
+        },
+        {
+          dm:'CSRQ',
+          cm:'出生日期',
+          width:'100'
+        },
+        {
+          dm:'GJDQ_DESC',
+          cm:'国籍',
+        },
+        {
+          dm:'ZJZL_DESC',
+          cm:'证件种类',
+          width:'130'
+        },
+        {
+          dm:'ZJHM',
+          cm:'证件号码',
+          width:'100'
+        },
+        {
+          dm:'QZZL_DESC',
+          cm:'签证种类',
+          width:'100'
+        },
+        {
+          dm:'QZYXQ',
+          cm:'签证有效期至',
+          width:'120'
+        },
+        {
+          dm:'SFDM_DESC',
+          cm:'身份',
+        },
+        {
+          dm:'SSFJ_DESC',
+          cm:'所属分局',
+          width:'100'
+        },
+        {
+          dm:'SSPCS_DESC',
+          cm:'所属派出所',
+          width:'120'
+        },
+        {
+          dm:'LXDH',
+          cm:'电话',
+        },
+        {
+          dm:'XXDZ',
+          cm:'详细地址',
+          width:'150'
+        },
+        {
+          dm:'CRJBS_DESC',
+          cm:'出入境标识',
+          width:'120'
+        },
+        {
+          dm:'IODATE',
+          cm:'出入境时间',
+          width:'120'
+        },
+        {
+          dm:'FWCS',
+          cm:'服务处所',
+          width:'130'
+        },
+        {
+          dm:'ZSXZ_DESC',
+          cm:'住房类型',
+          width:'100'
+        }
+      ],
+      lbData:[],//列表简表动态加载数据====简表选中项
+      //简表结束
     };
   },
   mounted() {
+    this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
     this.$store.dispatch("getGjdq");
     this.$store.dispatch("getXB");
     this.$store.dispatch("getSsdw");
@@ -766,6 +884,29 @@ export default {
     titleShow(e, el) {
       el.target.title = e.label;
     },
+
+    //=================================================简表开始=====================
+    jbFnc(){
+      this.timer = new Date().getTime();
+      this.jbDialogVisible = true
+    },
+    transSave(data){
+      this.pointData = [];
+      if(data.length == 0){
+        this.lbData = this.lbDataAll
+      }else{
+        this.lbDataAll.forEach(item =>{
+          data.forEach(jtem => {
+            if(item.dm == jtem){
+              this.pointData.push(item)
+            }
+          })
+        })
+        this.lbData = this.pointData;
+      }
+      this.jbDialogVisible = false;
+    },
+    //=================================================简表结束=====================
     getSsfj() {
       let p = {
         operatorId: this.$store.state.uid,

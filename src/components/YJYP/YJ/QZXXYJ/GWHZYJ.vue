@@ -138,6 +138,9 @@
     <div class="yycontent">
        <div class="yylbt mb-15">预警信息列表</div>
        <COUNT :ccPd="ccPd" :random="new Date().getTime()"></COUNT>
+        <el-row class="mb-15">
+         <el-button type="primary"  size="small" @click="jbFnc" style="float:right;margin-top:-35px">简表</el-button>
+        </el-row>
       <el-table
            :data="tableData"
            border
@@ -152,7 +155,44 @@
              type="selection"
              width="55">
            </el-table-column>
-           <el-table-column
+           <!-- 循环生成动态表格 -->
+            <template v-for="(lb,i) in lbData">
+            <el-table-column
+              :key="i"
+              v-if="lb.ct"
+              :prop="lb.dm"
+              :label="lb.cm">
+             <template slot-scope="scope">
+               <span :class="{'t-red':scope.row.CLZT=='1','t-blue':scope.row.CLZT=='2','t-yel':scope.row.CLZT=='3'}">{{scope.row.CLZT_DESC}}</span>
+             </template>
+            </el-table-column>
+            <el-table-column
+              :key="i"
+              v-else-if="lb.xm"
+              :prop="lb.dm"
+              :label="lb.cm">
+              <template slot-scope="scope">
+                 <span>{{getXM(scope.row.ZWXM,scope.row.YWXM)}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              :key="i"
+              v-else-if="lb.ju"
+              :prop="lb.dm"
+              :label="lb.cm">
+             <template slot-scope="scope">
+               <span v-if="juState=='1'">{{scope.row.FJCLZT_DESC}}</span>
+               <span v-else :class="{'t-red':scope.row.FJCLZT=='1','t-blue':scope.row.FJCLZT=='2','t-yel':scope.row.FJCLZT=='3'}">{{scope.row.FJCLZT_DESC}}</span>
+             </template>
+            </el-table-column>
+            <el-table-column
+              :key="i"
+              v-else
+              :prop="lb.dm"
+              :label="lb.cm">
+            </el-table-column>
+          </template>
+           <!-- <el-table-column
              prop="ZWXM"
              label="姓名">
               <template slot-scope="scope">
@@ -211,7 +251,7 @@
                <span v-if="juState=='1'">{{scope.row.FJCLZT_DESC}}</span>
                <span v-else :class="{'t-red':scope.row.FJCLZT=='1','t-blue':scope.row.FJCLZT=='2','t-yel':scope.row.FJCLZT=='3'}">{{scope.row.FJCLZT_DESC}}</span>
              </template>
-           </el-table-column>
+           </el-table-column> -->
            <el-table-column
              label="操作" width="70">
              <template slot-scope="scope">
@@ -285,14 +325,25 @@
         <el-button @click="qxItem('addForm')" size="small">取 消</el-button>
       </div>
     </el-dialog>
+    <!--===================简表开始======================-->
+    <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+      <Trans
+        :key="timer"
+        :transData="lbDataAll"
+        :pointData="pointData"
+        @transSave="transSave"
+        @dialogCancel="jbDialogVisible=false"></Trans>
+    </el-dialog>
+    <!--===================简表结束======================-->
   </div>
 
 </template>
 <script>
 import AREA from '../../../common/area'
 import COUNT from '../../../common/CLZTCount'
+import Trans from "@/components/common/Transfer.vue"
 export default {
-  components:{AREA,COUNT},
+  components:{AREA,COUNT,Trans},
   data() {
     return {
       CurrentPage: 1,
@@ -320,11 +371,73 @@ export default {
       juState:'',
       areaPd:{},
       ccPd:{},
+
+      //简表开始
+      timer:'',
+      jbDialogVisible:false,
+      pointData:[],//选中项
+      lbDataAll:[//列表总数据===简表数据源
+        {
+          dm:'ZWXM',
+          cm:'姓名',
+          xm:true
+        },
+        {
+          dm:'XB_DESC',
+          cm:'性别',
+        },
+        {
+          dm:'GJDQ_DESC',
+          cm:'国家地区',
+        },
+        {
+          dm:'ZJZL_DESC',
+          cm:'证件种类',
+        },
+        {
+          dm:'ZJHM',
+          cm:'证件号码',
+        },
+        {
+          dm:'QZZL_DESC',
+          cm:'签证种类',
+        },
+        {
+          dm:'QZHM',
+          cm:'签证号码',
+        },
+        {
+          dm:'BJSJ',
+          cm:'预警时间',
+        },
+        {
+          dm:'SSFJ_DESC',
+          cm:'所属分局',
+        },
+        {
+          dm:'PCS_DESC',
+          cm:'所属派出所'
+        },
+        {
+          dm:'CLZT_DESC',
+          cm:'处理状态',
+          ct:true,
+        },
+        {
+          dm:'FJCLZT_DESC',
+          cm:'分局处理状态',
+          ju:true
+        },
+      ],
+      lbData:[],//列表简表动态加载数据====简表选中项
+      //简表结束
     }
   },
   mounted() {
     if(this.Global.serviceState==0){this.$set(this.pd,'CLZT','CLZT_1')};
     if(this.Global.serviceState==1){this.$set(this.pd,'CLZT','1')};
+    this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
+
     this.$store.dispatch('getGjdq');
     this.$store.dispatch('getClzt');
     this.$store.dispatch('getZjzl');
@@ -368,6 +481,29 @@ export default {
          }
        })
     },
+
+    //=================================================简表开始=====================
+    jbFnc(){
+      this.timer = new Date().getTime();
+      this.jbDialogVisible = true
+    },
+    transSave(data){
+      this.pointData = [];
+      if(data.length == 0){
+        this.lbData = this.lbDataAll
+      }else{
+        this.lbDataAll.forEach(item =>{
+          data.forEach(jtem => {
+            if(item.dm == jtem){
+              this.pointData.push(item)
+            }
+          })
+        })
+        this.lbData = this.pointData;
+      }
+      this.jbDialogVisible = false;
+    },
+    //=================================================简表结束=====================
     getPSC(i){
       this.$set(this.pd,'PCS','');
       this.$api.post(this.Global.aport5+'/djbhl/getpcsbyfjdm',{pd:{fjdm:i},userCode:this.userCode,userName:this.userName,orgJB:this.juState,orgCode:this.orgCode,token:this.token},

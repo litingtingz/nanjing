@@ -81,6 +81,9 @@
         <el-button type="success" size="small" @click="download">列表导出</el-button>
         <el-button type="danger" size="small" @click="delbjsc">批量删除</el-button>
         </el-row>
+      <el-row class="mb-15">
+         <el-button type="primary"  size="small" @click="jbFnc" style="float:right;margin-top:-45px">简表</el-button>
+      </el-row>
       <el-table
            :data="tableData"
            border
@@ -94,7 +97,58 @@
              type="selection"
              width="55">
            </el-table-column>
-           <el-table-column
+
+           <!-- 循环生成动态表格 -->
+            <template v-for="(lb,i) in lbData">
+            <el-table-column
+              :key="i"
+              v-if="lb.aj"
+              :prop="lb.dm"
+              :label="lb.cm">
+             <template slot-scope="scope">
+              <span  class="bjscblue" v-if="scope.row.AJHCJG_DESC == '无异常'">{{scope.row.AJHCJG_DESC}}</span>
+              <span  class="hand bjscred" v-else @click="gotos(scope.row,1)">{{scope.row.AJHCJG_DESC}}</span>
+             </template>
+            </el-table-column>
+            <el-table-column
+              :key="i"
+              v-else-if="lb.tb"
+              :prop="lb.dm"
+              :label="lb.cm">
+             <template slot-scope="scope">
+               <span class="bjscblue" v-if="scope.row.TBRYHCJG_DESC == '无异常'">{{scope.row.TBRYHCJG_DESC}}</span>
+               <span class="bjscyellow hand" @click="gotos(scope.row,2)" v-else>{{scope.row.TBRYHCJG_DESC}}</span>
+             </template>
+            </el-table-column>
+            <el-table-column
+              :key="i"
+              v-else-if="lb.sj"
+              :prop="lb.dm"
+              :label="lb.cm">
+             <div slot-scope="scope">
+               <span  class="bjscblue" v-if="scope.row.SJXXHCJG_DESC == '无异常'">{{scope.row.SJXXHCJG_DESC}}</span>
+               <span  class="hand bjscred" v-else @click="gotos(scope.row,3)">{{scope.row.SJXXHCJG_DESC}}</span>
+             </div>
+            </el-table-column>
+            <el-table-column
+              :key="i"
+              v-else-if="lb.cr"
+              :prop="lb.dm"
+              :label="lb.cm">
+            <div slot-scope="scope">
+                <span :class="{'bjscred':scope.row.CRJJLHCJG_DESC == '境外','bjscblue':scope.row.CRJJLHCJG_DESC == '境内'}" @click="gotos(scope.row,4)">{{scope.row.CRJJLHCJG_DESC}}</span>
+             </div>
+            </el-table-column>
+            <el-table-column
+              :key="i"
+              v-else
+              :prop="lb.dm"
+              :label="lb.cm">
+            </el-table-column>
+          </template>
+
+
+           <!-- <el-table-column
              prop="YWXM"
              label="英文姓名">
            </el-table-column>
@@ -143,9 +197,9 @@
              label="涉警信息核查结果">
              <div slot-scope="scope">
                <span  class="bjscblue" v-if="scope.row.SJXXHCJG_DESC == '无异常'">{{scope.row.SJXXHCJG_DESC}}</span>
-               <span  class="hand bjscred" v-else @click="gotos(scope.row,3)">{{scope.row.SJXXHCJG_DESC}}</span>
+               <span  class="hand bjscred" v-else @click="gotos(scope.row,3)">{{scope.row.SJXXHCJG_DESC}}</span> -->
               <!-- <span :class="{'bjscred':scope.row.SJXXHCJG_DESC == '查中','bjscblue':scope.row.SJXXHCJG_DESC == '无异常','bjscyellow':scope.row.SJXXHCJG_DESC == '疑似'}" @click="gotos(scope.row,3)">{{scope.row.SJXXHCJG_DESC}}</span> -->
-             </div>
+             <!-- </div>
            </el-table-column>
            <el-table-column
              prop="CRJJLHCJG_DESC"
@@ -153,7 +207,8 @@
              <div slot-scope="scope">
                 <span :class="{'bjscred':scope.row.CRJJLHCJG_DESC == '境外','bjscblue':scope.row.CRJJLHCJG_DESC == '境内'}" @click="gotos(scope.row,4)">{{scope.row.CRJJLHCJG_DESC}}</span>
              </div>
-           </el-table-column>
+           </el-table-column> -->
+
            <!-- <el-table-column
              label="操作" width="120">
              <template slot-scope="scope">
@@ -576,6 +631,16 @@
       <el-button @click="crjDialogVisible = false" size="small">取 消</el-button>
     </div>
   </el-dialog>
+    <!--===================简表开始======================-->
+    <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+      <Trans
+        :key="timer"
+        :transData="lbDataAll"
+        :pointData="pointData"
+        @transSave="transSave"
+        @dialogCancel="jbDialogVisible=false"></Trans>
+    </el-dialog>
+    <!--===================简表结束======================--> 
   </div>
 </template>
 <script>
@@ -584,10 +649,70 @@ import TBRYXX from '../../common/tbryxx_xq'
 import ANSJRY from '../../YJYP/YP/LXSYP/ansjxq_ry'
 import CRJXXRY from '../../YJYP/YP/LXSYP/crjxq_ry'
 import JZSJ from '../../common/jzsj_xq'
+import Trans from "@/components/common/Transfer.vue"
 export default {
-  components:{TBRYXX,ANSJRY,JZSJ,CRJXXRY},
+  components:{TBRYXX,ANSJRY,JZSJ,CRJXXRY,Trans},
   data() {
     return {
+
+
+      //简表开始
+      timer:'',
+      jbDialogVisible:false,
+      pointData:[],//选中项
+      lbDataAll:[//列表总数据===简表数据源
+        {
+          dm:'YWXM',
+          cm:'英文姓名',
+        },
+        {
+          dm:'XB_DESC',
+          cm:'性别',
+        },
+        {
+          dm:'GJDQ_DESC',
+          cm:'国家地区',
+        },
+        {
+          dm:'ZJZL_DESC',
+          cm:'证件种类',
+        },
+        {
+          dm:'ZJHM',
+          cm:'证件号码',
+        },
+        {
+          dm:'PC',
+          cm:'批次',
+        },
+        {
+          dm:'CJSJ',
+          cm:'审查时间',
+        },
+        {
+          dm:'AJHCJG_DESC',
+          cm:'案件核查结果',
+          aj:true
+        },
+        {
+          dm:'TBRYHCJG_DESC',
+          cm:'通报人员核查结果',
+          tb:true
+        },
+        {
+          dm:'SJXXHCJG_DESC',
+          cm:'涉警信息核查结果',
+          sj:true
+        },
+        {
+          dm:'CRJJLHCJG_DESC',
+          cm:'出入境核查结果',
+          cr:true
+        },
+      ],
+      lbData:[],//列表简表动态加载数据====简表选中项
+      //简表结束
+
       CurrentPage: 1,
       pageSize: 10,
       TotalResult: 0,
@@ -653,6 +778,7 @@ export default {
       // },1000)
   },
   mounted() {
+    this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
     this.$store.dispatch('getGjdq');
     this.$store.dispatch('getXB');
     this.$store.dispatch('getZjzl');
@@ -664,6 +790,28 @@ export default {
     this.token=this.$store.state.token;
   },
   methods: {
+    //=================================================简表开始=====================
+    jbFnc(){
+      this.timer = new Date().getTime();
+      this.jbDialogVisible = true
+    },
+    transSave(data){
+      this.pointData = [];
+      if(data.length == 0){
+        this.lbData = this.lbDataAll
+      }else{
+        this.lbDataAll.forEach(item =>{
+          data.forEach(jtem => {
+            if(item.dm == jtem){
+              this.pointData.push(item)
+            }
+          })
+        })
+        this.lbData = this.pointData;
+      }
+      this.jbDialogVisible = false;
+    },
+    //=================================================简表结束=====================
     delbjsc(){
       if(this.selectionAll.length>0){
         this.$confirm('您是否确认删除选中数据？', '提示', {

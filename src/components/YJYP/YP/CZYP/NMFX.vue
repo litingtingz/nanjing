@@ -149,6 +149,11 @@
           </el-table>
           </div>
           <div v-else>
+            <!-- 简表按钮 -->
+            <el-row class="mb-15">
+              <el-button type="primary"  size="small" @click="jbFnc" style="float:right;margin-top:-44px;margin-right:30px">简表</el-button>
+            </el-row>
+            <!-- 简表按钮 -->
               <el-table
                 ref="multipleTable"
                 :data="tableData"
@@ -161,7 +166,15 @@
                   type="selection"
                   width="55">
                 </el-table-column>
-                <el-table-column
+           <!-- 循环生成动态表格 -->
+              <template v-for="(lb,i) in lbData">
+              <el-table-column
+                :key="i"
+                :prop="lb.dm"
+                :label="lb.cm">
+              </el-table-column>
+            </template>
+                <!-- <el-table-column
                   prop="XM"
                   label="姓名">
                 </el-table-column>
@@ -196,7 +209,7 @@
                 <el-table-column
                   prop="RS"
                   label="户室人数">
-                </el-table-column>
+                </el-table-column> -->
                 <el-table-column
                   label="操作" width="100">
                   <template slot-scope="scope">
@@ -237,15 +250,70 @@
             </div>
             <div style="color:blue">统计总数量：{{ALLResult}}</div>
   </div>
-
+    <!--===================简表开始======================-->
+    <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+      <Trans
+        :key="timer"
+        :transData="lbDataAll"
+        :pointData="pointData"
+        @transSave="transSave"
+        @dialogCancel="jbDialogVisible=false"></Trans>
+    </el-dialog>
+    <!--===================简表结束======================-->
   </div>
 </template>
 <script>
-
+import Trans from "@/components/common/Transfer.vue"
 export default {
-
+  components:{Trans},
   data() {
     return {
+      //简表开始
+      timer:'',
+      jbDialogVisible:false,
+      pointData:[],//选中项
+      lbDataAll:[//列表总数据===简表数据源
+        {
+          dm:'XM',
+          cm:'姓名',
+        },
+        {
+          dm:'XBDM_DESC',
+          cm:'性别',
+        },
+        {
+          dm:'GJDQ_DESC',
+          cm:'国家地区',
+        },
+        {
+          dm:'AJBH',
+          cm:'案卷编号',
+        },
+        {
+          dm:'ZCRQ',
+          cm:'注册时间',
+        },
+        {
+          dm:'HZHM',
+          cm:'护照号码',
+        },
+        {
+          dm:'SFDM_DESC',
+          cm:'身份类型',
+        },
+        {
+          dm:'DHHM',
+          cm:'电话号码',
+        },
+        {
+          dm:'RS',
+          cm:'户室人数',
+        },
+      ],
+      lbData:[],//列表简表动态加载数据====简表选中项
+      //简表结束
+
+
       CurrentPage: 1,
       pageSize: 10,
       TotalResult: 0,
@@ -328,9 +396,13 @@ export default {
     orgName:'',
     token:'',
     juState:'',
+
+
+
     }
   },
   mounted() {
+    this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
     this.userCode=this.$store.state.uid;
     this.userName=this.$store.state.uname;
     this.orgName=this.$store.state.orgname;
@@ -361,6 +433,28 @@ export default {
     titleShow(e,el){
       el.target.title = e.label;
     },
+    //=================================================简表开始=====================
+    jbFnc(){
+      this.timer = new Date().getTime();
+      this.jbDialogVisible = true
+    },
+    transSave(data){
+      this.pointData = [];
+      if(data.length == 0){
+        this.lbData = this.lbDataAll
+      }else{
+        this.lbDataAll.forEach(item =>{
+          data.forEach(jtem => {
+            if(item.dm == jtem){
+              this.pointData.push(item)
+            }
+          })
+        })
+        this.lbData = this.pointData;
+      }
+      this.jbDialogVisible = false;
+    },
+    //=================================================简表结束=====================
     handleChange(val){
 
     },

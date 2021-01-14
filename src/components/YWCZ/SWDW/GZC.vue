@@ -87,7 +87,10 @@
     </div>
     <div class="yycontent">
        <div class="yylbt mb-15">甄别信息列表</div>
-
+        <!-- 简表按钮 -->
+        <el-row class="mb-15">
+         <el-button type="primary"  size="small" @click="jbFnc" style="float:right;margin-top:-35px">简表</el-button>
+        </el-row>
       <el-table
            :data="tableData"
            border
@@ -100,7 +103,25 @@
              type="selection"
              width="55">
            </el-table-column> -->
-           <el-table-column
+          <!-- 循环生成动态表格 -->
+            <template v-for="(lb,i) in lbData">
+            <el-table-column
+              :key="i"
+              v-if="lb.zt"
+              :prop="lb.dm"
+              :label="lb.cm">
+            <template slot-scope="scope">
+              {{scope.row.HCZT=='0'?'核查通过':scope.row.HCZT=='1'?'核查不通过':''}}
+            </template>
+            </el-table-column>
+            <el-table-column
+              :key="i"
+              v-else
+              :prop="lb.dm"
+              :label="lb.cm">
+            </el-table-column>
+          </template>
+           <!-- <el-table-column
              prop="SBDWMC"
              label="公证处单位">
            </el-table-column>
@@ -134,14 +155,15 @@
             <template slot-scope="scope">
               {{scope.row.HCZT=='0'?'核查通过':scope.row.HCZT=='1'?'核查不通过':''}}
             </template>
-           </el-table-column>
-           <el-table-column
+           </el-table-column> -->
+           <!-- <el-table-column
              prop="CLZT_DESC"
-             label="处理状态">
+             label="处理状态"> -->
              <!-- <template slot-scope="scope">
                {{scope.row.CLZT=='0'?'已处理':'未处理'}}
              </template> -->
-           </el-table-column>
+           <!-- </el-table-column> -->
+
            <el-table-column
              label="操作" width="70">
              <template slot-scope="scope">
@@ -182,14 +204,70 @@
         </el-pagination>
       </div>
     </div>
+    <!--===================简表开始======================-->
+    <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+      <Trans
+        :key="timer"
+        :transData="lbDataAll"
+        :pointData="pointData"
+        @transSave="transSave"
+        @dialogCancel="jbDialogVisible=false"></Trans>
+    </el-dialog>
+    <!--===================简表结束======================-->
   </div>
-
 </template>
 <script>
 // import {format} from '@/assets/js/date.js'
+import Trans from "@/components/common/Transfer.vue"
 export default {
+  components:{Trans},
   data() {
     return {
+       //简表开始
+      timer:'',
+      jbDialogVisible:false,
+      pointData:[],//选中项
+      lbDataAll:[//列表总数据===简表数据源
+        {
+          dm:'SBDWMC',
+          cm:'公证处单位',
+        },
+        {
+          dm:'YWX',
+          cm:'英文姓',
+        },
+        {
+          dm:'YWM',
+          cm:'英文名',
+        },
+        {
+          dm:'GJDQ_DESC',
+          cm:'国家地区',
+        },
+        {
+          dm:'HZHM',
+          cm:'护照号码',
+        },
+        {
+          dm:'CCHZHM',
+          cm:'曾持护照号码',
+        },
+        {
+          dm:'SBDWMC',
+          cm:'上报单位'
+        },
+        {
+          dm:'HCZT',
+          cm:'核查状态',
+          zt:true
+        },
+        {
+          dm:'CLZT_DESC',
+          cm:'处理状态'
+        }
+      ],
+      lbData:[],//列表简表动态加载数据====简表选中项
+      //简表结束
       CurrentPage: 1,
       pageSize: 10,
       TotalResult: 0,
@@ -219,6 +297,7 @@ export default {
       },1000)
   },
   mounted() {
+    this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
     this.$store.dispatch('getGjdq');
     this.$store.dispatch('getClzt');
     this.$store.dispatch('getZjzl');
@@ -236,6 +315,28 @@ export default {
     this.getDw();
   },
   methods: {
+    //=================================================简表开始=====================
+    jbFnc(){
+      this.timer = new Date().getTime();
+      this.jbDialogVisible = true
+    },
+    transSave(data){
+      this.pointData = [];
+      if(data.length == 0){
+        this.lbData = this.lbDataAll
+      }else{
+        this.lbDataAll.forEach(item =>{
+          data.forEach(jtem => {
+            if(item.dm == jtem){
+              this.pointData.push(item)
+            }
+          })
+        })
+        this.lbData = this.pointData;
+      }
+      this.jbDialogVisible = false;
+    },
+    //=================================================简表结束=====================
     titleShow(e,el){
       el.target.title = e.label;
     },

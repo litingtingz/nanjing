@@ -1129,6 +1129,12 @@ export default new Router({
           component: resolve => require(['@/components/XTGL/YHQX/GNSQ'], resolve),
         },
         {
+          path: 'YHCK',
+          name: 'YHCK',
+          meta:{title:['系统管理','用户权限','在线用户查看']},
+          component: resolve => require(['@/components/XTGL/YHQX/YHCK'], resolve),
+        },
+        {
           path: 'GZGLYJ',
           name: 'GZGLYJ',
           meta:{title:['系统管理','系统配置','规则管理']},

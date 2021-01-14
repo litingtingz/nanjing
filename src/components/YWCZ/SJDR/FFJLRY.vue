@@ -80,6 +80,11 @@
         <el-button type="primary"  size="small" @click="showUpload(0)">批量导入</el-button>
         <el-button type="success" size="small" @click="download(0)">模板下载</el-button>
       </el-row>
+      <!-- 简表按钮1 -->
+      <el-row class="mb-15">
+         <el-button type="primary"  size="small" @click="jbFnc" style="float:right;margin-top:-35px">简表</el-button>
+     </el-row>
+     <!-- 简表按钮1 -->
       <el-table
            ref="multipleTable"
            :data="tableData"
@@ -90,7 +95,16 @@
              type="selection"
              width="55">
            </el-table-column> -->
-           <el-table-column
+
+          <!-- 循环生成动态表格 -->
+            <template v-for="(lb,i) in lbData">
+            <el-table-column
+              :key="i"
+              :prop="lb.dm"
+              :label="lb.cm">
+            </el-table-column>
+          </template>
+           <!-- <el-table-column
              prop="XM"
              label="姓名">
            </el-table-column>
@@ -109,7 +123,7 @@
            <el-table-column
              prop="GJDQMC"
              label="国家地区">
-           </el-table-column>
+           </el-table-column> -->
 
            <el-table-column
              label="操作" width="120">
@@ -430,13 +444,25 @@
           <el-button @click="detailsDialogVisible = false" size="small">取 消</el-button>
         </div>
       </el-dialog>
-
+      <!--===================简表开始======================-->
+      <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+        <Trans
+          :key="timer"
+          :transData="lbDataAll"
+          :pointData="pointData"
+          @transSave="transSave"
+          @dialogCancel="jbDialogVisible=false"></Trans>
+      </el-dialog>
+      <!--===================简表结束======================-->
       </div>
       <div v-show="page==1">
         <el-row class="mb-15">
            <el-button type="primary"  size="small" @click="showUpload(1)">批量导入</el-button>
            <el-button type="success" size="small" @click="download(1)">模板下载</el-button>
-         </el-row>
+        </el-row>
+       <el-row class="mb-15">
+         <el-button type="primary"  size="small" @click="jbFnc" style="float:right;margin-top:-35px">简表</el-button>
+       </el-row>
          <el-table
               ref="multipleTable"
               :data="tableData1"
@@ -447,7 +473,16 @@
                 type="selection"
                 width="55">
               </el-table-column> -->
-              <el-table-column
+
+            <!-- 循环生成动态表格 -->
+            <template v-for="(lb,i) in lbData">
+            <el-table-column
+              :key="i"
+              :prop="lb.dm"
+              :label="lb.cm">
+            </el-table-column>
+            </template>
+              <!-- <el-table-column
                 prop="XM"
                 label="姓名">
               </el-table-column>
@@ -466,7 +501,8 @@
               <el-table-column
                 prop="GJDQMC"
                 label="国家地区">
-              </el-table-column>
+              </el-table-column> -->
+
               <el-table-column
                 label="操作" width="120">
                 <template slot-scope="scope">
@@ -750,12 +786,25 @@
              <el-button @click="detailsDialogVisible1 = false" size="small">取 消</el-button>
            </div>
          </el-dialog>
+          <!--===================简表开始======================-->
+            <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+              <Trans
+                :key="timer"
+                :transData="lbDataAll"
+                :pointData="pointData"
+                @transSave="transSave"
+                @dialogCancel="jbDialogVisible=false"></Trans>
+            </el-dialog>
+            <!--===================简表结束======================-->
       </div>
       <div v-show="page==2">
         <el-row class="mb-15">
            <el-button type="primary"  size="small" @click="showUpload(2)">批量导入</el-button>
            <el-button type="success" size="small" @click="download(2)">模板下载</el-button>
          </el-row>
+       <el-row class="mb-15">
+         <el-button type="primary"  size="small" @click="jbFnc" style="float:right;margin-top:-35px">简表</el-button>
+       </el-row>
          <el-table
               ref="multipleTable"
               :data="tableData2"
@@ -766,7 +815,18 @@
                 type="selection"
                 width="55">
               </el-table-column> -->
-              <el-table-column
+            <!-- 循环生成动态表格 -->
+
+          <!-- 循环生成动态表格 -->
+            <template v-for="(lb,i) in lbData">
+            <el-table-column
+              :key="i"
+              :prop="lb.dm"
+              :label="lb.cm">
+            </el-table-column>
+          </template>
+
+              <!-- <el-table-column
                 prop="XM"
                 label="姓名">
               </el-table-column>
@@ -785,7 +845,7 @@
               <el-table-column
                 prop="GJDQMC"
                 label="国家地区">
-              </el-table-column>
+              </el-table-column> -->
 
               <el-table-column
                 label="操作" width="120">
@@ -1122,12 +1182,25 @@
              <el-button @click="detailsDialogVisible2 = false" size="small">取 消</el-button>
            </div>
          </el-dialog>
+      <!--===================简表开始======================-->
+      <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+        <Trans
+          :key="timer"
+          :transData="lbDataAll"
+          :pointData="pointData"
+          @transSave="transSave"
+          @dialogCancel="jbDialogVisible=false"></Trans>
+      </el-dialog>
+      <!--===================简表结束======================-->
       </div>
       <div v-show="page==3">
         <el-row class="mb-15">
            <el-button type="primary"  size="small" @click="showUpload(3)">批量导入</el-button>
            <el-button type="success" size="small" @click="download(3)">模板下载</el-button>
          </el-row>
+        <el-row class="mb-15">
+         <el-button type="primary"  size="small" @click="jbFnc" style="float:right;margin-top:-35px">简表</el-button>
+       </el-row>
          <el-table
               ref="multipleTable"
               :data="tableData3"
@@ -1138,7 +1211,17 @@
                 type="selection"
                 width="55">
               </el-table-column> -->
-              <el-table-column
+
+
+            <!-- 循环生成动态表格 -->
+            <template v-for="(lb,i) in lbData">
+            <el-table-column
+              :key="i"
+              :prop="lb.dm"
+              :label="lb.cm">
+            </el-table-column>
+          </template>
+              <!-- <el-table-column
                 prop="XM"
                 label="姓名">
               </el-table-column>
@@ -1157,7 +1240,7 @@
               <el-table-column
                 prop="GJDQMC"
                 label="国家地区">
-              </el-table-column>
+              </el-table-column> -->
 
               <el-table-column
                 label="操作" width="120">
@@ -1454,6 +1537,16 @@
              <el-button @click="detailsDialogVisible3 = false" size="small">取 消</el-button>
            </div>
          </el-dialog>
+      <!--===================简表开始======================-->
+      <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+        <Trans
+          :key="timer"
+          :transData="lbDataAll"
+          :pointData="pointData"
+          @transSave="transSave"
+          @dialogCancel="jbDialogVisible=false"></Trans>
+      </el-dialog>
+      <!--===================简表结束======================-->
       </div>
      </div>
     </div>
@@ -1461,7 +1554,9 @@
 
 </template>
 <script>
+import Trans from "@/components/common/Transfer.vue"
 export default {
+  components:{Trans},
   data() {
     return {
       CurrentPage: 1,
@@ -1519,7 +1614,34 @@ export default {
       tableData1: [],
       tableData2: [],
       tableData3: [],
-
+      //简表开始
+      timer:'',
+      jbDialogVisible:false,
+      pointData:[],//选中项
+      lbDataAll:[//列表总数据===简表数据源
+        {
+          dm:'XM',
+          cm:'姓名',
+        },
+        {
+          dm:'XBMC',
+          cm:'性别',
+        },
+        {
+          dm:'CSRQ',
+          cm:'出生日期',
+        },
+        {
+          dm:'QZHM',
+          cm:'签证号码',
+        },
+        {
+          dm:'GJDQMC',
+          cm:'国家地区',
+        },
+      ],
+      lbData:[],//列表简表动态加载数据====简表选中项
+      //简表结束
     }
   },
   mounted() {
@@ -1530,11 +1652,34 @@ export default {
     this.$store.dispatch('getZjzl');
     this.$store.dispatch('getRjqzzl');
     this.$store.dispatch('getRjkn');
-
+    this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
     this.getList(this.CurrentPage, this.pageSize, this.pd);
 
   },
   methods: {
+
+    //=================================================简表开始=====================
+    jbFnc(){
+      this.timer = new Date().getTime();
+      this.jbDialogVisible = true
+    },
+    transSave(data){
+      this.pointData = [];
+      if(data.length == 0){
+        this.lbData = this.lbDataAll
+      }else{
+        this.lbDataAll.forEach(item =>{
+          data.forEach(jtem => {
+            if(item.dm == jtem){
+              this.pointData.push(item)
+            }
+          })
+        })
+        this.lbData = this.pointData;
+      }
+      this.jbDialogVisible = false;
+    },
+    //=================================================简表结束=====================
     getLable(t,val){
      if(t==1){//行政区划
 

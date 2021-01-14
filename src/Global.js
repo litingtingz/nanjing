@@ -9,7 +9,7 @@ const indexstate=0;
 const aport="api-reporter";//大师网关
 // const aport="http://192.168.1.105:9420";//大师
 const aport1="api-permission";//大师网关
-// const aport1="http://192.168.1.105:9435";//大师
+// const aport1="http://182.18.87.234:9435";//大师
 const aport2="api-yewu";//左星海网关
 // const aport2="http://10.0.30.163:9439";//左星海
 const aport3="api-yewu";//石飞网关
@@ -46,6 +46,7 @@ const aport10="http://10.33.72.145:9433";//中管大屏
 // const aport12="api-distribution";
 const aport12="http://10.33.72.217:9432";//流程监控
 // const aport12="http://192.168.3.217:9432";//流程监控
+
 
 const serviceState=1 //代码已统一
 

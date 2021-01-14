@@ -211,6 +211,11 @@
             </div>
         </div>
         <div v-else>
+            <!-- 简表按钮 -->
+            <el-row class="mb-15">
+              <el-button type="primary"  size="small" @click="jbFnc" style="float:right;margin-top:-44px;margin-right:30px">简表</el-button>
+            </el-row>
+            <!-- 简表按钮 -->
           <el-table
              ref="multipleTable"
              :data="tableData"
@@ -223,7 +228,15 @@
                type="selection"
                width="55">
              </el-table-column>
-             <el-table-column
+            <!-- 循环生成动态表格 -->
+              <template v-for="(lb,i) in lbData">
+              <el-table-column
+                :key="i"
+                :prop="lb.dm"
+                :label="lb.cm">
+              </el-table-column>
+            </template>
+             <!-- <el-table-column
                prop="ZWXM"
                label="中文姓名">
              </el-table-column>
@@ -250,7 +263,7 @@
              <el-table-column
                prop="SBQZHM"
                label="签证号码">
-             </el-table-column>
+             </el-table-column> -->
              <el-table-column
                label="操作" width="70">
                <template slot-scope="scope">
@@ -299,16 +312,63 @@
            </div>
       </el-dialog>
     </div>
-
+    <!--===================简表开始======================-->
+    <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+      <Trans
+        :key="timer"
+        :transData="lbDataAll"
+        :pointData="pointData"
+        @transSave="transSave"
+        @dialogCancel="jbDialogVisible=false"></Trans>
+    </el-dialog>
+    <!--===================简表结束======================-->
       </div>
-
     </template>
     <script>
     import QZXXTJXQ from '../../../common/qzxxtj_xq'
+    import Trans from "@/components/common/Transfer.vue"
+
     export default {
-      components:{QZXXTJXQ},
+      components:{QZXXTJXQ,Trans},
       data() {
         return {
+
+          //简表开始
+          timer:'',
+          jbDialogVisible:false,
+          pointData:[],//选中项
+          lbDataAll:[//列表总数据===简表数据源
+            {
+              dm:'ZWXM',
+              cm:'中文姓名',
+            },
+            {
+              dm:'YWXM',
+              cm:'英文姓名',
+            },
+            {
+              dm:'GJDQ_DESC',
+              cm:'国家地区',
+            },
+            {
+              dm:'CSRQ',
+              cm:'出生日期',
+            },
+            {
+              dm:'XCZJHM',
+              cm:'证件号码',
+            },
+            {
+              dm:'QZZL_DESC',
+              cm:'签证种类',
+            },
+            {
+              dm:'SBQZHM',
+              cm:'签证号码',
+            },
+          ],
+          lbData:[],//列表简表动态加载数据====简表选中项
+          //简表结束
           radio1:'0',
           radio2:'0',
           typet:'1',
@@ -434,6 +494,7 @@
         }
       },
       mounted() {
+         this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
          this.$store.dispatch("getGjdq");
          this.$store.dispatch("getZjzl");
          this.$store.dispatch("getQzzl");
@@ -476,6 +537,29 @@
           this.multipleSelection = a;
           this.dataSelection()
         },
+
+      //=================================================简表开始=====================
+      jbFnc(){
+        this.timer = new Date().getTime();
+        this.jbDialogVisible = true
+      },
+      transSave(data){
+        this.pointData = [];
+        if(data.length == 0){
+          this.lbData = this.lbDataAll
+        }else{
+          this.lbDataAll.forEach(item =>{
+            data.forEach(jtem => {
+              if(item.dm == jtem){
+                this.pointData.push(item)
+              }
+            })
+          })
+          this.lbData = this.pointData;
+        }
+        this.jbDialogVisible = false;
+      },
+      //=================================================简表结束=====================
         dataSelection(){
           // console.log('this.multipleSelection',this.multipleSelection)
           this.selectionReal.splice(this.CurrentPage-1,1,this.multipleSelection);

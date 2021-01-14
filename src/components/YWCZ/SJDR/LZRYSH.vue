@@ -95,6 +95,9 @@
     </div>
     <div class="yycontent">
       <el-button type="success" size="small" class="t-mb10" @click="edits({},'1')">批量审核</el-button>
+      <el-row class="mb-15">
+         <el-button type="primary"  size="small" @click="jbFnc" style="float:right;margin-top:-45px">简表</el-button>
+       </el-row>
       <el-table
            ref="multipleTable"
            :data="tableData"
@@ -102,11 +105,32 @@
            style="width: 100%"
            @selection-change="handleSelectionChange"
            @header-click="titleShow">
+
            <!-- <el-table-column
              type="selection"
              width="55">
            </el-table-column> -->
-           <el-table-column
+            <!-- 循环生成动态表格 -->
+            <template v-for="(lb,i) in lbData">
+            <el-table-column
+              :key="i"
+              v-if="lb.zt"
+              :prop="lb.dm"
+              :label="lb.cm">
+              <template slot-scope="scope">
+                <span v-if="scope.row.SHMC=='审批不通过'" style="color:red">{{scope.row.SHMC}}</span>
+                <span v-else-if="scope.row.SHMC=='审批通过'" style="color:blue">{{scope.row.SHMC}}</span>
+                <span v-else>{{scope.row.SHMC}}</span>
+             </template>
+            </el-table-column>
+            <el-table-column
+              :key="i"
+              v-else
+              :prop="lb.dm"
+              :label="lb.cm">
+            </el-table-column>
+          </template>
+           <!-- <el-table-column
              prop="BT"
              label="标题">
            </el-table-column>
@@ -150,7 +174,8 @@
                 <span v-else-if="scope.row.SHMC=='审批通过'" style="color:blue">{{scope.row.SHMC}}</span>
                 <span v-else>{{scope.row.SHMC}}</span>
              </template>
-           </el-table-column>
+           </el-table-column> -->
+
            <el-table-column
              label="操作" width="70">
              <template slot-scope="scope">
@@ -300,13 +325,75 @@
       <el-button @click="detailsDialogVisible = false" size="small">取 消</el-button>
     </div>
   </el-dialog>
+    <!--===================简表开始======================-->
+    <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+      <Trans
+        :key="timer"
+        :transData="lbDataAll"
+        :pointData="pointData"
+        @transSave="transSave"
+        @dialogCancel="jbDialogVisible=false"></Trans>
+    </el-dialog>
+    <!--===================简表结束======================-->  
   </div>
-
 </template>
 <script>
+import Trans from "@/components/common/Transfer.vue"
 export default {
+  components:{Trans},
   data() {
     return {
+
+      //简表开始
+      timer:'',
+      jbDialogVisible:false,
+      pointData:[],//选中项
+      lbDataAll:[//列表总数据===简表数据源
+        {
+          dm:'BT',
+          cm:'标题',
+        },
+        {
+          dm:'XM',
+          cm:'姓名',
+        },
+        {
+          dm:'CSRQ',
+          cm:'出生日期',
+        },
+        {
+          dm:'ZJZL_DESC',
+          cm:'证件种类',
+        },
+        {
+          dm:'ZJHM',
+          cm:'证件号码',
+        },
+        {
+          dm:'SFZH',
+          cm:'身份证号',
+        },
+        {
+          dm:'BKRQSTART',
+          cm:'布控开始时间',
+        },
+        {
+          dm:'BKRQEND',
+          cm:'布控结束时间',
+        },
+        {
+          dm:'GJDQMC',
+          cm:'国家地区',
+        },
+        {
+          dm:'SHMC',
+          cm:'审核状态',
+          zt:true
+        },
+      ],
+      lbData:[],//列表简表动态加载数据====简表选中项
+      //简表结束
+
       CurrentPage: 1,
       pageSize: 10,
       TotalResult: 0,
@@ -326,12 +413,35 @@ export default {
     }
   },
   mounted() {
+    this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
     this.$store.dispatch('getGjdq');
     this.$store.dispatch('getXB');
     this.$store.dispatch('getShzt');
     this.getList(this.CurrentPage, this.pageSize, this.pd);
   },
   methods: {
+    //=================================================简表开始=====================
+    jbFnc(){
+      this.timer = new Date().getTime();
+      this.jbDialogVisible = true
+    },
+    transSave(data){
+      this.pointData = [];
+      if(data.length == 0){
+        this.lbData = this.lbDataAll
+      }else{
+        this.lbDataAll.forEach(item =>{
+          data.forEach(jtem => {
+            if(item.dm == jtem){
+              this.pointData.push(item)
+            }
+          })
+        })
+        this.lbData = this.pointData;
+      }
+      this.jbDialogVisible = false;
+    },
+    //=================================================简表结束=====================
     titleShow(e,el){
       el.target.title = e.label;
     },

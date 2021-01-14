@@ -33,6 +33,10 @@
         <el-button type="primary"  size="small" @click="showUpload()">批量导入</el-button>
         <el-button type="success" size="small" @click="downloadXz()">模板下载</el-button>
       </el-row>
+      <!-- 按钮 -->
+       <el-row class="mb-15">
+         <el-button type="primary"  size="small" @click="jbFnc" style="float:right;margin-top:-35px">简表</el-button>
+       </el-row>     
       <el-table
          ref="multipleTable"
          :data="tableData"
@@ -43,7 +47,16 @@
            type="selection"
            width="55">
          </el-table-column> -->
-         <el-table-column
+         
+          <!-- 循环生成动态表格 -->
+            <template v-for="(lb,i) in lbData">
+            <el-table-column
+              :key="i"
+              :prop="lb.dm"
+              :label="lb.cm">
+            </el-table-column>
+          </template>
+         <!-- <el-table-column
            prop="JWJTGJBS"
            label="航班号"
            min-width="100">
@@ -78,7 +91,9 @@
            prop="XGSJ"
            label="修改时间"
            min-width="100">
-         </el-table-column>
+         </el-table-column> -->
+
+
          <el-table-column
            label="操作" width="70">
            <template slot-scope="scope">
@@ -199,12 +214,71 @@
           </el-form>
         </el-dialog>
      <!-- </div> -->
+
+      <!--===================简表开始======================-->
+      <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+        <Trans
+          :key="timer"
+          :transData="lbDataAll"
+          :pointData="pointData"
+          @transSave="transSave"
+          @dialogCancel="jbDialogVisible=false"></Trans>
+      </el-dialog>
+      <!--===================简表结束======================-->
     </div>
 </template>
 <script>
+import Trans from "@/components/common/Transfer.vue"
 export default {
+  components:{Trans},
   data() {
     return {
+
+      //简表开始
+      timer:'',
+      jbDialogVisible:false,
+      pointData:[],//选中项
+      lbDataAll:[//列表总数据===简表数据源
+        {
+          dm:'JWJTGJBS',
+          cm:'航班号',
+          winth:'100'
+        },
+        {
+          dm:'WLGMC',
+          cm:'往来国',
+        },
+        {
+          dm:'JTGJMC',
+          cm:'交通工具',
+        },
+        {
+          dm:'CRJKAMC',
+          cm:'出入境口岸',
+        },
+        {
+          dm:'CZR',
+          cm:'操作人',
+          width:'100'
+        },
+        {
+          dm:'CZSJ',
+          cm:'操作时间',
+        },
+        {
+          dm:'XGR',
+          cm:'修改人',
+          width:'100'
+        },
+        {
+          dm:'XGSJ',
+          cm:'修改时间',
+          width:'100'
+        },
+      ],
+      lbData:[],//列表简表动态加载数据====简表选中项
+      //简表结束
+
       CurrentPage: 1,
       pageSize: 10,
       TotalResult: 0,
@@ -245,6 +319,7 @@ export default {
     this.getList(this.CurrentPage,this.pageSize,this.pd);
   },
   mounted() {
+    this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
     this.$store.dispatch('getGjdq');
     this.$store.dispatch('getWlg');
     this.$store.dispatch('getRjkn');
@@ -256,6 +331,29 @@ export default {
     this.token=this.$store.state.token;
   },
   methods: {
+
+    //=================================================简表开始=====================
+    jbFnc(){
+      this.timer = new Date().getTime();
+      this.jbDialogVisible = true
+    },
+    transSave(data){
+      this.pointData = [];
+      if(data.length == 0){
+        this.lbData = this.lbDataAll
+      }else{
+        this.lbDataAll.forEach(item =>{
+          data.forEach(jtem => {
+            if(item.dm == jtem){
+              this.pointData.push(item)
+            }
+          })
+        })
+        this.lbData = this.pointData;
+      }
+      this.jbDialogVisible = false;
+    },
+    //=================================================简表结束=====================
     getLable(type,val){
       if(type=='wlg'){
         let obj = {};

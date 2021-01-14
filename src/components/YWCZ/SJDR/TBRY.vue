@@ -138,6 +138,10 @@
         <el-button type="primary"  size="small" @click="showUpload">批量导入</el-button>
         <el-button type="success" size="small" @click="download">模板下载</el-button>
         </el-row> -->
+      <!-- 简表按钮 -->
+      <el-row class="mb-15">
+         <el-button type="primary"  size="small" @click="jbFnc" style="float:left;">简表</el-button>
+      </el-row>
       <el-table
            ref="multipleTable"
            :data="tableData"
@@ -148,7 +152,16 @@
              type="selection"
              width="55">
            </el-table-column> -->
-           <el-table-column
+
+          <!-- 循环生成动态表格 -->
+            <template v-for="(lb,i) in lbData">
+            <el-table-column
+              :key="i"
+              :prop="lb.dm"
+              :label="lb.cm">
+            </el-table-column>
+          </template>
+           <!-- <el-table-column
              prop="TBRYZL"
              label="通报类型">
            </el-table-column>
@@ -171,7 +184,8 @@
            <el-table-column
              prop="CSRQ"
              label="出生日期">
-           </el-table-column>
+           </el-table-column> -->
+           <!-- 注释开始 -->
            <!-- <el-table-column
              prop="address"
              label="证件类型">
@@ -188,10 +202,13 @@
              prop="address"
              label="请求国">
            </el-table-column> -->
-           <el-table-column
+           <!-- 注释结束 -->
+
+           <!-- <el-table-column
              prop="FBSJ"
              label="发布时间">
-           </el-table-column>
+           </el-table-column> -->
+
            <el-table-column
              label="操作" width="120">
              <template slot-scope="scope">
@@ -276,14 +293,61 @@
       <el-button @click="detailsDialogVisible = false" size="small">取 消</el-button>
     </div>
   </el-dialog>
+  <!--===================简表开始======================-->
+    <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+      <Trans
+        :key="timer"
+        :transData="lbDataAll"
+        :pointData="pointData"
+        @transSave="transSave"
+        @dialogCancel="jbDialogVisible=false"></Trans>
+    </el-dialog>
+  <!--===================简表结束======================-->
   </div>
 </template>
 <script>
 import TBRYEDIT from '../../common/tbry_edit'
+import Trans from "@/components/common/Transfer.vue"
 export default {
-  components:{TBRYEDIT},
+  components:{TBRYEDIT,Trans},
   data() {
     return {
+       //简表开始
+      timer:'',
+      jbDialogVisible:false,
+      pointData:[],//选中项
+      lbDataAll:[//列表总数据===简表数据源
+        {
+          dm:'TBRYZL',
+          cm:'通报类型',
+        },
+        {
+          dm:'TBBH',
+          cm:'通报编号',
+        },
+        {
+          dm:'GJDQ_DESC',
+          cm:'国家地区',
+        },
+        {
+          dm:'YWX',
+          cm:'英文姓',
+        },
+        {
+          dm:'XB_DESC',
+          cm:'性别',
+        },
+        {
+          dm:'CSRQ',
+          cm:'出生日期',
+        },
+        {
+          dm:'FBSJ',
+          cm:'发布时间'
+        },
+      ],
+      lbData:[],//列表简表动态加载数据====简表选中项
+      //简表结束
       CurrentPage: 1,
       pageSize: 10,
       TotalResult: 0,
@@ -324,12 +388,35 @@ export default {
     this.detailsDialogVisible=false;
   },
   mounted() {
+      this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
      this.$store.dispatch('getXB');
      this.$store.dispatch('getGjdq');
      this.$store.dispatch('getZjzl');
      this.$store.dispatch('getTbry');
   },
   methods: {
+    //=================================================简表开始=====================
+    jbFnc(){
+      this.timer = new Date().getTime();
+      this.jbDialogVisible = true
+    },
+    transSave(data){
+      this.pointData = [];
+      if(data.length == 0){
+        this.lbData = this.lbDataAll
+      }else{
+        this.lbDataAll.forEach(item =>{
+          data.forEach(jtem => {
+            if(item.dm == jtem){
+              this.pointData.push(item)
+            }
+          })
+        })
+        this.lbData = this.pointData;
+      }
+      this.jbDialogVisible = false;
+    },
+    //=================================================简表结束=====================
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },

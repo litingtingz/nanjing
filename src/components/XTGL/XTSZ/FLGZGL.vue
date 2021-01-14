@@ -33,12 +33,35 @@
 
      <el-row class="mb-15">
        <el-button type="primary"  size="small" @click="from={};adds(0,'');">新增</el-button>
-       </el-row>
+      </el-row>
+      <el-row class="mb-15">
+         <el-button type="primary"  size="small" @click="jbFnc" style="float:right;margin-top:-45px">简表</el-button>
+      </el-row>
       <el-table
            :data="tableData"
            border
            style="width: 100%">
-           <el-table-column
+
+
+            <!-- 循环生成动态表格 -->
+            <template v-for="(lb,i) in lbData">
+            <el-table-column
+              :key="i"
+              v-if="lb.yx"
+              :prop="lb.dm"
+              :label="lb.cm">
+             <template slot-scope="scope">
+              <span>{{scope.row.SFYX=='1'?'有效':'无效'}}</span>
+            </template>
+            </el-table-column>
+            <el-table-column
+              :key="i"
+              v-else
+              :prop="lb.dm"
+              :label="lb.cm">
+            </el-table-column>
+          </template>
+           <!-- <el-table-column
              prop="MXLX"
              label="模型类型">
            </el-table-column>
@@ -68,7 +91,8 @@
            <el-table-column
              prop="CREATE_TIME"
              label="创建时间">
-           </el-table-column>
+           </el-table-column> -->
+
            <el-table-column
              label="操作" width="100">
              <template slot-scope="scope">
@@ -188,13 +212,62 @@
         <el-button @click="qxItem('addForm')" size="small">取 消</el-button>
       </div>
     </el-dialog>
+    <!--===================简表开始======================-->
+    <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+      <Trans
+        :key="timer"
+        :transData="lbDataAll"
+        :pointData="pointData"
+        @transSave="transSave"
+        @dialogCancel="jbDialogVisible=false"></Trans>
+    </el-dialog>
+    <!--===================简表结束======================-->
   </div>
-
 </template>
 <script>
+import Trans from "@/components/common/Transfer.vue"
 export default {
+  components:{Trans},
   data() {
     return {
+      //简表开始
+      timer:'',
+      jbDialogVisible:false,
+      pointData:[],//选中项
+      lbDataAll:[//列表总数据===简表数据源
+        {
+          dm:'MXLX',
+          cm:'模型类型',
+        },
+        {
+          dm:'MXLX_NAME',
+          cm:'导航类型名称',
+        },
+        {
+          dm:'RULE_NAME',
+          cm:'标签名称',
+          zt:true
+        },
+        {
+          dm:'RULE',
+          cm:'标签规则',
+        },
+        {
+          dm:'SFYX',
+          cm:'是否有效',
+          yx:true
+        },
+        {
+          dm:'CREATE_USER_NAME',
+          cm:'创建人姓名'
+        },
+        {
+          dm:'CREATE_TIME',
+          cm:'创建时间'
+        },
+      ],
+      lbData:[],//列表简表动态加载数据====简表选中项
+      //简表结束
       mxlx:[],
       CurrentPage: 1,
       pageSize: 10,
@@ -218,6 +291,7 @@ export default {
     }
   },
   mounted() {
+    this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
     this.userCode=this.$store.state.uid;
     this.userName=this.$store.state.uname;
     this.orgCode=this.$store.state.orgname;
@@ -229,6 +303,28 @@ export default {
     this.getList(this.CurrentPage,this.pageSize,this.pd)
   },
   methods: {
+    //=================================================简表开始=====================
+    jbFnc(){
+      this.timer = new Date().getTime();
+      this.jbDialogVisible = true
+    },
+    transSave(data){
+      this.pointData = [];
+      if(data.length == 0){
+        this.lbData = this.lbDataAll
+      }else{
+        this.lbDataAll.forEach(item =>{
+          data.forEach(jtem => {
+            if(item.dm == jtem){
+              this.pointData.push(item)
+            }
+          })
+        })
+        this.lbData = this.pointData;
+      }
+      this.jbDialogVisible = false;
+    },
+    //=================================================简表结束=====================
     MXType(){
       this.$api.post(this.Global.aport4+'/warningSortRuleController/selectMXLXList',{},
         r =>{

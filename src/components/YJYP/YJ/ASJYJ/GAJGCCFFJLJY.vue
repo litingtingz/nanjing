@@ -38,13 +38,26 @@
     </div>
     <div class="yycontent">
        <div class="yylbt mb-15">信息列表</div>
+      <el-row class="mb-15">
+         <el-button type="primary"  size="small" @click="jbFnc" style="float:left;">简表</el-button>
+      </el-row>
       <el-table
            :data="tableData"
            border
            :highlight-current-row="true"
            style="width: 100%"
            @header-click="titleShow">
-           <el-table-column
+
+            <!-- 循环生成动态表格 -->
+            <template v-for="(lb,i) in lbData">
+            <el-table-column
+              :key="i"
+              :prop="lb.dm"
+              :label="lb.cm"
+              :width="lb.width">
+            </el-table-column>
+          </template>
+           <!-- <el-table-column
              prop="wfzl"
              label="违法种类">
            </el-table-column>
@@ -89,7 +102,7 @@
            <el-table-column
              prop="jyjglx"
              label="就业机构类型">
-           </el-table-column>
+           </el-table-column> -->
          </el-table>
      <div class="middle-foot">
         <div class="page-msg">
@@ -125,13 +138,80 @@
         非法就业：<span>{{num.ffjy}}</span>
       </div>
     </div>
+    <!--===================简表开始======================-->
+    <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+      <Trans
+        :key="timer"
+        :transData="lbDataAll"
+        :pointData="pointData"
+        @transSave="transSave"
+        @dialogCancel="jbDialogVisible=false"></Trans>
+    </el-dialog>
+    <!--===================简表结束======================-->    
   </div>
-
 </template>
 <script>
+import Trans from "@/components/common/Transfer.vue"
 export default {
+  components:{Trans},
   data() {
     return {
+      //简表开始
+      timer:'',
+      jbDialogVisible:false,
+      pointData:[],//选中项
+      lbDataAll:[//列表总数据===简表数据源
+        {
+          dm:'wfzl',
+          cm:'违法种类',
+        },
+        {
+          dm:'xh',
+          cm:'序号',
+        },
+        {
+          dm:'gj',
+          cm:'国籍',
+        },
+        {
+          dm:'lhsy',
+          cm:'来华事由',
+        },
+        {
+          dm:'zjhm',
+          cm:'入境证件号码',
+          width:'120'
+        },
+        {
+          dm:'qzlx',
+          cm:'签证类型',
+          width:'120'
+        },
+        {
+          dm:'rjka',
+          cm:'入境口岸',
+        },
+        {
+          dm:'ffrj',
+          cm:'签证签发地点',
+        },
+        {
+          dm:'zjzl',
+          cm:'现持证件类型',
+        },
+        {
+          dm:'xzd',
+          cm:'现住址'
+        },
+        {
+          dm:'jyjglx',
+          cm:'就业机构类型',
+          ct:true,
+        },
+      ],
+      lbData:[],//列表简表动态加载数据====简表选中项
+      //简表结束
+
       CurrentPage: 1,
       pageSize: 10,
       TotalResult: 0,
@@ -154,6 +234,7 @@ export default {
 
     },
   mounted() {
+    this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
     this.userCode=this.$store.state.uid;
     this.userName=this.$store.state.uname;
     this.orgName=this.$store.state.orgname;
@@ -162,6 +243,28 @@ export default {
     this.token=this.$store.state.token;
    },
   methods: {
+    //=================================================简表开始=====================
+    jbFnc(){
+      this.timer = new Date().getTime();
+      this.jbDialogVisible = true
+    },
+    transSave(data){
+      this.pointData = [];
+      if(data.length == 0){
+        this.lbData = this.lbDataAll
+      }else{
+        this.lbDataAll.forEach(item =>{
+          data.forEach(jtem => {
+            if(item.dm == jtem){
+              this.pointData.push(item)
+            }
+          })
+        })
+        this.lbData = this.pointData;
+      }
+      this.jbDialogVisible = false;
+    },
+    //=================================================简表结束=====================
     titleShow(e,el){
       el.target.title = e.label;
     },

@@ -173,9 +173,14 @@ const menu=[
             url:"YHGL"
           },
           {
-              mc:"角色管理",
-              dm:"3-2-1",
-              url:"JSGL"
+            mc:"在线用户查看",
+            dm:"3-2-1",
+            url:"YHCK"
+          },
+          {
+            mc:"角色管理",
+            dm:"3-2-1",
+            url:"JSGL"
           },
           {
               mc:"功能授权",
@@ -187,6 +192,7 @@ const menu=[
               dm:"3-2-1",
               url:"YHSQ"
           },
+
         ]
       },
       {

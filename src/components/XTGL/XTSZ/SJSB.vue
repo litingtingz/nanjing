@@ -29,6 +29,10 @@
     </div>
     <div class="yycontent">
        <div class="yylbt mb-15">甄别信息列表</div>
+        <!-- 简表按钮 -->
+        <el-row class="mb-15">
+         <el-button type="primary"  size="small" @click="jbFnc" style="float:left;">简表</el-button>
+        </el-row>
       <el-table
            :data="tableData"
            border
@@ -41,7 +45,16 @@
              type="selection"
              width="55">
            </el-table-column> -->
-           <el-table-column
+
+            <!-- 循环生成动态表格 -->
+            <template v-for="(lb,i) in lbData">
+            <el-table-column
+              :key="i"
+              :prop="lb.dm"
+              :label="lb.cm">
+            </el-table-column>
+          </template>
+           <!-- <el-table-column
              prop="BT"
              label="标题">
            </el-table-column>
@@ -56,7 +69,8 @@
            <el-table-column
              prop="CREATETIME"
              label="上报时间">
-           </el-table-column>
+           </el-table-column> -->
+
            <el-table-column
              label="操作" width="70">
              <template slot-scope="scope">
@@ -143,13 +157,51 @@
         <el-button @click="" size="small" type="warning" @click="detailDialogVisible = false">返回</el-button>
       </div>
     </el-dialog>
+    <!--===================简表开始======================-->
+    <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+      <Trans
+        :key="timer"
+        :transData="lbDataAll"
+        :pointData="pointData"
+        @transSave="transSave"
+        @dialogCancel="jbDialogVisible=false"></Trans>
+    </el-dialog>
+    <!--===================简表结束======================-->  
   </div>
 </template>
 <script>
 // import {format} from '@/assets/js/date.js'
+import Trans from "@/components/common/Transfer.vue"
 export default {
+  components:{Trans},
   data() {
     return {
+
+       //简表开始
+      timer:'',
+      jbDialogVisible:false,
+      pointData:[],//选中项
+      lbDataAll:[//列表总数据===简表数据源
+        {
+          dm:'BT',
+          cm:'标题',
+        },
+        {
+          dm:'CJDWMC',
+          cm:'上报单位',
+        },
+        {
+          dm:'CJR',
+          cm:'上报人',
+          dw:true
+        },
+        {
+          dm:'CREATETIME',
+          cm:'创建时间'
+        },
+      ],
+      lbData:[],//列表简表动态加载数据====简表选中项
+      //简表结束
       CurrentPage: 1,
       pageSize: 10,
       TotalResult: 0,
@@ -185,6 +237,7 @@ export default {
       },1000)
   },
   mounted() {
+    this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
     this.$store.dispatch('getGjdq');
     this.$store.dispatch('getClzt');
     this.$store.dispatch('getZjzl');
@@ -201,6 +254,28 @@ export default {
     this.getDw();
   },
   methods: {
+    //=================================================简表开始=====================
+    jbFnc(){
+      this.timer = new Date().getTime();
+      this.jbDialogVisible = true
+    },
+    transSave(data){
+      this.pointData = [];
+      if(data.length == 0){
+        this.lbData = this.lbDataAll
+      }else{
+        this.lbDataAll.forEach(item =>{
+          data.forEach(jtem => {
+            if(item.dm == jtem){
+              this.pointData.push(item)
+            }
+          })
+        })
+        this.lbData = this.pointData;
+      }
+      this.jbDialogVisible = false;
+    },
+    //=================================================简表结束=====================
     titleShow(e,el){
       el.target.title = e.label;
     },

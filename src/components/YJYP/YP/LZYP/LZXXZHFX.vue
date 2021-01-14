@@ -185,7 +185,6 @@
               </el-row>
         </div>
         <div class="yycontent">
-
           <div class="yylbt mb-15">统计类别</div>
           <div class="mb-15 t-tjCheck">
             <el-checkbox-group v-model="checkedList">
@@ -257,7 +256,9 @@
           </div>
         </div>
         <div v-else>
-
+          <el-row class="mb-15">
+            <el-button type="primary"  size="small" @click="jbFnc" style="float:right;margin-top:-22px;margin-right:40px">简表</el-button>
+          </el-row>
           <el-table
                ref="multipleTable"
                :data="tableData"
@@ -270,7 +271,15 @@
                  type="selection"
                  width="55">
                </el-table-column>
-               <el-table-column
+            <!-- 循环生成动态表格 -->
+              <template v-for="(lb,i) in lbData">
+                <el-table-column
+                  :key="i"
+                  :prop="lb.dm"
+                  :label="lb.cm">
+                </el-table-column>
+            </template>
+               <!-- <el-table-column
                  prop="YWXM"
                  label="英文姓名">
                </el-table-column>
@@ -298,11 +307,11 @@
                  prop="ZJHM"
                  label="证件号码">
                </el-table-column>
-               <!-- <el-table-column
+                <el-table-column
                  prop="YXQZ"
                  label="证件有效期">
                </el-table-column> -->
-               <el-table-column
+               <!-- <el-table-column
                  prop="QZZL_DESC"
                  label="签证种类">
                </el-table-column>
@@ -325,7 +334,7 @@
                <el-table-column
                  prop="LSDWDZ"
                  label="留宿单位地址">
-               </el-table-column>
+               </el-table-column> -->
                <el-table-column
                  label="操作" width="70">
                  <template slot-scope="scope">
@@ -373,18 +382,27 @@
           </div>
         </el-dialog>
     </div>
-
+    <!--===================简表开始======================-->
+    <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+      <Trans
+        :key="timer"
+        :transData="lbDataAll"
+        :pointData="pointData"
+        @transSave="transSave"
+        @dialogCancel="jbDialogVisible=false"></Trans>
+    </el-dialog>
+    <!--===================简表结束======================-->
       </div>
-
     </template>
     <script>
     import {
       ToArray,sortByKey
     } from '@/assets/js/ToArray.js'
     import LZXX from '../../../common/lzxx_xq'
+    import Trans from "@/components/common/Transfer.vue"
     import AREAMS from '../../../common/areaMs'
     export default {
-        components:{LZXX,AREAMS},
+        components:{LZXX,AREAMS,Trans},
       data() {
         return {
           areaPd:{},
@@ -551,9 +569,72 @@
           orgName:'',
           token:'',
           juState:'',
+
+          //简表开始
+          timer:'',
+          jbDialogVisible:false,
+          pointData:[],//选中项
+          lbDataAll:[//列表总数据===简表数据源
+            {
+              dm:'YWXM',
+              cm:'英文姓名',
+            },
+            {
+              dm:'ZWXM',
+              cm:'中文姓名',
+            },
+            {
+              dm:'XB_DESC',
+              cm:'性别',
+            },
+            {
+              dm:'CSRQ',
+              cm:'出生日期',
+            },
+            {
+              dm:'GJDQ_DESC',
+              cm:'国家地区',
+            },
+            {
+              dm:'ZJZL_DESC',
+              cm:'证件种类',
+            },
+            {
+              dm:'ZJHM',
+              cm:'证件号码',
+            },
+            {
+              dm:'QZZL_DESC',
+              cm:'签证种类',
+            },
+            {
+              dm:'QZHM',
+              cm:'签证号码',
+            },
+            {
+              dm:'JLSY_DESC',
+              cm:'停留事由',
+            },
+            {
+              dm:'SSFJ_DESC',
+              cm:'所属分局',
+            },
+            {
+              dm:'SSPCS_DESC',
+              cm:'所属派出所',
+            },
+            {
+              dm:'LSDWDZ',
+              cm:'留宿单位地址',
+            },
+          ],
+          lbData:[],//列表简表动态加载数据====简表选中项
+          //简表结束
+
         }
       },
       mounted() {
+        this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
         this.userCode=this.$store.state.uid;
         this.userName=this.$store.state.uname;
         this.orgName=this.$store.state.orgname;
@@ -613,6 +694,28 @@
               this.ssfj = sortByKey(r.data.SSFJ,'dm');
             })
         },
+        //=================================================简表开始=====================
+        jbFnc(){
+          this.timer = new Date().getTime();
+          this.jbDialogVisible = true
+        },
+        transSave(data){
+          this.pointData = [];
+          if(data.length == 0){
+            this.lbData = this.lbDataAll
+          }else{
+            this.lbDataAll.forEach(item =>{
+              data.forEach(jtem => {
+                if(item.dm == jtem){
+                  this.pointData.push(item)
+                }
+              })
+            })
+            this.lbData = this.pointData;
+          }
+          this.jbDialogVisible = false;
+        },
+    //=================================================简表结束=====================
 
         getSSPCS(arr) {
           this.$set(this.pd, "SSPCS", '');

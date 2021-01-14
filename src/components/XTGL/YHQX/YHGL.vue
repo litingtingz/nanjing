@@ -2,7 +2,6 @@
   <!-- 用户管理 -->
   <div class="yymain">
     <div class="yytitle">
-
       <el-row type="flex">
         <el-col :span="22" class="br pr-20">
           <el-row align="center"   :gutter="2">
@@ -33,6 +32,9 @@
       <!-- <el-row class="mb-15">
         <el-button type="primary"  size="small" @click="from={};adds(0,'');">新增</el-button>
         </el-row> -->
+      <el-row class="mb-15">
+         <el-button type="primary"  size="small" @click="jbFnc" style="float:left;">简表</el-button>
+      </el-row>
       <el-table
            ref="multipleTable"
            :data="tableData"
@@ -44,7 +46,25 @@
              width="55">
            </el-table-column>
 
-           <el-table-column
+            <!-- 循环生成动态表格 -->
+            <template v-for="(lb,i) in lbData">
+            <el-table-column
+              :key="i"
+              v-if="lb.dw"
+              :prop="lb.dm"
+              :label="lb.cm">
+             <template slot-scope="scope">
+              <span>  {{getDM(scope.row.ssdw)}}</span>
+             </template>
+            </el-table-column>
+            <el-table-column
+              :key="i"
+              v-else
+              :prop="lb.dm"
+              :label="lb.cm">
+            </el-table-column>
+          </template>
+           <!-- <el-table-column
              prop="dlm"
              label="登录号/警号">
            </el-table-column>
@@ -58,13 +78,16 @@
              <template slot-scope="scope">
               <span>  {{getDM(scope.row.ssdw)}}</span>
              </template>
-           </el-table-column>
+           </el-table-column> -->
+
            <el-table-column
              label="状态">
              <template slot-scope="scope">
               <span :class="{'yyred':scope.row.sfyx == '0','yyblue':scope.row.sfyx == '1'}">  {{scope.row.sfyx | fifterstatus}}</span>
              </template>
            </el-table-column>
+
+
            <el-table-column
              label="操作" width="200">
              <template slot-scope="scope">
@@ -320,15 +343,51 @@
       <el-button @click="jsDialogVisible = false" size="small">取 消</el-button>
     </div>
   </el-dialog>
+    <!--===================简表开始======================-->
+    <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+      <Trans
+        :key="timer"
+        :transData="lbDataAll"
+        :pointData="pointData"
+        @transSave="transSave"
+        @dialogCancel="jbDialogVisible=false"></Trans>
+    </el-dialog>
+    <!--===================简表结束======================--> 
   </div>
 </template>
 <script>
+import Trans from "@/components/common/Transfer.vue"
 import {
   ToData
 } from '@/assets/js/ToArray.js'
+
 export default {
+  components:{Trans},
   data() {
     return {
+
+      //简表开始
+      timer:'',
+      jbDialogVisible:false,
+      pointData:[],//选中项
+      lbDataAll:[//列表总数据===简表数据源
+        {
+          dm:'dlm',
+          cm:'登录号/警号',
+        },
+        {
+          dm:'mc',
+          cm:'姓名',
+        },
+        {
+          dm:'ssdw',
+          cm:'所属单位',
+          dw:true
+        },
+      ],
+      lbData:[],//列表简表动态加载数据====简表选中项
+      //简表结束
+
       CurrentPage: 1,
       pageSize: 10,
       TotalResult: 0,
@@ -381,18 +440,38 @@ export default {
       org: '',
       ssdw: [],
       menurr: [],
-
       menuArr:[],
-
     }
   },
   mounted() {
+    this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
     this.getCompany();
     this.getList(this.CurrentPage, this.pageSize, this.pd);
     console.log(this.from)
   },
   methods: {
-
+    //=================================================简表开始=====================
+    jbFnc(){
+      this.timer = new Date().getTime();
+      this.jbDialogVisible = true
+    },
+    transSave(data){
+      this.pointData = [];
+      if(data.length == 0){
+        this.lbData = this.lbDataAll
+      }else{
+        this.lbDataAll.forEach(item =>{
+          data.forEach(jtem => {
+            if(item.dm == jtem){
+              this.pointData.push(item)
+            }
+          })
+        })
+        this.lbData = this.pointData;
+      }
+      this.jbDialogVisible = false;
+    },
+    //=================================================简表结束=====================
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },

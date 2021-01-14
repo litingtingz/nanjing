@@ -131,6 +131,11 @@
     <div class="yycontent">
        <div class="yylbt mb-15">甄别信息列表</div>
        <COUNT :ccPd="ccPd" :random="new Date().getTime()" :typeCount="true"></COUNT>
+      <!-- 简表按钮 -->
+       <el-row class="mb-15">
+         <el-button type="primary"  size="small" @click="jbFnc" style="float:right;margin-top:-35px">简表</el-button>
+       </el-row>
+       <!-- 简表按钮 -->
       <el-table
            :data="tableData"
            border
@@ -143,7 +148,16 @@
              type="selection"
              width="55">
            </el-table-column>
-           <el-table-column
+
+            <!-- 循环生成动态表格 -->
+              <template v-for="(lb,i) in lbData">
+              <el-table-column
+                :key="i"
+                :prop="lb.dm"
+                :label="lb.cm">
+              </el-table-column>
+            </template>
+           <!-- <el-table-column
              prop="FJ_DESC"
              label="所属分局">
            </el-table-column>
@@ -166,7 +180,7 @@
            <el-table-column
              prop="BJSJ"
              label="预警时间">
-           </el-table-column>
+           </el-table-column> -->
            <!-- <el-table-column
              prop="SHZT"
              label="审核状态">
@@ -174,10 +188,12 @@
                  <span>{{scope.row.SHZT=="0"?"已通过":scope.row.SHZT=="1"?"未通过":""}}</span>
              </template>
            </el-table-column> -->
-           <el-table-column
+
+           <!-- <el-table-column
              prop="CLZT_DESC"
              label="处理状态">
-           </el-table-column>
+           </el-table-column> -->
+
            <el-table-column
              label="操作" width="70">
              <template slot-scope="scope">
@@ -216,15 +232,65 @@
         </el-pagination>
       </div>
     </div>
+    <!--===================简表开始======================-->
+    <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+      <Trans
+        :key="timer"
+        :transData="lbDataAll"
+        :pointData="pointData"
+        @transSave="transSave"
+        @dialogCancel="jbDialogVisible=false"></Trans>
+    </el-dialog>
+    <!--===================简表结束======================-->
   </div>
 </template>
 <script>
 import AREA from '../../../common/area'
 import COUNT from '../../../common/CLZTCount'
+import Trans from "@/components/common/Transfer.vue"
 export default {
-  components:{AREA,COUNT},
+  components:{AREA,COUNT,Trans},
   data() {
     return {
+
+          //简表开始
+          timer:'',
+          jbDialogVisible:false,
+          pointData:[],//选中项
+          lbDataAll:[//列表总数据===简表数据源
+            {
+              dm:'FJ_DESC',
+              cm:'所属分局'
+            },
+            {
+              dm:'PCS_DESC',
+              cm:'派出所',
+            },
+            {
+              dm:'JWZRQ',
+              cm:'责任区'
+            },
+            {
+              dm:'JLXMC',
+              cm:'街道名称',
+            },
+            {
+              dm:'ZSRQ',
+              cm:'入住时间',
+            },
+            {
+              dm:'BJSJ',
+              cm:'预警时间'
+            },
+            {
+              dm:'CLZT_DESC',
+              cm:'处理状态',
+            },
+          ],
+          lbData:[],//列表简表动态加载数据====简表选中项
+          //简表结束
+
+
       areaPd:{},
       // ssfj:[],
       getallfj:[],
@@ -248,6 +314,43 @@ export default {
       token:'',
       juState:'',
       ccPd:{},
+
+      //简表开始
+          timer:'',
+          jbDialogVisible:false,
+          pointData:[],//选中项
+          lbDataAll:[//列表总数据===简表数据源
+            {
+              dm:'FJ_DESC',
+              cm:'所属分局'
+            },
+            {
+              dm:'PCS_DESC',
+              cm:'派出所',
+            },
+            {
+              dm:'JWZRQ',
+              cm:'责任区'
+            },
+            {
+              dm:'JLXMC',
+              cm:'街道名称',
+            },
+            {
+              dm:'ZSRQ',
+              cm:'入住时间',
+            },
+            {
+              dm:'BJSJ',
+              cm:'预警时间'
+            },
+            {
+              dm:'CLZT_DESC',
+              cm:'处理状态',
+            },
+          ],
+          lbData:[],//列表简表动态加载数据====简表选中项
+          //简表结束
     }
   },
   activated(){
@@ -268,6 +371,7 @@ export default {
   mounted() {
     if(this.Global.serviceState==0){this.$set(this.pd,'CLZT','CLZT_1')};
     if(this.Global.serviceState==1){this.$set(this.pd,'CLZT','1')};
+    this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
     this.$store.dispatch('getGjdq');
     this.$store.dispatch('getPcs');
     this.$store.dispatch('getXzqh');
@@ -300,6 +404,28 @@ export default {
     titleShow(e,el){
       el.target.title = e.label;
     },
+    //=================================================简表开始=====================
+    jbFnc(){
+      this.timer = new Date().getTime();
+      this.jbDialogVisible = true
+    },
+    transSave(data){
+      this.pointData = [];
+      if(data.length == 0){
+        this.lbData = this.lbDataAll
+      }else{
+        this.lbDataAll.forEach(item =>{
+          data.forEach(jtem => {
+            if(item.dm == jtem){
+              this.pointData.push(item)
+            }
+          })
+        })
+        this.lbData = this.pointData;
+      }
+      this.jbDialogVisible = false;
+    },
+    //=================================================简表结束=====================
     getZrq(arr) {
       let p = {
         "operatorId": this.$store.state.uid,

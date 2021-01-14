@@ -127,6 +127,10 @@
               <el-button type="primary"  size="small" @click="showUpload(0)">批量导入</el-button>
               <el-button type="success" size="small" @click="download(0)">模板下载</el-button>
             </el-row>
+            <!-- 简表按钮 -->
+            <el-row class="mb-15">
+              <el-button type="primary"  size="small" @click="jbFnc" style="float:right;margin-top:-35px">简表</el-button>
+            </el-row>
             <el-table
                  ref="multipleTable"
                  :data="tableData"
@@ -137,7 +141,16 @@
                    type="selection"
                    width="55">
                  </el-table-column> -->
-                 <el-table-column
+                <!-- 循环生成动态表格 -->
+                  <template v-for="(lb,i) in lbData">
+                  <el-table-column
+                    :key="i"
+                    :prop="lb.dm"
+                    :label="lb.cm"
+                    >
+                  </el-table-column>
+                </template>
+                 <!-- <el-table-column
                    prop="BT"
                    label="标题">
                  </el-table-column>
@@ -172,7 +185,8 @@
                  <el-table-column
                    prop="SFZH"
                    label="身份证号">
-                 </el-table-column>
+                 </el-table-column> -->
+
                  <el-table-column
                    label="操作" width="120">
                    <template slot-scope="scope">
@@ -519,6 +533,16 @@
                 <el-button @click="detailsDialogVisible = false" size="small">取 消</el-button>
               </div>
             </el-dialog>
+            <!--===================简表开始======================-->
+            <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+              <Trans
+                :key="timer"
+                :transData="lbDataAll"
+                :pointData="pointData"
+                @transSave="transSave"
+                @dialogCancel="jbDialogVisible=false"></Trans>
+            </el-dialog>
+            <!--===================简表结束======================-->
          </div>
          <!-- 暂时不用 -->
           <div v-show="page==1">
@@ -526,6 +550,10 @@
                <el-button type="primary"  size="small" @click="showUpload(1)">批量导入</el-button>
                <el-button type="success" size="small" @click="download(1)">模板下载</el-button>
              </el-row>
+             <!-- 简表按钮 -->
+            <el-row class="mb-15">
+                <el-button type="primary"  size="small" @click="jbFnc2" style="float:right;margin-top:-35px">简表</el-button>
+            </el-row>            
              <el-table
                   ref="multipleTable"
                   :data="tableData1"
@@ -536,7 +564,17 @@
                     type="selection"
                     width="55">
                   </el-table-column> -->
+
+                  <!-- 循环生成动态表格 -->
+                  <template v-for="(lb,i) in lbData2">
                   <el-table-column
+                    :key="i"
+                    :prop="lb.dm"
+                    :label="lb.cm"
+                    >
+                  </el-table-column>
+                </template>
+                  <!-- <el-table-column
                     prop="BT"
                     label="标题">
                   </el-table-column>
@@ -595,7 +633,8 @@
                   <el-table-column
                     prop="WLGMC"
                     label="往来国">
-                  </el-table-column>
+                  </el-table-column> -->
+
                   <el-table-column
                     label="操作" width="120">
                     <template slot-scope="scope">
@@ -967,6 +1006,16 @@
                  <el-button @click="detailsDialogVisible1 = false" size="small">取 消</el-button>
                </div>
              </el-dialog>
+          <!--===================简表开始======================-->
+           <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+            <Trans
+              :key="timer2"
+              :transData="lb2DataAll"
+              :pointData="pointData2"
+              @transSave="transSave2"
+              @dialogCancel="jbDialogVisible=false"></Trans>
+          </el-dialog>
+          <!--===================简表结束======================-->
           </div>
      </div>
     </div>
@@ -974,9 +1023,124 @@
 
 </template>
 <script>
+import Trans from "@/components/common/Transfer.vue"
 export default {
+  components:{Trans},
   data() {
     return {
+      //简表开始
+      timer:'',
+      jbDialogVisible:false,
+      pointData:[],//选中项
+
+      timer2:'',
+      pointData2:[],//选中项
+      lbDataAll:[//列表总数据===简表数据源
+        {
+          dm:'BT',
+          cm:'标题',
+        },
+        {
+          dm:'XM',
+          cm:'姓名',
+        },
+        {
+          dm:'XBMC',
+          cm:'性别',
+        },
+        {
+          dm:'CSRQ',
+          cm:'出生日期',
+        },
+        {
+          dm:'ZJHM',
+          cm:'证件号码',
+        },
+        {
+          dm:'HKSZD',
+          cm:'户口所在地',
+        },
+        {
+          dm:'JTZZ',
+          cm:'家庭住址',
+        },
+        {
+          dm:'LXDH',
+          cm:'联系电话',
+        },
+        {
+          dm:'SFZH',
+          cm:'身份证号',
+        },
+      ],
+
+      lb2DataAll:[//列表总数据===简表数据源
+        {
+          dm:'BT',
+          cm:'标题',
+        },
+        {
+          dm:'XM',
+          cm:'姓名',
+        },
+        {
+          dm:'XBMC',
+          cm:'性别',
+        },
+        {
+          dm:'CSRQ',
+          cm:'出生日期',
+        },
+        {
+          dm:'GJDQMC',
+          cm:'国家地区',
+        },
+        {
+          dm:'ZJZLMC',
+          cm:'证件种类',
+        },
+        {
+          dm:'ZJHM',
+          cm:'证件号码',
+        },
+        {
+          dm:'QZLXMC',
+          cm:'签证种类',
+        },
+        {
+          dm:'TLYXQ',
+          cm:'停留有效期',
+        },
+        {
+          dm:'QFDWMC',
+          cm:'签发单位',
+        },
+        {
+          dm:'LXDH',
+          cm:'联系电话',
+        },
+        {
+          dm:'CRJKAMC',
+          cm:'出入境口岸',
+        },
+        {
+          dm:'CRJSJ',
+          cm:'出入境日期',
+        },
+        {
+          dm:'JTGJ',
+          cm:'交通工具',
+        },
+        {
+          dm:'WLGMC',
+          cm:'往来国',
+        },
+      ],
+      lbData:[],//列表简表动态加载数据====简表选中项
+      lbData2:[],
+      //简表结束
+
+      
       CurrentPage: 1,
       pageSize: 10,
       TotalResult: 0,
@@ -1041,6 +1205,12 @@ export default {
     }
   },
   mounted() {
+    //this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
+    //if(this.page==0){
+      this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
+    //}else{
+      this.lbData2 = this.lb2DataAll//页面加载 列表选中项 == 列表总数据源
+    //}
     this.$store.dispatch('getXB');
     this.$store.dispatch('getGjdq');
     this.$store.dispatch('getXzqh');
@@ -1055,6 +1225,49 @@ export default {
     this.getList(this.CurrentPage, this.pageSize, this.pd);
   },
   methods: {
+     //=================================================简表开始=====================
+    jbFnc(){
+      this.timer = new Date().getTime();
+      this.jbDialogVisible = true
+    },
+    transSave(data){
+      this.pointData = [];
+      if(data.length == 0){
+        this.lbData = this.lbDataAll
+      }else{
+        this.lbDataAll.forEach(item =>{
+          data.forEach(jtem => {
+            if(item.dm == jtem){
+              this.pointData.push(item)
+            }
+          })
+        })
+        this.lbData = this.pointData;
+      }
+      this.jbDialogVisible = false;
+    },
+
+    jbFnc2(){
+      this.timer2 = new Date().getTime();
+      this.jbDialogVisible = true
+    },
+    transSave2(data){
+      this.pointData2 = [];
+      if(data.length == 0){
+        this.lbData2 = this.lb2DataAll
+      }else{
+        this.lb2DataAll.forEach(item =>{
+          data.forEach(jtem => {
+            if(item.dm == jtem){
+              this.pointData2.push(item)
+            }
+          })
+        })
+        this.lbData2 = this.pointData2;
+      }
+      this.jbDialogVisible = false;
+    },
+    //=================================================简表结束=====================
     getLable(t,val){
      // if(t==1){//行政区划
      //
