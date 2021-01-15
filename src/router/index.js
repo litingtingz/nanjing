@@ -183,6 +183,12 @@ export default new Router({
           component: resolve => require(['@/components/YJYP/YJ/LZYJ/ZDGZCZWYJ'], resolve),
         },
         {
+          path: 'CZFWYHYJ_XQ',
+          name: 'CZFWYHYJ_XQ',
+          meta:{title:['日常管理','临住信息','新增出租房屋提醒'],father:'ZDGZCZWYJ'},
+          component: resolve => require(['@/components/YJYP/YJ/LZYJ/CZFWYHYJ_XQ'], resolve),
+        },
+        {
           path: 'ZDGZCZWSH',
           name: 'ZDGZCZWSH',
           meta:{title:['日常管理','临住信息','重点关注出租屋审核']},
@@ -213,10 +219,10 @@ export default new Router({
           component: resolve => require(['@/components/YJYP/YJ/LZYJ/CZFWYHYJ'], resolve),
         },
         {
-          path: 'CZFWYHYJ_XQ',
-          name: 'CZFWYHYJ_XQ',
+          path: 'XZCZFWYHYJ_XQ',
+          name: 'XZCZFWYHYJ_XQ',
           meta:{title:['日常管理','临住信息','新增出租房屋提醒'],father:'CZFWYHYJ'},
-          component: resolve => require(['@/components/YJYP/YJ/LZYJ/CZFWYHYJ_XQ'], resolve),
+          component: resolve => require(['@/components/YJYP/YJ/LZYJ/XZCZFWYHYJ_XQ'], resolve),
         },
         {
           path: 'LZRYTJ',
@@ -401,13 +407,13 @@ export default new Router({
         {
           path: 'DQQZFFJYYJ',
           name: 'DQQZFFJYYJ',
-          meta:{title:['预警研判','预警信息','持短期签证非法就业预警']},
+          meta:{title:['预警研判','预警信息','偷越国边境预警']},
           component: resolve => require(['@/components/YJYP/YJ/ASJYJ/DQQZFFJYYJ'], resolve),
         },
         {
           path: 'DQQZFFJYYJ_XQ',
           name: 'DQQZFFJYYJ_XQ',
-          meta:{title:['预警研判','预警信息','持短期签证非法就业预警详情']},
+          meta:{title:['预警研判','预警信息','偷越国边境预警详情']},
           component: resolve => require(['@/components/GYZJ/ASJXQ'], resolve),
         },
         {
@@ -556,6 +562,25 @@ export default new Router({
           name: 'GWHZYJ',
           meta:{title:['预警研判','预警信息','公务护照预警']},
           component: resolve => require(['@/components/YJYP/YJ/QZXXYJ/GWHZYJ'], resolve),
+        },
+        //=============================二版新重点出租屋预警============================================
+        {
+          path: 'ZDCZWYJTJ',
+          name: 'ZDCZWYJTJ',
+          meta:{title:['预警研判','预警信息','重点出租屋预警统计']},
+          component: resolve => require(['@/components/YJYP/YJ/ASJYJ/ZDCZWYJTJ'], resolve),
+        },
+        {
+          path: 'ZDCZWYJ',
+          name: 'ZDCZWYJ',
+          meta:{title:['预警研判','预警信息','重点出租屋预警统计'],father:'ZDCZWYJTJ'},
+          component: resolve => require(['@/components/YJYP/YJ/ASJYJ/ZDCZWYJ'], resolve),
+        },
+        {
+          path: 'ZDCZWYJ_XQ',
+          name: 'ZDCZWYJ_XQ',
+          meta:{title:['预警研判','预警信息','重点出租屋预警统计'],father:'ZDCZWYJ'},
+          component: resolve => require(['@/components/YJYP/YJ/LZYJ/CZFWYHYJ_XQ'], resolve),
         },
         // 研判=====================================================================================
         {
@@ -1237,8 +1262,6 @@ export default new Router({
         meta:{title:['系统管理','内地居民申请变化量']},
         component: resolve => require(['@/components/ZG/NDJMBHL'], resolve),
         },
-
-
       ]
     },
 
