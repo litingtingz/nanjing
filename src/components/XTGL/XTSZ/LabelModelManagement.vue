@@ -146,16 +146,6 @@
               <span class="yy-input-text" style="vertical-align: top;">自定义项：</span>
               <div class="transfer">
                 <el-transfer
-<<<<<<< HEAD
-                filterable
-                :filter-method="filterMethod"
-                v-model="form.tagIdList"
-                :render-content="renderFunc"
-                :props="propsData"
-                :data="$store.state.gjdq"
-                :titles="['可选择列', '已选择列']"
-                ></el-transfer>
-=======
                   filterable
                   :filter-method="filterMethod"
                   v-model="form.tagIdList"
@@ -164,7 +154,6 @@
                   :data="xzLabelData"
                   :titles="['可选择列', '已选择列']"
                   ></el-transfer>
->>>>>>> li
               </div>
             </el-col>
         </el-row>

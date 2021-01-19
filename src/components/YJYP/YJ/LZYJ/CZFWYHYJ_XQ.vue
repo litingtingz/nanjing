@@ -27,6 +27,7 @@
         </el-row>
       </div>
       <div class="mb-15">
+        <div v-if="leiType!='xz'">
         <div class="yylbt">临住信息</div>
         <div class="stru-lal bb" id="box1" @click="con1=!con1">有案事件<i class="el-icon-d-caret"></i></div>
         <div v-show="tableData1.data.length==0?(!con1):con1">
@@ -60,13 +61,8 @@
             </el-table-column>
             <el-table-column
               prop="JYAQ"
-              label="简要案情">
-            </el-table-column>
-            <el-table-column
-              label="操作" width="80">
-              <template slot-scope="scope">
-                <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="details(scope.row)"></el-button>
-              </template>
+              label="简要案情"
+              >
             </el-table-column>
           </el-table>
           <div class="middle-foot">
@@ -216,6 +212,7 @@
           </div>
         </div>
          <div class="stru-lal bb" id="box3" @click="con3=!con3">登记次数过多<i class="el-icon-d-caret"></i></div>
+         </div>
         <div class="mt-10" v-show="tableData4.data.length==0?(!con3):con3">
           <el-row type="flex">
             <el-col :span="22" class="br pr-20">
@@ -413,7 +410,6 @@ export default {
   components:{LZXX,ANSJ},
   data() {
     return {
-      
       asjDialogVisible:false,
       rybh:"",
       CurrentPage: 1,
@@ -535,20 +531,6 @@ export default {
     },
     //临住信息列表
     getList(currentPage, showCount, pd,type){
-      if(this.leiType=='xz'){//暂时废弃
-        pd.DZDTID=this.row.BZHDZID;
-        pd.ZSRQ_Nokeyword=this.row.ZSRQ;
-        let p = {
-          "currentPage":currentPage,
-          "showCount":showCount,
-          "pd":pd,
-        };
-        this.$api.post(this.Global.aport4+'/rentingHouseHiddenDangerWarning/getLinZhuListByDZDTIDAndZSRQ', p,
-          r => {
-              this.tableData1.data=r.data.resultList;
-              this.tableData1.TotalResult=r.data.totalResult;
-          });
-      }else if(this.leiType=='zd'){
         let p={
           currentPage:currentPage,
           showCount:showCount,
@@ -591,7 +573,6 @@ export default {
               this[type].data=r.data.resultList;
               this[type].TotalResult=r.data.totalResult;
           });
-      }
     },
     //确定
     chuli(){

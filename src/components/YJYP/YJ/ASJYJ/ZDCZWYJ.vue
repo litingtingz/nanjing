@@ -5,63 +5,7 @@
       <el-row type="flex">
         <el-col :span="22" class="br pr-20">
           <el-row align="center"   :gutter="2">
-            <!-- <el-col  :sm="24" :md="12" :lg="8"  class="input-item">
-                <span class="input-text">所属分局：</span>
-                <el-select v-model="pd.XZQHDM" filterable clearable default-first-option placeholder="请选择"  size="small" class="input-input">
-                  <el-option
-                    v-for="(item,ind) in ssfj"
-                    :key="ind"
-                    :label="item.dm+' - '+item.mc"
-                    :value="item.dm">
-                  </el-option>
-                </el-select>
-            </el-col>
-            <el-col  :sm="24" :md="12" :lg="8"  class="input-item">
-                <span class="input-text">派出所：</span>
-                <el-select v-model="pd.PCS" filterable clearable default-first-option placeholder="请选择"  size="small" class="input-input">
-                  <el-option
-                    v-for="item in $store.state.pcs"
-                    :key="item.dm"
-                    :label="item.dm+' - '+item.mc"
-                    :value="item.dm">
-                  </el-option>
-                </el-select>
-            </el-col> -->
-                <!-- <el-col  :sm="24" :md="12" :lg="8"  class="input-item">
-                    <span class="input-text">所属分局：</span>
-                    <el-select v-model="pd.FJ" filterable clearable @change="getPSC(pd.FJ)" default-first-option placeholder="请选择"  size="small" class="input-input" :disabled="juState=='1'?false:true">
-                      <el-option
-                        v-for="(item,ind) in getallfj"
-                        :key="item.DM"
-                        :label="item.DM+' - '+item.MC"
-                        :value="item.DM">
-                      </el-option>
-                    </el-select>
-                </el-col>
-                <el-col  :sm="24" :md="12" :lg="8"  class="input-item">
-                    <span class="input-text">派出所：</span>
-                    <el-select v-model="pd.PCS" @change="getZrq(pd.PCS)" filterable clearable default-first-option placeholder="请选择"  size="small" class="input-input" :disabled="juState=='3'" :no-data-text="pd.FJ==''||pd.FJ==undefined?'请先选择所属分局':'无数据'">
-                      <el-option
-                        v-for="item in PSC"
-                        :key="item.DM"
-                        :label="item.DM+' - '+item.MC"
-                        :value="item.DM">
-                      </el-option>
-                    </el-select>
-                </el-col>
-                <el-col  :sm="24" :md="12" :lg="8"  class="input-item">
-                    <span class="input-text">责任区：</span>
-                    <el-select v-model="pd.JWZRQ" filterable clearable default-first-option placeholder="请选择"  size="small" class="input-input"
-                    :no-data-text="pd.FJ==''||pd.FJ==undefined?'请先选择所属分局':pd.PCS==''||pd.PCS==undefined?'请先选择派出所':'无数据'">
-                      <el-option
-                        v-for="item in zrq"
-                        :key="item.dm"
-                        :label="item.dm+' - '+item.mc"
-                        :value="item.dm">
-                      </el-option>
-                    </el-select>
-                </el-col> -->
-                <AREA @getArea="getArea"></AREA>
+                <AREA @getArea="getArea" :key="areaKey" :turnData="turnData"></AREA>
                 <el-col  :sm="24" :md="12" :lg="8"   class="input-item">
                    <span class="input-text">街道名称：</span>
                    <el-input placeholder="请输入内容" size="small" v-model="pd.JLXMC_Like" class="input-input"></el-input>
@@ -130,7 +74,10 @@
     </div>
     <div class="yycontent">
        <div class="yylbt mb-15">甄别信息列表</div>
-       <COUNT :ccPd="ccPd" :random="new Date().getTime()" :typeCount="true"></COUNT>
+       <COUNT :ccPd="ccPd" :random="random" :typeCount="true"></COUNT>
+        <el-row class="mb-15">
+         <el-button type="primary"  size="small" @click="$router.go(-1)" style="float:right;margin-top:-35px">返回</el-button>
+       </el-row>
       <el-table
            :data="tableData"
            border
@@ -226,9 +173,6 @@ export default {
   data() {
     return {
       areaPd:{},
-      // ssfj:[],
-      getallfj:[],
-      PSC:[],
       CurrentPage: 1,
       pageSize: 10,
       TotalResult: 0,
@@ -249,6 +193,9 @@ export default {
       token:'',
       juState:'',
       ccPd:{},
+      areaKey:0,
+      turnData:{},
+      random:0,
     }
   },
   activated(){
@@ -261,10 +208,18 @@ export default {
       this.getPSC(this.pd.FJ);
       this.pd.PCS = this.orgCode;
     }
-    this.queryPd = this.$route.query.row;
+    if(this.$route.query.row.CLZT){
+      this.areaKey=new Date().getTime();
+      this.turnData=this.$route.query.row;
+      // this.pd.FJ = this.$route.query.row.FJ
+      // this.pd.PCS = this.$route.query.row.PCS
+      this.pd.CLZT = this.$route.query.row.CLZT
+      this.queryPd = this.$route.query.row;
+    }
     let _this = this;
     setTimeout(function(){
       _this.getList(_this.CurrentPage, _this.pageSize, _this.pd);
+      _this.random = new Date().getTime()
     },1000)
   },
   mounted() {
@@ -282,63 +237,17 @@ export default {
     this.orgCode=this.$store.state.orgid;
     this.juState=this.$store.state.juState;
     this.token=this.$store.state.token;
-    // this.getFJ();
-    this.getFj();
-    this.getZrq();
-
   },
-
   methods: {
-    // getFJ() {
-    //   let p = {
-    //     "operatorId": this.$store.state.uid,
-    //     "operatorNm": this.$store.state.uname
-    //   };
-    //   this.$api.post(this.Global.aport2 + '/data_report/selectSsfjDm', p,
-    //     r => {
-    //       this.ssfj = r.data.SSFJ;
-    //     })
-    // },
     titleShow(e,el){
       el.target.title = e.label;
-    },
-    getZrq(arr) {
-      let p = {
-        "operatorId": this.$store.state.uid,
-        "operatorNm": this.$store.state.uname,
-        "pcsdm":[arr]
-      };
-      var url = this.Global.aport2 + "/data_report/selectZrqDm";
-      this.$api.post(url, p,
-        r => {
-          this.zrq = r.data.ZRQ;
-        })
-    },
-    getFj(){
-      this.$api.post(this.Global.aport5+'/djbhl/getallfj',{},
-       r =>{
-         if(r.success){
-           this.getallfj=r.data;
-         }
-       })
-    },
-    getPSC(i){
-      this.$set(this.pd,'PCS','');
-      this.$api.post(this.Global.aport5+'/djbhl/getpcsbyfjdm',{pd:{fjdm:i}},
-      r =>{
-        if(r.success){
-          this.PSC=r.data;
-        }
-      })
     },
     selectfn(a,b){
       this.multipleSelection = a;
       this.dataSelection()
     },
     dataSelection(){
-      // console.log('this.multipleSelection',this.multipleSelection)
       this.selectionReal.splice(this.CurrentPage-1,1,this.multipleSelection);
-      // console.log('this.selectionReal',this.selectionReal);
       this.selectionAll=[];
       for(var i=0;i<this.selectionReal.length;i++){
         if(this.selectionReal[i]){
@@ -347,7 +256,6 @@ export default {
           }
         }
       }
-      // console.log('this.selectionAll',this.selectionAll);
     },
     download(){
       if(this.tableData.length==0){
@@ -414,12 +322,12 @@ export default {
     },
     getArea(val){
       this.areaPd = val;
-    },
-    getList(currentPage, showCount, pd,type) {
-      this.ccPd.MXLX="CZW_FWYHYJ";
+      this.ccPd.MXLX="CZW_ZDCZWYJ";
       this.ccPd.FJ=this.areaPd.FJ;
       this.ccPd.PCS=this.areaPd.PCS;
-      pd.MXLX='CZW_FWYHYJ';
+    },
+    getList(currentPage, showCount, pd,type) {
+      pd.MXLX='CZW_ZDCZWYJ';
       this.pd.ZSRQ_DateRange.begin=this.pd0.beginZSRQ;
       this.pd.ZSRQ_DateRange.end=this.pd0.endZSRQ;
       this.pd.BJSJ_DateRange.begin=this.pd0.beginBJSJ;
@@ -427,7 +335,7 @@ export default {
       if(pd.hasOwnProperty('YJID')){
         delete pd['YJID']
       }
-      pd = Object.assign({},this.queryPd,pd,this.areaPd);
+      pd = Object.assign({},pd,this.areaPd);
       if(type==1){
         this.selectionAll=[];
         this.multipleSelection=[];
@@ -452,8 +360,6 @@ export default {
           }
           this.$nextTick(()=>{
             this.multipleSelection=[]
-             // let arr=this.selectionReal[currentPage-1]
-             // console.log("arr",arr)
             for(var i=0;i<this.tableData.length;i++){
               for(var j=0;j<this.selectionAll.length;j++){
                 if(this.tableData[i].YJID==this.selectionAll[j].YJID){

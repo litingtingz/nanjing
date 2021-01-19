@@ -5,33 +5,39 @@
       <el-row type="flex">
         <el-col :span="19" class="br pr-20">
           <el-row align="center" :gutter="1">
-                <el-col  :sm="24" :md="12" :lg="12"  class="input-item">
-                  <span class="input-text">时间范围：</span>
+                <el-col  :sm="24" :md="12" :lg="8"  class="input-item">
+                  <span class="input-text">住宿日期：</span>
                   <div class="input-input t-flex t-date">
                     <el-date-picker
-                       v-model="pd.beginDate" format="yyyy-MM-dd"
+                       v-model="pd.ZSSJ_DateRange.begin" format="yyyy-MM-dd"
+                       type="date" size="small" value-format="yyyy/MM/dd"
+                       placeholder="开始时间" >
+                    </el-date-picker>
+                    <span class="septum">-</span>
+                    <el-date-picker
+                        v-model="pd.ZSSJ_DateRange.end" format="yyyy-MM-dd"
+                        type="date" size="small" value-format="yyyy/MM/dd"
+                        placeholder="结束时间" >
+                    </el-date-picker>
+                 </div>
+                </el-col>
+                <el-col  :sm="24" :md="12" :lg="8"  class="input-item">
+                  <span class="input-text">报警时间：</span>
+                  <div class="input-input t-flex t-date">
+                    <el-date-picker
+                       v-model="pd.BJSJ_DateRange.begin" format="yyyy-MM-dd"
                        type="date" size="small" value-format="yyyyMMdd"
                        placeholder="开始时间" >
                     </el-date-picker>
                     <span class="septum">-</span>
                     <el-date-picker
-                        v-model="pd.endDate" format="yyyy-MM-dd"
+                        v-model="pd.BJSJ_DateRange.end" format="yyyy-MM-dd"
                         type="date" size="small" value-format="yyyyMMdd"
                         placeholder="结束时间" >
                     </el-date-picker>
                  </div>
                 </el-col>
-                <el-col :sm="24" :md="12" :lg="12"  class="input-item">
-                    <span class="input-text">宾馆：</span>
-                    <el-select v-model="pd.bgList" multiple  :multiple-limit="5"   collapse-tags filterable clearable default-first-option placeholder="请选择"  size="small" class="input-input">
-                      <el-option
-                        v-for="item in $store.state.zsbg"
-                        :key="item.dm"
-                        :label="item.dm+' - '+item.mc"
-                        :value="item.dm">
-                      </el-option>
-                    </el-select>
-                </el-col>
+                <AREAFP @getArea="getArea" ></AREAFP>
          </el-row>
          </el-col>
          <el-col :span="5">
@@ -50,47 +56,26 @@
            @selection-change="handleSelectionChange"
            @header-click="titleShow">
            <el-table-column
-             prop="dw"
+             prop="dwmc"
              label="单位">
              <template slot-scope="scope">
-               <span class="sb" @click="getList(pd,scope.row)" v-if="scope.row.level!='3'">{{scope.row.dw}}</span>
-               <span v-if="scope.row.level=='3'">{{scope.row.dw}}</span>
+               <span class="sb" @click="getList(pd,scope.row)" v-if="scope.row.level!='2'">{{scope.row.dwmc}}</span>
+               <span v-if="scope.row.level=='2'">{{scope.row.dwmc}}</span>
              </template>
            </el-table-column>
            <el-table-column
-             prop="zrs"
-             label="总人数">
+             prop="wclTotal"
+             label="未处理">
              <template slot-scope="scope">
-               <span class="sb" @click="toLink (pd,scope.row,'zrs')">{{scope.row.zrs}}</span>
+               <span class="sb" @click="toLink (pd,scope.row,'1')">{{scope.row.wclTotal}}</span>
              </template>
            </el-table-column>
            <el-table-column
-             prop="rxz"
-             label="人像照数">
-             <template slot-scope="scope">
-               <span class="sb" @click="toLink (pd,scope.row,'rxz')" >{{scope.row.rxz}}</span>
-             </template>
-           </el-table-column>
-           <!-- <el-table-column
-             prop="frxz"
-             label="非人像照数">
-             <template slot-scope="scope">
-               <span class="sb" @click="toLink (pd,scope.row,'frxz')" >{{scope.row.frxz}}</span>
-             </template>
-           </el-table-column> -->
-           <el-table-column
-             prop="qrxz"
-             label="缺人像照数">
-             <template slot-scope="scope">
-                <span class="sb" @click="toLink (pd,scope.row,'qrxz')">{{scope.row.qrxz}}</span>
-             </template>
-           </el-table-column>
-           <el-table-column
-             prop="wtx"
-             label="无图像数">
-             <template slot-scope="scope">
-                <span class="sb" @click="toLink (pd,scope.row,'wtx')">{{scope.row.wtx}}</span>
-             </template>
+             prop="clTotal"
+             label="已处理">
+             <div slot-scope="scope">
+               <span class="sb" @click="toLink (pd,scope.row,'0')" >{{scope.row.clTotal}}</span>
+             </div>
            </el-table-column>
          </el-table>
     </div>
@@ -98,18 +83,25 @@
 </template>
 <script>
 import {ToArray} from '@/assets/js/ToArray.js'
+import AREAFP from '../../../common/areafp'
 export default {
+  components:{AREAFP},
   data() {
     return {
       pd: {
-        beginDate:'',
-        endDate:'',
-        bgList:[],
+        ZSSJ_DateRange:{
+          dataType:'date',
+          begin:'',
+          end:''
+        },
+        BJSJ_DateRange:{
+          begin:'',
+          end:'',
+        },
       },
+      areaPd:{},
       deepCli:{
         level:'',
-        type:'0',
-        list:[],//合计
         dwbm:'',
       },
       form:{},
@@ -123,20 +115,14 @@ export default {
       listSave:[],
       levelKon:{
         level:'',
-        type:'0',
-        list:[],//合计
         dwbm:'',
       },
       levelOne:{
         level:'',
-        type:'0',
-        list:[],//合计
         dwbm:'',
       },
       levelTwo:{
         level:'',
-        type:'0',
-        list:[],//合计
         dwbm:'',
       },
       userCode:'',
@@ -169,54 +155,46 @@ export default {
     titleShow(e,el){
       el.target.title = e.label;
     },
+    getArea(val){
+      this.areaPd = val;
+    },
     getList(pd,deepCli,type) {
       let p={};
+      pd = Object.assign({},pd,this.areaPd);
       if(type==1){//点击查询按钮查询当前
-        if(this.levelSave=='2'){deepCli = this.levelTwo};
-        if(this.levelSave=='1'){deepCli = this.levelOne};
-        if(this.levelSave==''){deepCli = this.levelKon};
+        // if(this.levelSave=='2'){deepCli = this.levelTwo};
+        if(this.levelSave=='1'){deepCli = this.levelOne;p.groupList=['PCS']};
+        if(this.levelSave==''){deepCli = this.levelKon;p.groupList=['SSFJ']};
         deepCli.level = this.levelSave;
          p = {
-          pd:{
-            beginDate:pd.beginDate,
-            endDate:pd.endDate,
-            bgList:pd.bgList,
-
-            level:this.levelSave,
-            dw:deepCli.dwbm,
-            type:deepCli.type,
-            list:deepCli.list,
-          },
+          pd:pd,
           userCode:this.$store.state.uid,
           userName:this.$store.state.uname,
           orgJB:this.juState,
           orgCode:this.orgCode,
-          token:this.token
+          token:this.token,
         };
+        p.pd.level=deepCli.level+'';
+        p.pd.SSFJ=deepCli.dwbm;
+        p.pd.MXLX='CZW_ZDCZWYJ'
       }else{//点击列表嵌入
          p = {
-          pd:{
-            beginDate:pd.beginDate,
-            endDate:pd.endDate,
-            bgList:pd.bgList,
-
-            level:deepCli.level,
-            dw:deepCli.dwbm,
-            type:deepCli.dw=='合计'?deepCli.type='1':deepCli.type='0',
-            list:deepCli.dw=='合计'?deepCli.list=deepCli.hjList:[],
-          },
+          pd:pd,
           userCode:this.$store.state.uid,
           userName:this.$store.state.uname,
           orgJB:this.juState,
           orgCode:this.orgCode,
           token:this.token
         };
-        this.levelSave = deepCli.level;
+        p.pd.level=deepCli.level+'';
+        p.pd.SSFJ=deepCli.dwbm?deepCli.dwbm:'';
+        p.pd.MXLX='CZW_ZDCZWYJ'
+        this.levelSave = deepCli.level+'';
       }
-      if(this.levelSave=='2'){this.levelTwo.dwbm = deepCli.dwbm;this.levelTwo.list = deepCli.hjList;this.levelTwo.type = deepCli.type;this.levelTwo.level = deepCli.level;};
-      if(this.levelSave=='1'){this.levelOne.dwbm = deepCli.dwbm;this.levelOne.list = deepCli.hjList;this.levelOne.type = deepCli.type;this.levelOne.level = deepCli.level;};
-      if(this.levelSave==''){this.levelKon.dwbm = deepCli.dwbm;this.levelKon.list = deepCli.hjList;this.levelKon.type = deepCli.type;this.levelKon.level = deepCli.level;};
-      var url=this.Global.aport3+'/rxtj/getRxData';
+      // if(this.levelSave=='2'){this.levelTwo.dwbm = deepCli.dwbm;this.levelTwo.list = deepCli.hjList;this.levelTwo.type = deepCli.type;this.levelTwo.level = deepCli.level;};
+      if(this.levelSave=='1'){this.levelOne.dwbm = deepCli.dwbm;this.levelOne.level = deepCli.level+'';p.groupList=['PCS']};
+      if(this.levelSave==''){this.levelKon.dwbm = deepCli.dwbm;this.levelKon.level = deepCli.level+'';p.groupList=['SSFJ']};
+      var url=this.Global.aport4+'/api/roomController/aggRoomInfo';
       this.$api.post(url, p,
         r => {
           if(r.success){
@@ -236,46 +214,57 @@ export default {
         this.deepCli.level='';
         this.getList(this.pd,this.levelKon)
       }
-      this.levelSave = this.deepCli.level;
+      this.levelSave = this.deepCli.level+'';
     },
     toLink(pd,deepCli,type){
         let p={
-            beginDate:pd.beginDate,
-            endDate:pd.endDate,
-            bgList:pd.bgList,
-
-            level:deepCli.level,
-            dw:deepCli.dwbm,
-            type:deepCli.dw=='合计'?deepCli.type='1':deepCli.type='0',
-            list:deepCli.dw=='合计'?deepCli.list=deepCli.hjList:[],
-            lx:type,
+          CLZT:type,
         }
+        if(deepCli.level=='1'){
+          p.FJ=deepCli.dwbm
+          if(deepCli.dwmc=='合计'){
+            p.FJ=''
+          }
+        }else if(deepCli.level=='2'){
+          p.PCS=deepCli.dwbm
+          if(deepCli.ssfj){
+            p.FJ=deepCli.ssfj
+          }else{
+            let data={
+              currentPage: 1,
+              showCount: 10,
+              pd: { DM: deepCli.dwbm }
+            }
+            this.$api.post(this.Global.aport4 + "/LRDWController/getAllParentByChildDW",data,r=>{
+              if(r.success){
+                p.FJ = r.data.FJDM
+                this.$router.push({name:'ZDCZWYJ',query:{row:p}});
+                return
+              }
+            })
+          }
+        }
+        console.log('p==',p)
         this.$router.push({name:'ZDCZWYJ',query:{row:p}});
     },
     download(pd,deepCli){
-      if(this.levelSave=='2'){deepCli = this.levelTwo};
-      if(this.levelSave=='1'){deepCli = this.levelOne};
-      if(this.levelSave==''){deepCli = this.levelKon};
-      let p = {
-        pd:{
-          beginDate:pd.beginDate,
-      		endDate:pd.endDate,
-      		bgList:pd.bgList,
-
-          level:deepCli.level,
-      		dw:deepCli.dwbm,
-      		type:deepCli.type,
-          list:deepCli.list,
-        },
+      // if(this.levelSave=='2'){deepCli = this.levelTwo};
+      let p={};
+      pd = Object.assign({},pd,this.areaPd);
+      if(this.levelSave=='1'){deepCli = this.levelOne;p.groupList=['PCS']};
+      if(this.levelSave==''){deepCli = this.levelKon;p.groupList=['PCS']};
+      p = {
         userCode:this.$store.state.uid,
         userName:this.$store.state.uname,
         orgJB:this.juState,
         orgCode:this.orgCode,
         token:this.token
       };
-      this.$api.post(this.Global.aport3+'/rxtj/exportRxData',p,
+      p.pd.level=deepCli.level+'';
+      p.pd.SSFJ=deepCli.dwbm;
+      this.$api.post(this.Global.aport4+'/api/roomController/exportAggRoomInfo',p,
         r =>{
-          this.downloadM(r,'临住人像统计列表');
+          this.downloadM(r,'重点出租屋预警统计列表');
         },e=>{},{},'blob')
     },
     downloadM (data,name) {

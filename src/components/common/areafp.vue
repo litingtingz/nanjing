@@ -2,7 +2,7 @@
   <div class="">
     <el-col  :sm="24" :md="12" :lg="8"  class="input-item">
         <span class="input-text">所属分局：</span>
-        <el-select v-model="pd.FJ" @change="getPSC(pd.FJ)" filterable clearable default-first-option placeholder="请选择"  size="small" class="input-input" :disabled="juState=='1'?false:true">
+        <el-select v-model="pd.SSFJ" @change="getPSC(pd.SSFJ)" filterable clearable default-first-option placeholder="请选择"  size="small" class="input-input" :disabled="juState=='1'?false:true">
           <el-option
             v-for="item in getallfj"
             :key="item.DM"
@@ -13,24 +13,12 @@
     </el-col>
     <el-col  :sm="24" :md="12" :lg="8"  class="input-item">
         <span class="input-text" title="所属派出所">所属派出所：</span>
-        <el-select v-model="pd.PCS" @change="getZrq(pd.PCS)" filterable clearable default-first-option placeholder="请选择"  size="small" class="input-input" :disabled="juState=='3'||juState=='4'" :no-data-text="pd.FJ==''||pd.FJ==undefined?'请先选择所属分局':'无数据'">
+        <el-select v-model="pd.PCS" @change="getZrq(pd.PCS)" filterable clearable default-first-option placeholder="请选择"  size="small" class="input-input" :disabled="juState=='3'||juState=='4'" :no-data-text="pd.SSFJ==''||pd.SSFJ==undefined?'请先选择所属分局':'无数据'">
           <el-option
-            v-for="item in PSC"
+            v-for="item in SSPSC"
             :key="item.DM"
             :label="item.DM+' - '+item.MC"
             :value="item.DM">
-          </el-option>
-        </el-select>
-    </el-col>
-    <el-col  :sm="24" :md="12" :lg="8"  class="input-item">
-        <span class="input-text">责任区：</span>
-        <el-select v-model="pd.SSZRQ" @change="getZrqProp(pd.SSZRQ)" filterable clearable  default-first-option placeholder="请选择"  size="small" class="input-input"
-        :no-data-text="pd.FJ==''||pd.FJ==undefined?'请先选择所属分局':pd.PCS==''||pd.PCS==undefined?'请先选择派出所':'无数据'">
-          <el-option
-            v-for="item in zrq"
-            :key="item.dm"
-            :label="item.dm+' - '+item.mc"
-            :value="item.dm">
           </el-option>
         </el-select>
     </el-col>
@@ -39,13 +27,13 @@
 
 <script>
 export default {
-  name:'AREA',
-  props:['turnData'],
+  name:'AREAFP',
+  props:[],
   data(){
     return{
       pd:{},
       getallfj:[],
-      PSC:[],
+      SSPSC:[],
       zrq:[],
 
       userCode:'',
@@ -64,27 +52,21 @@ export default {
     this.token=this.$store.state.token;
     this.getFj();
     if(this.juState=='2'){//分局登录
-      this.pd.FJ = this.orgCode;
-      this.getPSC(this.pd.FJ);
+      this.pd.SSFJ = this.orgCode;
+      this.getPSC(this.pd.SSFJ);
     }
     if(this.juState=='3'){//派出所登录
-      this.pd.FJ = this.$store.state.pcsToju;
-      this.getPSC(this.pd.FJ);
+      this.pd.SSFJ = this.$store.state.pcsToju;
+      this.getPSC(this.pd.SSFJ);
       this.pd.PCS = this.orgCode;
     }
     if(this.juState=='4'){
-      this.pd.FJ = this.$store.state.pcsToju;
-      this.getPSC(this.pd.FJ);
+      this.pd.SSFJ = this.$store.state.pcsToju;
+      this.getPSC(this.pd.SSFJ);
       this.pd.PCS = this.$store.state.zrqTopcs;
       this.getZrq(this.pd.PCS);
     }
-    if(JSON.stringify(this.turnData) != "{}"){
-      this.pd.FJ = this.$route.query.row.FJ
-      this.getPSC(this.pd.FJ);
-      this.pd.PCS = this.$route.query.row.PCS
-    }
     this.$emit('getArea',this.pd);
-    console.log('this.pd',this.pd)
   },
   activated(){
 
@@ -104,7 +86,7 @@ export default {
       this.$api.post(this.Global.aport5+'/djbhl/getpcsbyfjdm',{pd:{fjdm:i},userCode:this.userCode,userName:this.userName,orgJB:this.juState,orgCode:this.orgCode,token:this.token},
       r =>{
         if(r.success){
-          this.PSC=r.data;
+          this.SSPSC=r.data;
         }
       })
     },
