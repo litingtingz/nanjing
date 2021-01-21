@@ -170,6 +170,16 @@
                        <span class="input-text">住宿地址：</span>
                        <el-input placeholder="请输入内容" size="small" v-model="pd.LSDWDZ_Like" class="input-input"></el-input>
                     </el-col>
+                     <el-col  :sm="24" :md="12" :lg="8"   class="input-item">
+                       <span class="input-text">自定义国家：</span>
+                       <el-select v-model="pd.customCountry" placeholder="请选择"   filterable clearable default-first-option   size="small" class="input-input" @visible-change="cusCountryFnc">
+                        <el-option v-for="item in $store.state.cusCountry"
+                         :key="item.dm"
+                         :label="item.mc"
+                         :value="item.dm">
+                        </el-option>
+                      </el-select>
+                    </el-col>
                     <el-col  :sm="24" :md="12" :lg="8"   class="input-item gjTs">
                       <el-checkbox-group v-model="checkedList">
                         <el-checkbox v-for="item in checkItem" :label="item.code" :key="item.code" v-if="item.code=='SHIGUO'||item.code=='SANSHIYIGUO'">{{item.label}}</el-checkbox>
@@ -273,12 +283,8 @@
                </el-table-column>
             <!-- 循环生成动态表格 -->
               <template v-for="(lb,i) in lbData">
-                <el-table-column
-                  :key="i"
-                  :prop="lb.dm"
-                  :label="lb.cm">
-                </el-table-column>
-            </template>
+                <el-table-column :key="i" :prop="lb.dm" :label="lb.cm"></el-table-column>
+              </template>
                <!-- <el-table-column
                  prop="YWXM"
                  label="英文姓名">
@@ -337,714 +343,775 @@
                </el-table-column> -->
                <el-table-column
                  label="操作" width="70">
-                 <template slot-scope="scope">
-                 <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="details(scope.row)"></el-button>
-                 </template>
+                 <div slot-scope="scope">
+                  <el-button
+                    type="text"
+                    class="a-btn"
+                    title="详情"
+                    icon="el-icon-document"
+                    @click="details(scope.row)"
+                  ></el-button>
+                </div>
                </el-table-column>
-         </el-table>
-         <div class="middle-foot">
-            <div class="page-msg">
-              <div class="">
-            共{{TotalResult}}条记录
-              </div>
-              <div class="">
-                每页显示
-                <el-select v-model="pageSize" @change="pageSizeChange(pageSize)" placeholder="10" size="mini" class="page-select">
-                  <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-                条
-              </div>
-              <div class="">
-              共{{Math.ceil(TotalResult/pageSize)}}页
+            </el-table>
+            <div class="middle-foot">
+                <div class="page-msg">
+                  <div class="">
+                共{{TotalResult}}条记录
+                  </div>
+                  <div class="">
+                    每页显示
+                    <el-select v-model="pageSize" @change="pageSizeChange(pageSize)" placeholder="10" size="mini" class="page-select">
+                      <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                      </el-option>
+                    </el-select>
+                    条
+                  </div>
+                  <div class="">
+                  共{{Math.ceil(TotalResult/pageSize)}}页
+                  </div>
+                </div>
+                <el-pagination
+                  background
+                  @current-change="handleCurrentChange"
+                  :current-page.sync="CurrentPage"
+                  :page-size="pageSize"
+                  layout="prev, pager, next"
+                  :total="TotalResult">
+                </el-pagination>
               </div>
             </div>
-            <el-pagination
-              background
-              @current-change="handleCurrentChange"
-              :current-page.sync="CurrentPage"
-              :page-size="pageSize"
-              layout="prev, pager, next"
-              :total="TotalResult">
-            </el-pagination>
-          </div>
-        </div>
-        </div>
-     <div class="bj">
-        <el-dialog title="临住详情" :visible.sync="detailsDialogVisible" custom-class="big_dialog" :append-to-body="false" :modal="false">
-            <LZXX :type="type" :xid="xid" :rybh="rybh" :random="new Date().getTime()"></LZXX>
-          <div slot="footer" class="dialog-footer">
-            <el-button @click="detailsDialogVisible = false" size="small">取 消</el-button>
-          </div>
-        </el-dialog>
-    </div>
-    <!--===================简表开始======================-->
-    <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
-      <Trans
-        :key="timer"
-        :transData="lbDataAll"
-        :pointData="pointData"
-        @transSave="transSave"
-        @dialogCancel="jbDialogVisible=false"></Trans>
-    </el-dialog>
-    <!--===================简表结束======================-->
-      </div>
-    </template>
-    <script>
-    import {
-      ToArray,sortByKey
-    } from '@/assets/js/ToArray.js'
-    import LZXX from '../../../common/lzxx_xq'
-    import Trans from "@/components/common/Transfer.vue"
-    import AREAMS from '../../../common/areaMs'
-    export default {
-        components:{LZXX,AREAMS,Trans},
-      data() {
-        return {
-          areaPd:{},
-          tenArr:[],
-          tirArr:[],
-          rybh:'',
-          radio1:'0',
-          radio2:'0',
-          typet:'1',
-          CurrentPage: 1,
-          pageSize: 10,
-          TotalResult: 0,
-          pd: {
-              CSRQ_DateRange:{dataType:'date'},
-              TLYXQZ_DateRange:{dataType:'date'},
-              ZSRQ_DateRange:{dataType:'date'},
-              YWXM:''
-            },
-          imagess:[],
-          imgshow1:false,
-          imgshow2:true,
-          shm:false,
-          lg:false,
-          type:1,
-          xid:'',
-          detailsDialogVisible:false,
-          options:[{
-            value: 10,
-            label: "10"
-          },
-          {
-            value: 20,
-            label: "20"
-          },
-          {
-            value: 30,
-            label: "30"
-
-          }
-        ],
-        checkItem:[
-          {
-            code:'GJDQ',
-            label:'国家地区'
-          },
-          {
-            code:'ZJZL',
-            label:'证件种类'
-          },
-          {
-            code:'SSFJ',
-            label:'所属分局'
-          },
-          {
-            code:'SSPCS',
-            label:'所属派出所'
-          },
-          {
-            code:'SSZRQ',
-            label:'所属责任区'
-          },
-          {
-            code:'XB',
-            label:'性别'
-          },
-          {
-            code:'QZZL',
-            label:'签证(注)种类'
-          },
-          {
-            code:'JLSY',
-            label:'停留事由'
-          },
-          {
-            code:'SHIGUO',
-            label:'十国人员'
-          },
-          {
-            code:'SANSHIYIGUO',
-            label:'三十一国人员'
-          },
-          {
-            code:'WAIGSIG',
-            label:'外国人和四种人分布'
-          },
-          {
-            code:'DJDWMC',
-            label:'宾馆名称'
-          },
-          {
-            code:'BZHDZMC',
-            label:'散居社会面地址'
-          },
-          {
-            code:'LSDWDZ',
-            label:'住宿地址'
-          },
-        ],
-        checkedList:[],
-        tableHead:[
-          {
-            code:'GJDQ_DESC',
-            label:'国家地区'
-          },
-          {
-            code:'ZJZL_DESC',
-            label:'证件种类'
-          },
-          {
-            code:'SSFJ_DESC',
-            label:'所属分局'
-          },
-          {
-            code:'SSPCS_DESC',
-            label:'所属派出所'
-          },
-          {
-            code:'SSZRQ_DESC',
-            label:'所属责任区'
-          },
-          {
-            code:'XB_DESC',
-            label:'性别'
-          },
-          {
-            code:'QZZL_DESC',
-            label:'签证(注)种类'
-          },
-          {
-            code:'JLSY_DESC',
-            label:'停留事由'
-          },
-          {
-            code:'DJDWMC',
-            label:'宾馆名称'
-          },
-          {
-            code:'BZHDZMC',
-            label:'散居社会面地址'
-          },
-          {
-            code:'LSDWDZ',
-            label:'住宿地址'
-          },
-        ],
-          tableData: [],
-          checkItemReal:[],
-          configHeader:[],
-          pd0:{},
-          form:{},
-          falg:false,
-          totalAllResult:0,
-
-          multipleSelection:[],
-          selectionAll:[],
-          yuid:[],
-          selectionReal:[],
-          ssfj: [],
-          sspcs: [],
-
-          userCode:'',
-          userName:'',
-          orgCode:'',
-          orgName:'',
-          token:'',
-          juState:'',
-
-          //简表开始
-          timer:'',
-          jbDialogVisible:false,
-          pointData:[],//选中项
-          lbDataAll:[//列表总数据===简表数据源
-            {
-              dm:'YWXM',
-              cm:'英文姓名',
-            },
-            {
-              dm:'ZWXM',
-              cm:'中文姓名',
-            },
-            {
-              dm:'XB_DESC',
-              cm:'性别',
-            },
-            {
-              dm:'CSRQ',
-              cm:'出生日期',
-            },
-            {
-              dm:'GJDQ_DESC',
-              cm:'国家地区',
-            },
-            {
-              dm:'ZJZL_DESC',
-              cm:'证件种类',
-            },
-            {
-              dm:'ZJHM',
-              cm:'证件号码',
-            },
-            {
-              dm:'QZZL_DESC',
-              cm:'签证种类',
-            },
-            {
-              dm:'QZHM',
-              cm:'签证号码',
-            },
-            {
-              dm:'JLSY_DESC',
-              cm:'停留事由',
-            },
-            {
-              dm:'SSFJ_DESC',
-              cm:'所属分局',
-            },
-            {
-              dm:'SSPCS_DESC',
-              cm:'所属派出所',
-            },
-            {
-              dm:'LSDWDZ',
-              cm:'留宿单位地址',
-            },
-          ],
-          lbData:[],//列表简表动态加载数据====简表选中项
-          //简表结束
-
-        }
+            </div>
+            <div class="bj">
+                <el-dialog title="临住详情" :visible.sync="detailsDialogVisible" custom-class="big_dialog" :append-to-body="false" :modal="false">
+                    <LZXX :type="type" :xid="xid" :rybh="rybh" :random="new Date().getTime()"></LZXX>
+                  <div slot="footer" class="dialog-footer">
+                    <el-button @click="detailsDialogVisible = false" size="small">取 消</el-button>
+                  </div>
+                </el-dialog>
+            </div>
+            <!--===================简表开始======================-->
+            <el-dialog title="简表" :visible.sync="jbDialogVisible" width="1000px">
+              <Trans
+                :key="timer"
+                :transData="lbDataAll"
+                :pointData="pointData"
+                @transSave="transSave"
+                @dialogCancel="jbDialogVisible=false"></Trans>
+            </el-dialog>
+            <!--===================简表结束======================-->
+            </div>
+</template>
+<script>
+import { ToArray, sortByKey } from "@/assets/js/ToArray.js";
+import LZXX from "../../../common/lzxx_xq";
+import Trans from "@/components/common/Transfer.vue";
+import AREAMS from "../../../common/areaMs";
+export default {
+  components: { LZXX, AREAMS, Trans },
+  data() {
+    return {
+      areaPd: {},
+      tenArr: [],
+      tirArr: [],
+      rybh: "",
+      radio1: "0",
+      radio2: "0",
+      typet: "1",
+      CurrentPage: 1,
+      pageSize: 10,
+      TotalResult: 0,
+      pd: {
+        CSRQ_DateRange: { dataType: "date" },
+        TLYXQZ_DateRange: { dataType: "date" },
+        ZSRQ_DateRange: { dataType: "date" },
+        YWXM: ""
       },
-      mounted() {
-        this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
-        this.userCode=this.$store.state.uid;
-        this.userName=this.$store.state.uname;
-        this.orgName=this.$store.state.orgname;
-        this.orgCode=this.$store.state.orgid;
-        this.juState=this.$store.state.juState;
-        this.token=this.$store.state.token;
-        if(this.juState=='2'){//分局登录
-          this.pd.SSFJ = this.orgCode;
-          this.getSSPCS(this.pd.SSFJ);
-        }
-        if(this.juState=='3'){//派出所登录
-          this.pd.SSFJ = this.$store.state.pcsToju;
-          this.getSSPCS(this.pd.SSFJ);
-          this.pd.SSPCS = this.orgCode;
-        }
-         this.$store.dispatch("getGjdq");
-         this.$store.dispatch("getXB");
-         this.$store.dispatch("getSsdw");
-         this.$store.dispatch("getZjzl");
-         this.$store.dispatch("getRjqzzl");
-         this.$store.dispatch("getRjsy");
-         this.$store.dispatch("getZsxz");
-         this.$store.dispatch("getSjly");
-         this.getSsfj();
-      },
-      activated(){
-        this.getList(this.CurrentPage,this.pageSize, this.pd);
-      },
-      watch:{
-        falg:function(newVal,oldVal){
-          this.multipleSelection=[];
-          this.selectionAll=[];
-          this.selectionReal=[];
+      imagess: [],
+      imgshow1: false,
+      imgshow2: true,
+      shm: false,
+      lg: false,
+      type: 1,
+      xid: "",
+      detailsDialogVisible: false,
+      options: [
+        {
+          value: 10,
+          label: "10"
         },
-        checkedList:{
-          handler(newVal, oldVal) {
-            if(!(newVal.toString()==oldVal.toString())){
-              this.multipleSelection=[];
-              this.selectionAll=[];
-              this.selectionReal=[];
+        {
+          value: 20,
+          label: "20"
+        },
+        {
+          value: 30,
+          label: "30"
+        }
+      ],
+      checkItem: [
+        {
+          code: "GJDQ",
+          label: "国家地区"
+        },
+        {
+          code: "ZJZL",
+          label: "证件种类"
+        },
+        {
+          code: "SSFJ",
+          label: "所属分局"
+        },
+        {
+          code: "SSPCS",
+          label: "所属派出所"
+        },
+        {
+          code: "SSZRQ",
+          label: "所属责任区"
+        },
+        {
+          code: "XB",
+          label: "性别"
+        },
+        {
+          code: "QZZL",
+          label: "签证(注)种类"
+        },
+        {
+          code: "JLSY",
+          label: "停留事由"
+        },
+        {
+          code: "SHIGUO",
+          label: "十国人员"
+        },
+        {
+          code: "SANSHIYIGUO",
+          label: "三十一国人员"
+        },
+        {
+          code: "WAIGSIG",
+          label: "外国人和四种人分布"
+        },
+        {
+          code: "DJDWMC",
+          label: "宾馆名称"
+        },
+        {
+          code: "BZHDZMC",
+          label: "散居社会面地址"
+        },
+        {
+          code: "LSDWDZ",
+          label: "住宿地址"
+        }
+      ],
+      checkedList: [],
+      tableHead: [
+        {
+          code: "GJDQ_DESC",
+          label: "国家地区"
+        },
+        {
+          code: "ZJZL_DESC",
+          label: "证件种类"
+        },
+        {
+          code: "SSFJ_DESC",
+          label: "所属分局"
+        },
+        {
+          code: "SSPCS_DESC",
+          label: "所属派出所"
+        },
+        {
+          code: "SSZRQ_DESC",
+          label: "所属责任区"
+        },
+        {
+          code: "XB_DESC",
+          label: "性别"
+        },
+        {
+          code: "QZZL_DESC",
+          label: "签证(注)种类"
+        },
+        {
+          code: "JLSY_DESC",
+          label: "停留事由"
+        },
+        {
+          code: "DJDWMC",
+          label: "宾馆名称"
+        },
+        {
+          code: "BZHDZMC",
+          label: "散居社会面地址"
+        },
+        {
+          code: "LSDWDZ",
+          label: "住宿地址"
+        }
+      ],
+      tableData: [],
+      checkItemReal: [],
+      configHeader: [],
+      pd0: {},
+      form: {},
+      falg: false,
+      totalAllResult: 0,
+
+      multipleSelection: [],
+      selectionAll: [],
+      yuid: [],
+      selectionReal: [],
+      ssfj: [],
+      sspcs: [],
+
+      userCode: "",
+      userName: "",
+      orgCode: "",
+      orgName: "",
+      token: "",
+      juState: "",
+
+      //简表开始
+      timer: "",
+      jbDialogVisible: false,
+      pointData: [], //选中项
+      lbDataAll: [
+        //列表总数据===简表数据源
+        {
+          dm: "YWXM",
+          cm: "英文姓名"
+        },
+        {
+          dm: "ZWXM",
+          cm: "中文姓名"
+        },
+        {
+          dm: "XB_DESC",
+          cm: "性别"
+        },
+        {
+          dm: "CSRQ",
+          cm: "出生日期"
+        },
+        {
+          dm: "GJDQ_DESC",
+          cm: "国家地区"
+        },
+        {
+          dm: "ZJZL_DESC",
+          cm: "证件种类"
+        },
+        {
+          dm: "ZJHM",
+          cm: "证件号码"
+        },
+        {
+          dm: "QZZL_DESC",
+          cm: "签证种类"
+        },
+        {
+          dm: "QZHM",
+          cm: "签证号码"
+        },
+        {
+          dm: "JLSY_DESC",
+          cm: "停留事由"
+        },
+        {
+          dm: "SSFJ_DESC",
+          cm: "所属分局"
+        },
+        {
+          dm: "SSPCS_DESC",
+          cm: "所属派出所"
+        },
+        {
+          dm: "LSDWDZ",
+          cm: "留宿单位地址"
+        }
+      ],
+      lbData: [] //列表简表动态加载数据====简表选中项
+      //简表结束
+    };
+  },
+  mounted() {
+    this.lbData = this.lbDataAll; //页面加载 列表选中项 == 列表总数据源
+    this.userCode = this.$store.state.uid;
+    this.userName = this.$store.state.uname;
+    this.orgName = this.$store.state.orgname;
+    this.orgCode = this.$store.state.orgid;
+    this.juState = this.$store.state.juState;
+    this.token = this.$store.state.token;
+    if (this.juState == "2") {
+      //分局登录
+      this.pd.SSFJ = this.orgCode;
+      this.getSSPCS(this.pd.SSFJ);
+    }
+    if (this.juState == "3") {
+      //派出所登录
+      this.pd.SSFJ = this.$store.state.pcsToju;
+      this.getSSPCS(this.pd.SSFJ);
+      this.pd.SSPCS = this.orgCode;
+    }
+    this.$store.dispatch("getGjdq");
+    this.$store.dispatch("getXB");
+    this.$store.dispatch("getSsdw");
+    this.$store.dispatch("getZjzl");
+    this.$store.dispatch("getRjqzzl");
+    this.$store.dispatch("getRjsy");
+    this.$store.dispatch("getZsxz");
+    this.$store.dispatch("getSjly");
+    this.$store.dispatch("aGetCusCon");
+    this.getSsfj();
+  },
+  activated() {
+    this.getList(this.CurrentPage, this.pageSize, this.pd);
+  },
+  watch: {
+    falg: function(newVal, oldVal) {
+      this.multipleSelection = [];
+      this.selectionAll = [];
+      this.selectionReal = [];
+    },
+    checkedList: {
+      handler(newVal, oldVal) {
+        if (!(newVal.toString() == oldVal.toString())) {
+          this.multipleSelection = [];
+          this.selectionAll = [];
+          this.selectionReal = [];
+        }
+      }
+    }
+  },
+  methods: {
+    titleShow(e, el) {
+      el.target.title = e.label;
+    },
+    cusCountryFnc(){
+      this.$store.dispatch("aGetCusCon")
+    },
+    getSsfj() {
+      let p = {
+        operatorId: this.$store.state.uid,
+        operatorNm: this.$store.state.uname
+      };
+      var url = this.Global.aport2 + "/data_report/selectSsfjDm";
+      this.$api.post(url, p, r => {
+        this.ssfj = sortByKey(r.data.SSFJ, "dm");
+      });
+    },
+    //=================================================简表开始=====================
+    jbFnc() {
+      this.timer = new Date().getTime();
+      this.jbDialogVisible = true;
+    },
+    transSave(data) {
+      this.pointData = [];
+      if (data.length == 0) {
+        this.lbData = this.lbDataAll;
+      } else {
+        this.lbDataAll.forEach(item => {
+          data.forEach(jtem => {
+            if (item.dm == jtem) {
+              this.pointData.push(item);
             }
-          },
-        }
-      },
-      methods: {
-        titleShow(e,el){
-          el.target.title = e.label;
-        },
-        getSsfj() {
-          let p = {
-            "operatorId": this.$store.state.uid,
-            "operatorNm": this.$store.state.uname,
-          };
-          var url = this.Global.aport2 + "/data_report/selectSsfjDm";
-          this.$api.post(url, p,
-            r => {
-              this.ssfj = sortByKey(r.data.SSFJ,'dm');
-            })
-        },
-        //=================================================简表开始=====================
-        jbFnc(){
-          this.timer = new Date().getTime();
-          this.jbDialogVisible = true
-        },
-        transSave(data){
-          this.pointData = [];
-          if(data.length == 0){
-            this.lbData = this.lbDataAll
-          }else{
-            this.lbDataAll.forEach(item =>{
-              data.forEach(jtem => {
-                if(item.dm == jtem){
-                  this.pointData.push(item)
-                }
-              })
-            })
-            this.lbData = this.pointData;
-          }
-          this.jbDialogVisible = false;
-        },
+          });
+        });
+        this.lbData = this.pointData;
+      }
+      this.jbDialogVisible = false;
+    },
     //=================================================简表结束=====================
 
-        getSSPCS(arr) {
-          this.$set(this.pd, "SSPCS", '');
-          var srr = [];
-          srr.push(arr);
-          let p = {
-             "fjdmList": srr
-          }
-          this.$api.post(this.Global.aport2 + '/data_report/selectPcsDm', p,
-            r => {
-              if (r.success) {
-                this.sspcs = r.data.PCS;
-              }
-            })
-        },
+    getSSPCS(arr) {
+      this.$set(this.pd, "SSPCS", "");
+      var srr = [];
+      srr.push(arr);
+      let p = {
+        fjdmList: srr
+      };
+      this.$api.post(this.Global.aport2 + "/data_report/selectPcsDm", p, r => {
+        if (r.success) {
+          this.sspcs = r.data.PCS;
+        }
+      });
+    },
 
-        selectfn(a,b){
-          this.multipleSelection = a;
-          this.dataSelection()
-        },
-        dataSelection(){
-          // console.log('this.multipleSelection',this.multipleSelection)
-          this.selectionReal.splice(this.CurrentPage-1,1,this.multipleSelection);
-          // console.log('this.selectionReal',this.selectionReal);
-          this.selectionAll=[];
-          for(var i=0;i<this.selectionReal.length;i++){
-            if(this.selectionReal[i]){
-              for(var j=0;j<this.selectionReal[i].length;j++){
-                this.selectionAll.push(this.selectionReal[i][j])
-              }
-            }
+    selectfn(a, b) {
+      this.multipleSelection = a;
+      this.dataSelection();
+    },
+    dataSelection() {
+      // console.log('this.multipleSelection',this.multipleSelection)
+      this.selectionReal.splice(
+        this.CurrentPage - 1,
+        1,
+        this.multipleSelection
+      );
+      // console.log('this.selectionReal',this.selectionReal);
+      this.selectionAll = [];
+      for (var i = 0; i < this.selectionReal.length; i++) {
+        if (this.selectionReal[i]) {
+          for (var j = 0; j < this.selectionReal[i].length; j++) {
+            this.selectionAll.push(this.selectionReal[i][j]);
           }
-          // console.log('this.selectionAll',this.selectionAll);
-        },
-        download(){
-          if(this.tableData.length==0){
-             this.$message.error('无可导出数据');
-             return
-          }
-          let p={};
-          let url="";
-          this.pd.YWXM = (this.pd.YWXM).toUpperCase();
-          this.pd = Object.assign({},this.pd,this.areaPd);
-          if(this.checkedList.length==0){//人员导出
-            url="/linZhuInfoComprehensiveAnalysisController/exportPersonList"
-            if(this.selectionAll.length==0){//人员全部导出
-              p={
-                "pd":this.pd,
-                userCode:this.userCode,
-                userName:this.userName,
-                orgJB:this.juState,
-                orgCode:this.orgCode,
-                token:this.token,
-              }
-            }else{//人员部分导出
-              this.yuid=[];
-              for(var i in this.selectionAll){
-                this.yuid.push(this.selectionAll[i].DTID)
-              }
-              this.pd.DTID=this.yuid;
-              p={
-                "pd":this.pd,
-                userCode:this.userCode,
-                userName:this.userName,
-                orgJB:this.juState,
-                orgCode:this.orgCode,
-                token:this.token,
-              }
-            }
-          }else{//统计导出
-            url="/linZhuInfoComprehensiveAnalysisController/export"
-            if(this.selectionAll.length==0){//统计全部导出
-              p={
-                "pd":this.pd,
-                "groupList":this.checkedList,
-                userCode:this.userCode,
-                userName:this.userName,
-                orgJB:this.juState,
-                orgCode:this.orgCode,
-                token:this.token,
-              }
-            }else{//统计部分导出
-              p={
-                "requestTempList":this.selectionAll,
-                "groupList":this.checkedList,
-                userCode:this.userCode,
-                userName:this.userName,
-                orgJB:this.juState,
-                orgCode:this.orgCode,
-                token:this.token,
-              }
-            }
-          }
-          this.$api.post(this.Global.aport5+url,p,
-            r =>{
-              this.downloadM(r)
-              this.selectionAll=[];
-              this.multipleSelection=[];
-              this.getList(this.CurrentPage,this.pageSize,this.pd,1);
-            },e=>{},{},'blob')
-        },
-        downloadM (data) {
-            if (!data) {
-                return
-            }
-            let url = window.URL.createObjectURL(new Blob([data],{type:"application/xls"}))
-            let link = document.createElement('a')
-            link.style.display = 'none'
-            link.href = url
-            link.setAttribute('download', '临住信息综合分析列表'+this.format(new Date(),'yyyyMMddhhmmss')+'.xls')
-            document.body.appendChild(link)
-            link.click()
-        },
-        handleSelectionChange(val) {
-          this.multipleSelection = val;
-        },
-        pageSizeChange(val) {
-          this.pageSize=val;
-          this.getList(this.CurrentPage, val, this.pd);
-        },
-        handleCurrentChange(val) {
-          this.CurrentPage=val;
-          this.getList(val, this.pageSize, this.pd);
-        },
-        open(content) {
-          this.$alert(content, '提示', {
-            confirmButtonText: '确定',
-          });
-        },
-        // getPdGj(pd){
-        //   pd.GJDQ=[];
-        //   let arr=[];
-        //   if(this.pdGjItem.GJDQITEM!=''){
-        //     arr.push(this.pdGjItem.GJDQITEM)
-        //   }
-        //   if(this.pdGjItem.SHIGUO!=''){
-        //     arr.push([this.pdGjItem.SHIGUO])
-        //   }
-        //   if(this.pdGjItem.SANSHIYI!=''){
-        //     arr.push([this.pdGjItem.SANSHIYI])
-        //   }
-        //   for(var i=0;i<arr.length;i++){
-        //     pd.GJDQ = pd.GJDQ.concat(arr[i])
-        //   }
-        //   return pd;
-        // },
-        getArea(val){
-          this.areaPd = val;
-        },
-        getList(currentPage, showCount, pd,type) {
-          this.checkItemReal=[];
-          for(var i=0;i<this.checkedList.length;i++){
-            for(var j=0;j<this.checkItem.length;j++){
-              if(this.checkedList[i] == this.checkItem[j].code){
-                this.checkItemReal.push(this.checkItem[j])
-              }
-            }
-          }
-          this.pd.CSRQ_DateRange.begin=this.pd0.beginCSRQ;
-          this.pd.CSRQ_DateRange.end=this.pd0.endCSRQ;
-          this.pd.TLYXQZ_DateRange.begin=this.pd0.beginTLYXQZ;
-          this.pd.TLYXQZ_DateRange.end=this.pd0.endTLYXQZ;
-          this.pd.ZSRQ_DateRange.begin=this.pd0.beginZSRQ;
-          this.pd.ZSRQ_DateRange.end=this.pd0.endZSRQ;
-          this.pd.YWXM = (this.pd.YWXM).toUpperCase();
-          if(pd.hasOwnProperty('DTID')){
-            delete pd['DTID']
-          }
-          pd = Object.assign({},pd,this.areaPd);
-          if(type==1){
-            this.selectionAll=[];
-            this.multipleSelection=[];
-            this.selectionReal=[];
-          }
-          let p = {
-            "currentPage": currentPage,
-            "showCount": showCount,
-            "pd": pd,
-            "orderBy":'',
-            "orderType":'DESC',
-            "groupList":this.checkedList,
-            userCode:this.userCode,
-            userName:this.userName,
-            orgJB:this.juState,
-            orgCode:this.orgCode,
-            token:this.token,
+        }
+      }
+      // console.log('this.selectionAll',this.selectionAll);
+    },
+    download() {
+      if (this.tableData.length == 0) {
+        this.$message.error("无可导出数据");
+        return;
+      }
+      let p = {};
+      let url = "";
+      this.pd.YWXM = this.pd.YWXM.toUpperCase();
+      this.pd = Object.assign({}, this.pd, this.areaPd);
+      if (this.checkedList.length == 0) {
+        //人员导出
+        url = "/linZhuInfoComprehensiveAnalysisController/exportPersonList";
+        if (this.selectionAll.length == 0) {
+          //人员全部导出
+          p = {
+            pd: this.pd,
+            userCode: this.userCode,
+            userName: this.userName,
+            orgJB: this.juState,
+            orgCode: this.orgCode,
+            token: this.token
           };
+        } else {
+          //人员部分导出
+          this.yuid = [];
+          for (var i in this.selectionAll) {
+            this.yuid.push(this.selectionAll[i].DTID);
+          }
+          this.pd.DTID = this.yuid;
+          p = {
+            pd: this.pd,
+            userCode: this.userCode,
+            userName: this.userName,
+            orgJB: this.juState,
+            orgCode: this.orgCode,
+            token: this.token
+          };
+        }
+      } else {
+        //统计导出
+        url = "/linZhuInfoComprehensiveAnalysisController/export";
+        if (this.selectionAll.length == 0) {
+          //统计全部导出
+          p = {
+            pd: this.pd,
+            groupList: this.checkedList,
+            userCode: this.userCode,
+            userName: this.userName,
+            orgJB: this.juState,
+            orgCode: this.orgCode,
+            token: this.token
+          };
+        } else {
+          //统计部分导出
+          p = {
+            requestTempList: this.selectionAll,
+            groupList: this.checkedList,
+            userCode: this.userCode,
+            userName: this.userName,
+            orgJB: this.juState,
+            orgCode: this.orgCode,
+            token: this.token
+          };
+        }
+      }
+      this.$api.post(
+        this.Global.aport5 + url,
+        p,
+        r => {
+          this.downloadM(r);
+          this.selectionAll = [];
+          this.multipleSelection = [];
+          this.getList(this.CurrentPage, this.pageSize, this.pd, 1);
+        },
+        e => {},
+        {},
+        "blob"
+      );
+    },
+    downloadM(data) {
+      if (!data) {
+        return;
+      }
+      let url = window.URL.createObjectURL(
+        new Blob([data], { type: "application/xls" })
+      );
+      let link = document.createElement("a");
+      link.style.display = "none";
+      link.href = url;
+      link.setAttribute(
+        "download",
+        "临住信息综合分析列表" +
+          this.format(new Date(), "yyyyMMddhhmmss") +
+          ".xls"
+      );
+      document.body.appendChild(link);
+      link.click();
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
+    pageSizeChange(val) {
+      this.pageSize = val;
+      this.getList(this.CurrentPage, val, this.pd);
+    },
+    handleCurrentChange(val) {
+      this.CurrentPage = val;
+      this.getList(val, this.pageSize, this.pd);
+    },
+    open(content) {
+      this.$alert(content, "提示", {
+        confirmButtonText: "确定"
+      });
+    },
+    // getPdGj(pd){
+    //   pd.GJDQ=[];
+    //   let arr=[];
+    //   if(this.pdGjItem.GJDQITEM!=''){
+    //     arr.push(this.pdGjItem.GJDQITEM)
+    //   }
+    //   if(this.pdGjItem.SHIGUO!=''){
+    //     arr.push([this.pdGjItem.SHIGUO])
+    //   }
+    //   if(this.pdGjItem.SANSHIYI!=''){
+    //     arr.push([this.pdGjItem.SANSHIYI])
+    //   }
+    //   for(var i=0;i<arr.length;i++){
+    //     pd.GJDQ = pd.GJDQ.concat(arr[i])
+    //   }
+    //   return pd;
+    // },
+    getArea(val) {
+      this.areaPd = val;
+    },
+    getList(currentPage, showCount, pd, type) {
+      this.checkItemReal = [];
+      for (var i = 0; i < this.checkedList.length; i++) {
+        for (var j = 0; j < this.checkItem.length; j++) {
+          if (this.checkedList[i] == this.checkItem[j].code) {
+            this.checkItemReal.push(this.checkItem[j]);
+          }
+        }
+      }
+      this.pd.CSRQ_DateRange.begin = this.pd0.beginCSRQ;
+      this.pd.CSRQ_DateRange.end = this.pd0.endCSRQ;
+      this.pd.TLYXQZ_DateRange.begin = this.pd0.beginTLYXQZ;
+      this.pd.TLYXQZ_DateRange.end = this.pd0.endTLYXQZ;
+      this.pd.ZSRQ_DateRange.begin = this.pd0.beginZSRQ;
+      this.pd.ZSRQ_DateRange.end = this.pd0.endZSRQ;
+      this.pd.YWXM = this.pd.YWXM.toUpperCase();
+      if (pd.hasOwnProperty("DTID")) {
+        delete pd["DTID"];
+      }
+      pd = Object.assign({}, pd, this.areaPd);
+      if (type == 1) {
+        this.selectionAll = [];
+        this.multipleSelection = [];
+        this.selectionReal = [];
+      }
+      let p = {
+        currentPage: currentPage,
+        showCount: showCount,
+        pd: pd,
+        orderBy: "",
+        orderType: "DESC",
+        groupList: this.checkedList,
+        userCode: this.userCode,
+        userName: this.userName,
+        orgJB: this.juState,
+        orgCode: this.orgCode,
+        token: this.token
+      };
 
-          this.$api.post(this.Global.aport5+'/linZhuInfoComprehensiveAnalysisController/getComprehensiveAnalysis', p,
-            r => {
-              if(r.data.isFenLei=="true"){
-                this.falg=true;
+      this.$api.post(
+        this.Global.aport5 +
+          "/linZhuInfoComprehensiveAnalysisController/getComprehensiveAnalysis",
+        p,
+        r => {
+          if (r.data.isFenLei == "true") {
+            this.falg = true;
+            this.tableData = r.data.resultList;
+            this.TotalResult = r.data.totalResult;
+            this.totalAllResult = r.data.totalAllResult;
+            this.configHeader = [];
+            let _this = this;
+            for (var i = 0; i < _this.checkItemReal.length; i++) {
+              var obj = {};
+              for (var j = 0; j < _this.tableHead.length; j++) {
+                if (
+                  _this.checkItemReal[i].code == "SHIGUO" ||
+                  _this.checkItemReal[i].code == "SANSHIYIGUO" ||
+                  _this.checkItemReal[i].code == "WAIGSIG"
+                ) {
+                  obj.code = "GJDQ_DESC";
+                  obj.label = "国家地区";
+                }
+                if (_this.tableHead[j].label == _this.checkItemReal[i].label) {
+                  obj.code = _this.tableHead[j].code;
+                  obj.label = _this.tableHead[j].label;
+                }
+              }
+              _this.configHeader.push(obj);
+            }
+            var arrAfter = [];
+            var arrReal = [];
+            for (var i = 0; i < this.configHeader.length; i++) {
+              if (arrAfter.indexOf(this.configHeader[i].code) == -1) {
+                arrAfter.push(this.configHeader[i].code);
+                arrReal.push(this.configHeader[i]);
+              }
+            }
+            this.configHeader = arrReal;
+            if (this.selectionReal.length == 0) {
+              //声明一个数组对象
+              this.selectionReal = new Array(
+                Math.ceil(this.TotalResult / showCount)
+              );
+            }
+            this.$nextTick(() => {
+              this.multipleSelection = [];
+              for (var a = 0; a < this.tableData.length; a++) {
+                for (var b = 0; b < this.selectionAll.length; b++) {
+                  // console.log('======',this.chargeObjectEqual(this.tableData[a],this.selectionAll[b]))
+                  if (
+                    this.chargeObjectEqual(
+                      this.tableData[a],
+                      this.selectionAll[b]
+                    )
+                  ) {
+                    // console.log(this.chargeObjectEqual(this.tableData[a],this.selectionAll[b]))
+                    this.$refs.multipleTable.toggleRowSelection(
+                      this.tableData[a],
+                      true
+                    );
+                  }
+                }
+              }
+            });
+          } else {
+            this.falg = false;
+            var url =
+              this.Global.aport5 +
+              "/linZhuInfoComprehensiveAnalysisController/getComprehensivePersonList";
+            this.$api.post(url, p, r => {
+              if (r.success) {
                 this.tableData = r.data.resultList;
                 this.TotalResult = r.data.totalResult;
-                this.totalAllResult = r.data.totalAllResult;
-                this.configHeader=[];
-                let _this = this;
-                for(var i=0;i<_this.checkItemReal.length;i++){
-                  var obj={};
-                  for(var j=0;j<_this.tableHead.length;j++){
-                    if(_this.checkItemReal[i].code=='SHIGUO'||_this.checkItemReal[i].code=='SANSHIYIGUO'||_this.checkItemReal[i].code=='WAIGSIG'){
-                      obj.code='GJDQ_DESC';
-                      obj.label='国家地区';
-                    }
-                    if(_this.tableHead[j].label==_this.checkItemReal[i].label){
-                      obj.code=_this.tableHead[j].code;
-                      obj.label=_this.tableHead[j].label;
-                    }
-                  }
-                  _this.configHeader.push(obj);
+                if (this.selectionReal.length == 0) {
+                  //声明一个数组对象
+                  this.selectionReal = new Array(
+                    Math.ceil(this.TotalResult / showCount)
+                  );
                 }
-                var arrAfter=[];
-                var arrReal=[];
-                for(var i=0;i<this.configHeader.length;i++){
-                  if(arrAfter.indexOf(this.configHeader[i].code)==-1){
-                    arrAfter.push(this.configHeader[i].code);
-                    arrReal.push(this.configHeader[i])
-                  }
-                }
-                this.configHeader = arrReal;
-                if(this.selectionReal.length==0){//声明一个数组对象
-                  this.selectionReal=new Array(Math.ceil(this.TotalResult/showCount))
-                }
-                this.$nextTick(()=>{
-                  this.multipleSelection=[];
-                  for(var a=0;a<this.tableData.length;a++){
-                    for(var b=0;b<this.selectionAll.length;b++){
-                      // console.log('======',this.chargeObjectEqual(this.tableData[a],this.selectionAll[b]))
-                      if(this.chargeObjectEqual(this.tableData[a],this.selectionAll[b])){
-                        // console.log(this.chargeObjectEqual(this.tableData[a],this.selectionAll[b]))
-                        this.$refs.multipleTable.toggleRowSelection(this.tableData[a],true);
+                this.$nextTick(() => {
+                  this.multipleSelection = [];
+                  for (var i = 0; i < this.tableData.length; i++) {
+                    for (var j = 0; j < this.selectionAll.length; j++) {
+                      if (this.tableData[i].DTID == this.selectionAll[j].DTID) {
+                        // console.log(this.tableData[i].RGUID,this.selectionAll[j].RGUID,'this.selectionAll======',this.selectionAll)
+                        this.$refs.multipleTable.toggleRowSelection(
+                          this.tableData[i],
+                          true
+                        );
                       }
                     }
                   }
-                })
-              }else {
-                this.falg=false;
-                var url = this.Global.aport5 + "/linZhuInfoComprehensiveAnalysisController/getComprehensivePersonList";
-                this.$api.post(url, p,
-                  r => {
-                    if (r.success) {
-                       this.tableData = r.data.resultList;
-                       this.TotalResult = r.data.totalResult;
-                       if(this.selectionReal.length==0){//声明一个数组对象
-                         this.selectionReal=new Array(Math.ceil(this.TotalResult/showCount))
-                       }
-                       this.$nextTick(()=>{
-                         this.multipleSelection=[]
-                         for(var i=0;i<this.tableData.length;i++){
-                           for(var j=0;j<this.selectionAll.length;j++){
-                             if(this.tableData[i].DTID==this.selectionAll[j].DTID){
-                               // console.log(this.tableData[i].RGUID,this.selectionAll[j].RGUID,'this.selectionAll======',this.selectionAll)
-                               this.$refs.multipleTable.toggleRowSelection(this.tableData[i],true);
-                             }
-                           }
-                         }
-                       })
-                    }
-                  });
+                });
               }
-            })
-        },
-        details(i) {
-
-          // if(i.LB_LYD==undefined){
-          //   this.radio1='0';
-          // }
-          // if(i.LB_QWD==undefined){
-          //   this.radio2='0';
-          // }
-          // if(i.LB_DJDW==undefined){
-          //   this.typet='1';
-          //   this.shm=true;
-          //   this.lg=false;
-          // }else if(i.LB_DJDW=='1'){
-          //    this.typet='2';
-          //    this.shm=false;
-          //    this.lg=true;
-          // }else {
-          //   this.typet='1';
-          //   this.shm=true;
-          //   this.lg=false;
-          // }
-          this.xid=i.DTID;
-          this.rybh=i.RYBH;
-          this.detailsDialogVisible = true;
-          // this.form=i;
-        },
-      }
+            });
+          }
+        }
+      );
+    },
+    details(i) {
+      // if(i.LB_LYD==undefined){
+      //   this.radio1='0';
+      // }
+      // if(i.LB_QWD==undefined){
+      //   this.radio2='0';
+      // }
+      // if(i.LB_DJDW==undefined){
+      //   this.typet='1';
+      //   this.shm=true;
+      //   this.lg=false;
+      // }else if(i.LB_DJDW=='1'){
+      //    this.typet='2';
+      //    this.shm=false;
+      //    this.lg=true;
+      // }else {
+      //   this.typet='1';
+      //   this.shm=true;
+      //   this.lg=false;
+      // }
+      this.xid = i.DTID;
+      this.rybh = i.RYBH;
+      this.detailsDialogVisible = true;
+      // this.form=i;
     }
-    </script>
+  }
+};
+</script>
 
     <style scoped>
-    .el-carousel__item h3 {
-      color: #475669;
-      font-size: 14px;
-      opacity: 0.75;
-      line-height: 150px;
-      margin: 0;
-    }
+.el-carousel__item h3 {
+  color: #475669;
+  font-size: 14px;
+  opacity: 0.75;
+  line-height: 150px;
+  margin: 0;
+}
 
-    .el-carousel__item img {
-      width: 100%;
-      height: 100%;
-      cursor: pointer;
-    }
+.el-carousel__item img {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
 
-    .el-carousel__item:nth-child(2n) {
-      /* background: url(../../../assets/img/t1.png); */
-      background-size: 100% 100%;
-    }
+.el-carousel__item:nth-child(2n) {
+  /* background: url(../../../assets/img/t1.png); */
+  background-size: 100% 100%;
+}
 
-    .el-carousel__item:nth-child(2n+1) {
-      background-color: #d3dce6;
-    }
+.el-carousel__item:nth-child(2n + 1) {
+  background-color: #d3dce6;
+}
 
-    .crcolor {
-      background: #EFF3F6;
-    }
-    .yy-input-text {
-      text-align: left !important;
-    }
-    </style>
+.crcolor {
+  background: #eff3f6;
+}
+.yy-input-text {
+  text-align: left !important;
+}
+</style>
     <style>
-      /* .el-button+.el-button{margin-left: 0!important;} */
-      .t-tjCheck .el-checkbox{margin-left: 20px!important; line-height: 30px;}
-      .t-tjCheck .el-checkbox+.el-checkbox{margin-left: 20px!important;}
-      .bj .el-dialog__wrapper {
-        background: #000;
-        background: rgba(0, 0, 0, 0.3);
-      }
-    </style>
+/* .el-button+.el-button{margin-left: 0!important;} */
+.t-tjCheck .el-checkbox {
+  margin-left: 20px !important;
+  line-height: 30px;
+}
+.t-tjCheck .el-checkbox + .el-checkbox {
+  margin-left: 20px !important;
+}
+.bj .el-dialog__wrapper {
+  background: #000;
+  background: rgba(0, 0, 0, 0.3);
+}
+</style>

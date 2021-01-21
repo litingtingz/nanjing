@@ -40,7 +40,12 @@
 <script>
 export default {
   name:'AREA',
-  props:['turnData'],
+  props:{
+    turnData:{
+      type:Object,
+      default:()=>{}
+    }
+  },
   data(){
     return{
       pd:{},
@@ -56,6 +61,7 @@ export default {
     }
   },
   mounted(){
+    console.log('===',this.turnData)
     this.userCode=this.$store.state.uid;
     this.userName=this.$store.state.uname;
     this.orgName=this.$store.state.orgname;
@@ -78,7 +84,7 @@ export default {
       this.pd.PCS = this.$store.state.zrqTopcs;
       this.getZrq(this.pd.PCS);
     }
-    if(JSON.stringify(this.turnData) != "{}"){
+    if(JSON.stringify(this.turnData) != "{}"&&this.turnData!=undefined){
       this.pd.FJ = this.$route.query.row.FJ
       this.getPSC(this.pd.FJ);
       this.pd.PCS = this.$route.query.row.PCS

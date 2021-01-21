@@ -1175,7 +1175,7 @@ export default new Router({
         {
           path: 'CustomQuery',
           name: 'CustomQuery',
-          meta:{title:['系统管理','系统配置','自定义配置']},
+          meta:{title:['系统管理','系统配置','自定义国家配置']},
           component: resolve => require(['@/components/XTGL/XTSZ/CustomQuery'], resolve),
         },
         //====================================二版标签模型管理===============================================

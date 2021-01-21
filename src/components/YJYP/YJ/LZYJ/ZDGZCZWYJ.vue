@@ -325,31 +325,11 @@ export default {
     this.orgCode=this.$store.state.orgid;
     this.juState=this.$store.state.juState;
     this.token=this.$store.state.token;
-    this.getZrq();
-    this.getFj();
   },
 
   methods: {
-    // getFJ() {
-    //   let p = {
-    //     "operatorId": this.$store.state.uid,
-    //     "operatorNm": this.$store.state.uname
-    //   };
-    //   this.$api.post(this.Global.aport2 + '/data_report/selectSsfjDm', p,
-    //     r => {
-    //       this.ssfj = r.data.SSFJ;
-    //     })
-    // },
     titleShow(e,el){
       el.target.title = e.label;
-    },
-    getFj(){
-      this.$api.post(this.Global.aport5+'/djbhl/getallfj',{},
-       r =>{
-         if(r.success){
-           this.getallfj=r.data;
-         }
-       })
     },
     //=================================================简表开始=====================
     jbFnc(){

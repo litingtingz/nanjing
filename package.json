@@ -11,8 +11,9 @@
   },
   "dependencies": {
     "@turf/turf": "^5.1.6",
+    "ajv": "^6.0.0",
     "axios": "^0.18.0",
-    "echarts": "^4.2.1",
+    "echarts": "^4.8.0",
     "element-ui": "^2.11.1",
     "es6-promise": "^4.2.6",
     "js-base64": "^2.5.1",

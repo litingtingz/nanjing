@@ -15,9 +15,9 @@ const aport2="api-yewu";//左星海网关
 const aport3="api-yewu";//石飞网关
 // const aport3="http://10.0.30.163:9439";//石飞
 const aport4="api-yujing";//李文龙 预警
-// const aport4="http://192.168.1.105:9440";//李文龙
+// const aport4="http://10.0.30.176:9440";//李文龙
 const aport5="api-yanpan";//李文龙研判
-// const aport5="http://10.0.30.47:9438";//李文龙
+// const aport5="http://10.0.30.229:9438";//李文龙
 
 // const aport11="api-zhongguan";
 // const aport11="http://10.33.72.145:9433";

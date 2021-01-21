@@ -111,8 +111,8 @@
                     <div class="input-input t-fuzzy-12 t-flex">
                       <el-select v-model="pd.LRDW" multiple :multiple-limit="5" @change="getZrq(pd.LRDW)" @visible-change="getPCS(pd.LRDW_Like)" collapse-tags filterable clearable default-first-option placeholder="请选择"  size="small" :disabled="juState=='3'||juState=='4'" :no-data-text="pd.LRDW_Like==''||pd.LRDW_Like==undefined?'请先选择所属分局':'无数据'">
                         <el-option
-                          v-for="item in pcslist"
-                          :key="item.dm"
+                          v-for="(item,ind) in pcslist"
+                          :key="ind"
                           :label="item.dm+' - '+item.mc"
                           :value="item.dm">
                         </el-option>
@@ -170,7 +170,7 @@
           </el-row>
          </el-col>
         <el-col :span="2" class="down-btn-area">
-          <el-button type="success" size="small"  class="t-mb" @click="page=0;tableData=[];CurrentPage=1;TotalResult=0;getList()">查询</el-button>
+          <el-button type="success" size="small"  class="t-mb" @click="QueryFnc">查询</el-button>
           <!-- <el-button type="primary" size="small"  class="t-ml0" @click="download">导出</el-button> -->
         </el-col>
       </el-row>
@@ -186,18 +186,72 @@
         </div>
       </div>
       <div class="ak-tab-pane">
-        <div class="">
-          <span class="t-fr">
-            <i class="iconbtn hand" :class="{'el-icon-open':numChange==true,'el-icon-turn-off':numChange==false}" :title="numChange==true?'关闭数字':'展示数字'" @click="numChange=!numChange;getList()" v-show="page==0&&pageC==true"></i>
-            <i class="iconbtn hand" :class="{'el-icon-s-grid':pageC==true,'el-icon-s-data':pageC==false}" :title="pageC==true?'转为列表':'转为图表'" @click="changeTu()" v-show="page==0"></i>
-          </span>
-          <el-button type="primary" size="small"  @click="downloadC()" v-show="pageC==false&&page==0">导出</el-button>
-          <div style="clear:both"></div>
-        </div>
         <div v-show="page==0">
-          <div class = "chart" style="width:100%" v-show="pageC==true">
-            <div id = "echarts" style = "width: 100%;height: 400px"></div>
-          </div>
+          <el-row>
+            <el-col :xl="12" :lg="12">
+              <p class="chart-title mb-10">同比/环比</p>
+              <div class="chart-outer ml-10">
+                <div>
+                  <div class="chart-outer-label">分析维度</div>
+                  <el-select class="chart-select" v-model="analyArr.type_1" @change="analyFun(1)" placeholder="请选择" size="medium">
+                    <el-option v-for="(item,ind) in analysis_3" :key="ind" :label="item.mc" :value="item.dm"></el-option>
+                  </el-select>
+                </div>
+                <div style="margin-right: 70px;">
+                  <div class="chart-compare">同比：<span>{{InObj.y2y}}</span><i :class="InObj.y2y.includes('-')?'el-icon-bottom compare-icon icon-red':'el-icon-top compare-icon icon-green'"></i></div>
+                  <div class="chart-compare">环比：<span>{{InObj.m2m}}</span><i :class="InObj.m2m.includes('-')?'el-icon-bottom compare-icon icon-red':'el-icon-top compare-icon icon-green'"></i></div>
+                </div>
+              </div>
+              <div class = "chart" style="width:100%">
+                <div id = "echartsqr" style = "width: 100%;height: 250px"></div>
+              </div>
+            </el-col>
+            <!-- <el-col :xl="8" :lg="8">
+              <p class="chart-title mb-10">迁出量</p>
+              <div class="chart-outer ml-10">
+                <div>
+                  <div class="chart-outer-label">分析维度</div>
+                  <el-select class="chart-select" v-model="analyArr.type_2" @change="analyFun(2)" placeholder="请选择" size="medium">
+                    <el-option v-for="(item,ind) in analysis_3" :key="ind" :label="item.mc" :value="item.dm"></el-option>
+                  </el-select>
+                </div>
+                <div style="margin-right: 70px;">
+                  <div class="chart-compare">同比：<span>{{OutObj.y2y}}</span><i :class="OutObj.y2y.includes('-')?'el-icon-bottom compare-icon icon-red':'el-icon-top compare-icon icon-green'"></i></div>
+                  <div class="chart-compare">环比：<span>{{OutObj.m2m}}</span><i :class="OutObj.m2m.includes('-')?'el-icon-bottom compare-icon icon-red':'el-icon-top compare-icon icon-green'"></i></div>
+                </div>
+              </div>
+              <div class = "chart" style="width:100%">
+                <div id = "echartsqc" style = "width: 100%;height: 250px"></div>
+              </div>
+            </el-col> -->
+            <el-col :xl="12" :lg="12">
+              <p class="chart-title mb-10">前五国家</p>
+              <!-- <div class="chart-outer ml-10">
+                <div class="chart-outer-label">分析维度</div>
+                <el-select class="chart-select" v-model="analyArr.type_3" @change="analyFun(3)" placeholder="请选择" size="medium">
+                  <el-option v-for="(item,ind) in analysis_3" :key="ind" :label="item.mc" :value="item.dm"></el-option>
+                </el-select>
+              </div> -->
+              <div class = "chart" style="width:100%">
+                <div id = "echartsTop" style = "width: 100%;height: 250px"></div>
+              </div>
+            </el-col>
+            <el-col :xl="24" :lg="24">
+              <p class="chart-title mb-10">{{pageC==true?'变化趋势分析图':'变化趋势列表信息'}}</p>
+              <div class="">
+                <span class="t-fr">
+                  <i class="iconbtn hand" :class="{'el-icon-open':numChange==true,'el-icon-turn-off':numChange==false}" :title="numChange==true?'关闭数字':'展示数字'" @click="numChange=!numChange;getList()" v-show="page==0&&pageC==true"></i>
+                  <i class="iconbtn hand" :class="{'el-icon-s-grid':pageC==true,'el-icon-s-data':pageC==false}" :title="pageC==true?'转为列表':'转为图表'" @click="changeTu()" v-show="page==0"></i>
+                </span>
+                <el-button type="primary" size="small"  @click="downloadC()" v-show="pageC==false&&page==0">导出</el-button>
+                <div style="clear:both"></div>
+              </div>
+              <div class = "chart" style="width:100%" v-show="pageC==true">
+                <div id = "echarts" style = "width: 100%;height: 350px"></div>
+              </div>
+            </el-col>
+          </el-row>
+          
           <div v-show="pageC==false" class="t-mt10">
             <el-table
                :data="tableDataC"
@@ -378,6 +432,76 @@ import LZXX from '../../../common/lzxx_xq'
       yuid:[],
       selectionReal:[],
 
+      ChartQr:null,
+      ChartQc:null,
+      ChartTop:null,
+      analyArr:{
+        type_1:'',
+        type_2:'',
+        type_3:'',
+      },
+      optData_1:{},
+      optData_2:{},
+      optData_3: {},
+      analysis_3:[
+        {
+          dm:'01',
+          mc:'1月'
+        },
+        {
+          dm:'02',
+          mc:'2月'
+        },
+        {
+          dm:'03',
+          mc:'3月'
+        },
+        {
+          dm:'04',
+          mc:'4月'
+        },
+        {
+          dm:'05',
+          mc:'5月'
+        },
+        {
+          dm:'06',
+          mc:'6月'
+        },
+        {
+          dm:'07',
+          mc:'7月'
+        },
+        {
+          dm:'08',
+          mc:'8月'
+        },
+        {
+          dm:'09',
+          mc:'9月'
+        },
+        {
+          dm:'10',
+          mc:'10月'
+        },
+        {
+          dm:'11',
+          mc:'11月'
+        },
+        {
+          dm:'12',
+          mc:'12月'
+        },
+      ],
+      InObj:{
+        y2y:"",
+        m2m:"",
+      },
+      OutObj:{
+        y2y:"",
+        m2m:"",
+      },
+
       userCode:'',
       userName:'',
       orgCode:'',
@@ -405,6 +529,9 @@ import LZXX from '../../../common/lzxx_xq'
     // this.pd0.end=formatDate(new Date(),'yyyyMMdd');
     this.getFJ();
     this.getList();
+    this.chartFun_1();
+    // this.chartFun_2();
+    this.chartFun_3();
   },
   // beforeDestroy(){
   //   this.lineChart.dispose();
@@ -429,6 +556,434 @@ import LZXX from '../../../common/lzxx_xq'
     }
   },
   methods:{
+    QueryFnc(){
+      this.page=0;
+      this.tableData=[];
+      this.CurrentPage=1;
+      this.TotalResult=0;
+      this.getList();
+      this.chartFun_1();
+      // this.chartFun_2();
+      this.chartFun_3();
+    },
+    analyFun(val){
+      if(val == 1){this.chartFun_1()}
+      // if(val == 2){this.chartFun_2()}
+      if(val == 3){this.chartFun_3()}
+    },
+    chartFun_1(){
+      let p = {};
+      let cx_1 = {};
+      cx_1 = JSON.parse(JSON.stringify(this.pd))
+      cx_1.MONTH = this.analyArr.type_1;
+      p = {
+        pd: cx_1,
+        userCode:this.userCode,
+        userName:this.userName,
+        orgJB:this.juState,
+        orgCode:this.orgCode,
+        token:this.token
+      };
+      this.$api.post(this.Global.aport4 + '/eS_LZ_LZXXController/getHbTbCount',p,r=>{
+        // let r={"y2y":"-100.0%","xAxis":{"xAxis":["上期","本期","同期"]},"series":[{"data":[1837,0,2885],"name":"总计"}],"m2m":"-100.0%"}
+        this.InObj.y2y = r.data.y2y;
+        this.InObj.m2m = r.data.m2m;
+        let double={
+            type: "bar",
+            barWidth: 10,
+            barGap: '50%',
+            showBackground: true,
+            backgroundStyle: {            
+              color: 'rgba(220, 220, 220, 0.3)',
+              barBorderRadius: 30
+            },
+            itemStyle: {
+              normal: {
+                barBorderRadius: 10, //柱状图边角圆弧化
+                label: {
+                  show: true, //开启显示
+                  position: "top", //在上方显示
+                  textStyle: {
+                    //数值样式
+                    color: "#000",
+                    fontSize: 12,
+                    fontWeight:'bold'
+                  }
+                },
+              },
+              emphasis: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  {
+                    offset: 0,
+                    color: "#D5C95D"
+                  },
+                  {
+                    offset: 1,
+                    color: "#C39E69"
+                  }
+                ])
+              }
+            },
+        }
+        let dataReal = [];
+        r.data.series.forEach(item => {
+          let dataItem = Object.assign({},item,double)
+          dataReal.push(dataItem)
+        })
+        this.chartShow_1(r.data.xAxis.xAxis,dataReal)
+      })
+    },
+    chartShow_1(xAxis,series){
+      this.optData_1 = {
+        tooltip: {},
+        grid: {
+          x: 0,
+          y: 20
+        },
+        xAxis: [
+          {
+            type: "category",
+            data: xAxis,
+            axisPointer: {
+              type: "none"
+            },
+            axisLine: {
+              //去除x坐标轴
+              lineStyle: {
+                color: "#fff"
+              }
+            },
+            axisLabel: {
+              show: true, //这行代码控制着坐标轴x轴的文字是否显示
+              color: "#919294",
+              fontSize: 12
+            }
+          }
+        ],
+        yAxis: [
+          {
+            type: "value",
+            axisLine: {
+              //去除y坐标轴
+              lineStyle: {
+                color: "#fff"
+              }
+            },
+            axisPointer: {
+              //去除鼠标hover样式
+              type: "none"
+            },
+            axisTick: {
+              //去掉坐标刻度线
+              show: false
+            },
+            splitLine: {
+              //去除网格线
+              show: false
+            }
+          }
+        ],
+        series: series
+      };
+      this.ChartQr = echarts.init(document.getElementById('echartsqr'));
+      this.ChartQr.setOption(this.optData_1)
+       window.addEventListener("resize", (()=>{
+        this.ChartQr.resize();
+      }));
+    },
+    //============================暂时废弃=======================================================
+    chartFun_2(){
+      // let cx_2 = {}
+      // cx_2 = JSON.parse(JSON.stringify(this.pd))
+      // cx_2.MONTH = this.analyArr.type_2;
+      // cx_2.qcl = '1';
+      // this.$api.post(this.Global.aport4 + '/comprehensive/periodComparison2',cx_2,r=>{
+        let r={"y2y":"-74.31192%","xAxis":{"xAxis":["上期","本期","同期"]},"series":[{"data":[1546,504,1962],"name":"总计"}],"m2m":"-67.39974%"}
+        this.OutObj.y2y = r.y2y;
+        this.OutObj.m2m = r.m2m;
+        let double={
+          type: "bar",
+            barWidth: 10,
+            showBackground: true,
+            backgroundStyle: {
+              color: 'rgba(220, 220, 220, 0.3)',
+              barBorderRadius: 30
+            },
+            itemStyle: {
+              normal: {
+                barBorderRadius: 10, //柱状图边角圆弧化
+                label: {
+                  show: true, //开启显示
+                  position: "top", //在上方显示
+                  textStyle: {
+                    //数值样式
+                    color: "#000",
+                    fontSize: 12,
+                    fontWeight:'bold'
+                  }
+                },
+                color:((para)=>{
+                  var colorList = [
+                    {
+                      c1:"#FCAC62",
+                      c2:"#FC8C7E"
+                    },
+                    {
+                      c1:"#F86948",
+                      c2:"#E2453F"
+                    },
+                    {
+                      c1:"#AA30DF",
+                      c2:"#CE4AC0"
+                    },
+                    {
+                      c1:"#30BFDA",
+                      c2:"#1ACCE8"
+                    },
+                    {
+                      c1:"#0FACFA",
+                      c2:"#1ACCE8"
+                    },
+                    {
+                      c1:"#FCAC62",
+                      c2:"#FC8C7E"
+                    },
+                    {
+                      c1:"#F86948",
+                      c2:"#E2453F"
+                    },
+                    {
+                      c1:"#AA30DF",
+                      c2:"#CE4AC0"
+                    },
+                    {
+                      c1:"#30BFDA",
+                      c2:"#1ACCE8"
+                    },
+                    {
+                      c1:"#0FACFA",
+                      c2:"#1ACCE8"
+                    }
+                  ]
+                  return new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                    {
+                      offset: 0,
+                      color: colorList[para.dataIndex].c1
+                    },
+                    {
+                      offset: 1,
+                      color: colorList[para.dataIndex].c2
+                    }
+                  ])
+                })
+              },
+              emphasis: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  {
+                    offset: 0,
+                    color: "#D5C95D"
+                  },
+                  {
+                    offset: 1,
+                    color: "#C39E69"
+                  }
+                ])
+              }
+            },
+        }
+        let dataReal = [];
+        r.series.forEach(item => {
+          let dataItem = Object.assign({},item,double)
+          dataReal.push(dataItem)
+        })
+        this.chartShow_2(r.xAxis.xAxis,dataReal)
+      // })
+    },
+    chartShow_2(xAxis,series){
+      this.optData_2 = {
+        tooltip: {},
+        grid: {
+          x: 0,
+          y: 20
+        },
+        xAxis: [
+          {
+            type: "category",
+            data: xAxis,
+            axisPointer: {
+              type: "none"
+            },
+            axisLine: {
+              //去除x坐标轴
+              lineStyle: {
+                color: "#fff"
+              }
+            },
+            axisLabel: {
+              show: true, //这行代码控制着坐标轴x轴的文字是否显示
+              color: "#919294",
+              fontSize: 12
+            }
+          }
+        ],
+        yAxis: [
+          {
+            type: "value",
+            axisLine: {
+              //去除y坐标轴
+              lineStyle: {
+                color: "#fff"
+              }
+            },
+            axisPointer: {
+              //去除鼠标hover样式
+              type: "none"
+            },
+            axisTick: {
+              //去掉坐标刻度线
+              show: false
+            },
+            splitLine: {
+              //去除网格线
+              show: false
+            }
+          }
+        ],
+        series: series
+      };
+      this.ChartQc = echarts.init(document.getElementById('echartsqc'));
+      this.ChartQc.setOption(this.optData_2)
+       window.addEventListener("resize", (()=>{
+        this.ChartQc.resize();
+      }));
+    },
+    //============================暂时废弃=======================================================
+    //TOP
+    chartFun_3(){
+      // let p={};
+      // let cx_3={};
+      // cx_3 = JSON.parse(JSON.stringify(this.pd))
+      // cx_3.MONTH = this.analyArr.type_3;
+      let p = {
+        pd: this.pd,
+        userCode:this.userCode,
+        userName:this.userName,
+        orgJB:this.juState,
+        orgCode:this.orgCode,
+        token:this.token
+      };
+      this.$api.post(this.Global.aport4 + '/eS_LZ_LZXXController/getQwgjCount',p,r=>{
+        this.chartShow_3(r.data.xAxis.xAxis,r.data.series[0].data)
+      })
+    },
+    chartShow_3(xAxis,series) {
+      this.optData_3 = {
+        tooltip: {},
+        grid: {
+          x: 0,
+          y: 20
+        },
+        xAxis: [
+          {
+            type: "category",
+            data: xAxis,
+            axisPointer: {
+              type: "none"
+            },
+            axisLine: {
+              //去除x坐标轴
+              lineStyle: {
+                color: "#fff"
+              }
+            },
+            axisLabel: {
+              show: true, //这行代码控制着坐标轴x轴的文字是否显示
+              color: "#919294",
+              fontSize: 12
+            }
+          }
+        ],
+        yAxis: [
+          {
+            type: "value",
+            axisLine: {
+              //去除y坐标轴
+              lineStyle: {
+                color: "#fff"
+              }
+            },
+            axisPointer: {
+              //去除鼠标hover样式
+              type: "none"
+            },
+            axisTick: {
+              //去掉坐标刻度线
+              show: false
+            },
+            splitLine: {
+              //去除网格线
+              show: false
+            }
+          }
+        ],
+        series: [
+          {
+            name:'',
+            type: "bar",
+            barWidth: 10,
+            showBackground: true,
+            backgroundStyle: {
+              color: "#1AC8EA",
+              opacity: 0.1,
+              barBorderRadius: 30
+            },
+            itemStyle: {
+              normal: {
+                barBorderRadius: 30, //柱状图边角圆弧化
+                label: {
+                  show: true, //开启显示
+                  position: "top", //在上方显示
+                  textStyle: {
+                    //数值样式
+                    color: "#000",
+                    fontSize: 12,
+                    fontWeight:'bold'
+                  }
+                },
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  {
+                    offset: 0,
+                    color: "#1AC8EA"
+                  },
+                  {
+                    offset: 1,
+                    color: "#10ADFA"
+                  }
+                ])
+              },
+              emphasis: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  {
+                    offset: 0,
+                    color: "#D5C95D"
+                  },
+                  {
+                    offset: 1,
+                    color: "#C39E69"
+                  }
+                ])
+              }
+            },
+            data: series
+          }
+        ]
+      };
+      this.ChartTop = echarts.init(document.getElementById('echartsTop'));
+      this.ChartTop.setOption(this.optData_3)
+       window.addEventListener("resize", (()=>{
+        this.ChartTop.resize();
+      }));
+    },
     titleShow(e,el){
       el.target.title = e.label;
     },
@@ -668,38 +1223,43 @@ import LZXX from '../../../common/lzxx_xq'
     drawLine(dataname,ydata,series){
       this.lineChart = echarts.init(document.getElementById('echarts'));
       window.onresize = echarts.init(document.getElementById('echarts')).resize;
-      let label={
-          normal: {
-              show: this.numChange,
-              position: 'top'
-          }
-       }
-       for(var i=0;i<series.length;i++){
-         let s=0;
-         for(var j=0;j<series[i].data.length;j++){
-           // s+=series[i].data[j];
-           // if(s!=0){
-             series[i].label=label;
-           // }
-         }
-       }
+      let chartStyle={
+        smooth: 0.7,
+        symbolSize: 8,
+        symbol: "emptyCircle", //设定为实心点
+        label: {
+          show: this.numChange,
+          fontSize: 14,
+          position:'right',
+          fontWeight:'bold'
+        },
+        lineStyle: {
+          width: 3,
+        },
+      }
+      let dataReal = [];
+      series.forEach(item => {
+        let dataItem =  Object.assign({},item,chartStyle)
+        dataReal.push(dataItem)
+      })
       let that = this;
-      var colors = ['#5793f3', '#d14a61', '#675bba'];
               // 折线图初始化
      that.lineChart.setOption({
-        color: colors,
-        tooltip: {
-            // trigger: 'none',
-            axisPointer: {
-                type: 'cross'
-            }
-        },
+        color:['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#FCAC62', '#F86948', '#30BFDA','#AA30DF','#30BFDA', '#0FACFA','#749f83'],
+        // tooltip: {
+        //     // trigger: 'none',
+        //     axisPointer: {
+        //         type: 'cross'
+        //     }
+        // },
         legend: {
             data:dataname
         },
         grid: {
-            top: 70,
-            bottom: 50
+            x: 40,
+            y: 40,
+            x2: 40,
+            y2: 30
         },
         xAxis: [
             {
@@ -709,28 +1269,56 @@ import LZXX from '../../../common/lzxx_xq'
                 },
                 axisLine: {
                     onZero: false,
+                    lineStyle: {
+                      color: "#eee"
+                    }
+                },
+                axisPointer: {
+                  type: "none"
+                },
+                axisLabel: {
+                  show: true, //这行代码控制着坐标轴x轴的文字是否显示
+                  color: "#919294",
+                  fontSize: 12
                 },
                 data:ydata
             },
-            // {
-            //     type: 'category',
-            //     axisTick: {
-            //         alignWithLabel: true
-            //     },
-            //     axisLine: {
-            //         onZero: false,
-            //     },
-            //     data:ydata
-            // },
         ],
         yAxis: [
             {
-                type: 'value'
+                type: 'value',
+                boundaryGap: [0, "50%"],
+                axisLine: {
+                  //去除y坐标轴
+                  lineStyle: {
+                    color: "#fff"
+                  }
+                },
+                axisLabel: {
+                  show: true, //这行代码控制着坐标轴的文字是否显示
+                  color: "#919294",
+                  fontSize: 12
+                },
+                axisPointer: {
+                  //去除鼠标hover样式
+                  type: "none"
+                },
+                axisTick: {
+                  //去掉坐标刻度线
+                  show: false
+                },
+                splitLine: {
+                  //网格线
+                  show: true,
+                  lineStyle: {
+                    color: ["#ddd"],
+                    type: "dashed"
+                  }
+                }
             }
         ],
-        series: series
+        series: dataReal
       },true)
-      console.log('series',series)
       that.lineChart.off('click');
       that.lineChart.on('click',function(params){
         let p={};

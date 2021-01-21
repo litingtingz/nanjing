@@ -275,6 +275,16 @@
                   </el-select>
                 </el-col>
                 <el-col  :sm="24" :md="12" :lg="8"   class="input-item">
+                    <span class="input-text">自定义国家：</span>
+                    <el-select v-model="pd.customCountry" placeholder="请选择"   filterable clearable default-first-option   size="small" class="input-input" @visible-change="cusCountryFnc">
+                      <el-option v-for="item in $store.state.cusCountry"
+                        :key="item.dm"
+                        :label="item.mc"
+                        :value="item.dm">
+                      </el-option>
+                  </el-select>
+                </el-col>
+                <el-col  :sm="24" :md="12" :lg="8"   class="input-item">
                   <div class="gjcz">
                     <el-checkbox-group v-model="checkedList">
                       <el-checkbox v-for="item in checkItem" :label="item.code" :key="item.code" v-if="item.code=='SHIGUO'||item.code=='SANSHIYIGUO'">{{item.label}}</el-checkbox>
@@ -395,13 +405,8 @@
              </el-table-column>
               <!-- 循环生成动态表格 -->
             <template v-for="(lb,i) in lbData">
-            <el-table-column
-              :key="i"
-              :prop="lb.dm"
-              :label="lb.cm"
-              :min-width="lb.width">
-            </el-table-column>
-          </template>
+              <el-table-column :key="i" :prop="lb.dm" :label="lb.cm" :min-width="lb.width"></el-table-column>
+            </template>
              <!-- <el-table-column
                prop="YWXM"
                label="英文姓名"
@@ -487,15 +492,15 @@
                label="操作"
                width="70"
                fixed="right">
-               <template slot-scope="scope">
-            <el-button
-              type="text"
-              class="a-btn"
-              title="详情"
-              icon="el-icon-document"
-              @click="details(scope.row)"
-            ></el-button>
-</template>
+               <div slot-scope="scope">
+                <el-button
+                  type="text"
+                  class="a-btn"
+                  title="详情"
+                  icon="el-icon-document"
+                  @click="details(scope.row)"
+                ></el-button>
+              </div>
              </el-table-column>
          </el-table>
          <div class="middle-foot">
@@ -552,14 +557,14 @@
     <!--===================简表结束======================-->
       </div>
 
-    </template>
-    <script>
+</template>
+<script>
 import { ToArray, sortByKey } from "@/assets/js/ToArray.js";
 import CZXX from "../../../common/czxx_xq";
 import AREAMS from "../../../common/areaMs";
-import Trans from "@/components/common/Transfer.vue"
+import Trans from "@/components/common/Transfer.vue";
 export default {
-  components: { CZXX, AREAMS ,Trans},
+  components: { CZXX, AREAMS, Trans },
   data() {
     return {
       areaPd: {},
@@ -738,101 +743,101 @@ export default {
       token: "",
       juState: "",
 
-
       //简表开始
-      timer:'',
-      jbDialogVisible:false,
-      pointData:[],//选中项
-      lbDataAll:[//列表总数据===简表数据源
+      timer: "",
+      jbDialogVisible: false,
+      pointData: [], //选中项
+      lbDataAll: [
+        //列表总数据===简表数据源
         {
-          dm:'YWXM',
-          cm:'英文姓名',
-          width:'100',
+          dm: "YWXM",
+          cm: "英文姓名",
+          width: "100"
         },
         {
-          dm:'XB_DESC',
-          cm:'性别',
-          width:'60'
+          dm: "XB_DESC",
+          cm: "性别",
+          width: "60"
         },
         {
-          dm:'CSRQ',
-          cm:'出生日期',
-          width:'100'
+          dm: "CSRQ",
+          cm: "出生日期",
+          width: "100"
         },
         {
-          dm:'GJDQ_DESC',
-          cm:'国籍',
+          dm: "GJDQ_DESC",
+          cm: "国籍"
         },
         {
-          dm:'ZJZL_DESC',
-          cm:'证件种类',
-          width:'130'
+          dm: "ZJZL_DESC",
+          cm: "证件种类",
+          width: "130"
         },
         {
-          dm:'ZJHM',
-          cm:'证件号码',
-          width:'100'
+          dm: "ZJHM",
+          cm: "证件号码",
+          width: "100"
         },
         {
-          dm:'QZZL_DESC',
-          cm:'签证种类',
-          width:'100'
+          dm: "QZZL_DESC",
+          cm: "签证种类",
+          width: "100"
         },
         {
-          dm:'QZYXQ',
-          cm:'签证有效期至',
-          width:'120'
+          dm: "QZYXQ",
+          cm: "签证有效期至",
+          width: "120"
         },
         {
-          dm:'SFDM_DESC',
-          cm:'身份',
+          dm: "SFDM_DESC",
+          cm: "身份"
         },
         {
-          dm:'SSFJ_DESC',
-          cm:'所属分局',
-          width:'100'
+          dm: "SSFJ_DESC",
+          cm: "所属分局",
+          width: "100"
         },
         {
-          dm:'SSPCS_DESC',
-          cm:'所属派出所',
-          width:'120'
+          dm: "SSPCS_DESC",
+          cm: "所属派出所",
+          width: "120"
         },
         {
-          dm:'LXDH',
-          cm:'电话',
+          dm: "LXDH",
+          cm: "电话"
         },
         {
-          dm:'XXDZ',
-          cm:'详细地址',
-          width:'150'
+          dm: "XXDZ",
+          cm: "详细地址",
+          width: "150"
         },
         {
-          dm:'CRJBS_DESC',
-          cm:'出入境标识',
-          width:'120'
+          dm: "CRJBS_DESC",
+          cm: "出入境标识",
+          width: "120"
         },
         {
-          dm:'IODATE',
-          cm:'出入境时间',
-          width:'120'
+          dm: "IODATE",
+          cm: "出入境时间",
+          width: "120"
         },
         {
-          dm:'FWCS',
-          cm:'服务处所',
-          width:'130'
+          dm: "FWCS",
+          cm: "服务处所",
+          width: "130"
         },
         {
-          dm:'ZSXZ_DESC',
-          cm:'住房类型',
-          width:'100'
+          dm: "ZSXZ_DESC",
+          cm: "住房类型",
+          width: "100"
         }
       ],
-      lbData:[],//列表简表动态加载数据====简表选中项
+      lbData: [] //列表简表动态加载数据====简表选中项
       //简表结束
     };
   },
   mounted() {
-    this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
+    this.lbData = this.lbDataAll; //页面加载 列表选中项 == 列表总数据源
     this.$store.dispatch("getGjdq");
     this.$store.dispatch("getXB");
     this.$store.dispatch("getSsdw");
@@ -845,6 +850,7 @@ export default {
     this.$store.dispatch("getSf");
     this.$store.dispatch("getZflx");
     this.$store.dispatch("getCrjbs");
+    this.$store.dispatch("aGetCusCon");
     this.userCode = this.$store.state.uid;
     this.userName = this.$store.state.uname;
     this.orgName = this.$store.state.orgname;
@@ -884,24 +890,26 @@ export default {
     titleShow(e, el) {
       el.target.title = e.label;
     },
-
-    //=================================================简表开始=====================
-    jbFnc(){
-      this.timer = new Date().getTime();
-      this.jbDialogVisible = true
+    cusCountryFnc(){
+      this.$store.dispatch("aGetCusCon")
     },
-    transSave(data){
+    //=================================================简表开始=====================
+    jbFnc() {
+      this.timer = new Date().getTime();
+      this.jbDialogVisible = true;
+    },
+    transSave(data) {
       this.pointData = [];
-      if(data.length == 0){
-        this.lbData = this.lbDataAll
-      }else{
-        this.lbDataAll.forEach(item =>{
+      if (data.length == 0) {
+        this.lbData = this.lbDataAll;
+      } else {
+        this.lbDataAll.forEach(item => {
           data.forEach(jtem => {
-            if(item.dm == jtem){
-              this.pointData.push(item)
+            if (item.dm == jtem) {
+              this.pointData.push(item);
             }
-          })
-        })
+          });
+        });
         this.lbData = this.pointData;
       }
       this.jbDialogVisible = false;

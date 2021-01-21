@@ -5,7 +5,7 @@ import router from '../../router'
 import global_ from '../../Global.js'
 import api from '../../api/index.js';
 import {
-  ToArray
+  ToArray,sortByKey
 } from './ToArray.js'
 
 Vue.use(Vuex);
@@ -96,6 +96,7 @@ var store = new Vuex.Store({
     lnzt:[],
     queryType:'',
     tokenT:localStorage.getItem('tokenT') || '',
+    cusCountry:[],
   },
   mutations: {
     getOne(state,data){
@@ -373,6 +374,9 @@ var store = new Vuex.Store({
     getTokenT(state,data){
       state.tokenT=data;
       localStorage.setItem('tokenT',data)
+    },
+    getCusCon(state,data){
+      state.cusCountry=data;
     }
   },
   actions: {
@@ -765,6 +769,14 @@ var store = new Vuex.Store({
            context.commit('getTokenT',r.data)
          }
        })
+    },
+    aGetCusCon(context, payload){
+      return new Promise((resolve) => {
+        api.post(global_.aport5 + '/country/getCustomDmMc', {}, r => {
+          context.commit('getCusCon', sortByKey(r.data,'dm'))
+          resolve(payload)
+        })
+      })
     },
   }
 });

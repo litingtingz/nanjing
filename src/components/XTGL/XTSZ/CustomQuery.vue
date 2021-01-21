@@ -7,11 +7,11 @@
           <el-row align="center" :gutter="2">
               <el-col  :sm="24" :md="12" :lg="8"  class="input-item">
                   <span class="input-text">名称：</span>
-                  <el-input placeholder="请输入名称" size="small" v-model="pd.MXLX" class="input-input"></el-input>
+                  <el-input placeholder="请输入名称" size="small" v-model="pd.mc" class="input-input"></el-input>
               </el-col>
               <el-col  :sm="24" :md="12" :lg="8"   class="input-item">
                   <span class="input-text">描述：</span>
-                  <el-input placeholder="请输入描述" size="small" v-model="pd.RULE_NAME" class="input-input"></el-input>
+                  <el-input placeholder="请输入描述" size="small" v-model="pd.ms" class="input-input"></el-input>
               </el-col>
           </el-row>
         </el-col>
@@ -22,10 +22,10 @@
     </div>
     <div class="yycontent">
       <div class="ak-tabs">
-        <div class="ak-tab-item hand" :class="{'ak-checked':page==0}" @click="page=0;tabFnc(page)">
+        <div class="ak-tab-item hand" :class="{'ak-checked':page=='1'}" @click="page='1';tabFnc(page)">
           已启用
         </div>
-        <div class="ak-tab-item hand" :class="{'ak-checked':page==1}" @click="page=1;tabFnc(page)">
+        <div class="ak-tab-item hand" :class="{'ak-checked':page=='0'}" @click="page='0';tabFnc(page)">
           已停用
         </div>
       </div>
@@ -45,14 +45,6 @@
               :label="lb.cm">
             </el-table-column>
           </template>
-          <!-- <el-table-column
-            prop="MXLX"
-            label="名称">
-          </el-table-column>
-          <el-table-column
-            prop="MXLX_NAME"
-            label="描述">
-          </el-table-column> -->
           <el-table-column
             label="操作" width="100">
             <template slot-scope="scope">
@@ -69,7 +61,7 @@
                   class="a-btn"
                   title="停用"
                   icon="el-icon-s-tools"
-                  v-if="scope.row.SFYX=='1'"
+                  v-if="scope.row.sfyx=='1'"
                   @click="reset(scope.row)"
                 ></el-button>
                 <el-button
@@ -77,7 +69,7 @@
                   class="a-btn"
                   title="启用"
                   icon="el-icon-setting"
-                  v-if="scope.row.SFYX=='0'"
+                  v-if="scope.row.sfyx=='0'"
                   @click="reset(scope.row)"
                 ></el-button>
               </div>
@@ -113,42 +105,18 @@
         </div>
       </div>
     </div>
-    <el-dialog title="详情" :visible.sync="detailsDialogVisible" width="600px" >
-      <el-form  ref="mapf">
-        <el-row :gutter="1"  class="mb-6">
-            <el-col :span="24" class="input-item">
-              <span class="input-text">模型类型：</span>
-              <span class="input-input detailinput"> {{mapf.MXLX}}</span>
-            </el-col>
-            <el-col :span="24" class="input-item">
-            <span class="input-text">导航类型名称：</span>
-            <span class="input-input detailinput">{{mapf.MXLX_NAME}} </span>
-            </el-col>
-            <el-col :span="24" class="input-item">
-            <span class="input-text">标签名称：</span>
-            <span class="input-input detailinput">{{mapf.RULE_NAME}} </span>
-            </el-col>
-            <el-col :span="24" class="input-item">
-            <span class="input-text">标签规则：</span>
-            <span class="input-input detailinput">{{mapf.RULE}} </span>
-            </el-col>
-        </el-row>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="detailsDialogVisible = false" size="small">取 消</el-button>
-      </div>
-    </el-dialog>
+    
     <el-dialog :title="dialogText" :visible.sync="addsDialogVisible" width="1000px" >
       <el-form :model="form" ref="addForm">
         <el-row :gutter="1"  class="mb-6">
             <el-col :span="24"  class="yzform" data-scope="demo" data-name="MXLX" data-type="input"
              v-validate-easy="[['required']]">
               <span class="yy-input-text">名称：</span>
-              <el-input placeholder="请输入内容" size="small" v-model="form.MXLX" class="yy-input-input"></el-input>
+              <el-input placeholder="请输入内容" size="small" v-model="form.mc" class="yy-input-input"></el-input>
             </el-col>
             <el-col :span="24"  class="yzform">
               <span class="yy-input-text">描述：</span>
-              <el-input placeholder="请输入内容" size="small" v-model="form.MXLX_NAME"  id="mxmc"  class="yy-input-input"></el-input>
+              <el-input placeholder="请输入内容" size="small" v-model="form.ms"  id="mxmc"  class="yy-input-input"></el-input>
             </el-col>
             <el-col :span="24"  class="yzform">
               <span class="yy-input-text" style="vertical-align: top;">自定义项：</span>
@@ -156,7 +124,7 @@
                 <el-transfer
                 filterable
                 :filter-method="filterMethod"
-                v-model="form.custom"
+                v-model="form.countryList"
                 :render-content="renderFunc"
                 :props="propsData"
                 :data="$store.state.gjdq"
@@ -188,7 +156,7 @@ export default {
   components:{Trans},
   data() {
     return {
-      page:0,
+      page:'1',
       renderFunc(h, option) {
         return <span>{ option.dm } - { option.mc }</span>;
       },
@@ -202,11 +170,11 @@ export default {
       pointData:[],//选中项
       lbDataAll:[//列表总数据===简表数据源
         {
-          dm:'MXLX',
+          dm:'mc',
           cm:'名称',
         },
         {
-          dm:'MXLX_NAME',
+          dm:'ms',
           cm:'描述',
         },
       ],
@@ -223,6 +191,7 @@ export default {
       detailsDialogVisible: false,
       addsDialogVisible: false,
       dialogText: "新增",
+      dialogType:'',
       userCode: "",
       userName: "",
       orgCode: "",
@@ -293,13 +262,13 @@ export default {
         orgJB: this.juState,
         token: this.token
       };
-      p.pd.sfyx = this.page+''
+      p.pd.sfyx = this.page
       this.$api.post(
-        this.Global.aport4 + "/warningSortRuleController/getResultListByParams",
+        this.Global.aport5 + "/country/getCustomCountryType",
         p,
         r => {
-          this.tableData = r.data.resultList;
-          this.TotalResult = r.data.totalResult;
+          this.tableData = r.data.list;
+          this.TotalResult = r.data.total;
         }
       );
     },
@@ -311,10 +280,15 @@ export default {
       this.addsDialogVisible = true;
       this.V.$reset("demo");
       if (n != 0) {
-        this.form = Object.assign({}, i);
+        this.form = Object.assign({countryList:[]}, i);
         this.dialogText = "编辑";
+        this.dialogType = "edit"
+        this.$api.post(this.Global.aport5 + '/country/getCustomCountryDM',{uuid:i.uuid},r=>{
+          this.form.countryList = r.data
+        })
       } else {
         this.dialogText = "新增";
+        this.dialogType = "xz"
         this.form = {};
       }
     },
@@ -325,17 +299,15 @@ export default {
     addItem(addForm) {
       this.V.$submit("demo", (canSumit, data) => {
         if (!canSumit) return;
-        this.form.CREATE_USER_ID = this.userCode;
-        this.form.CREATE_USER_NAME = this.userName;
-        this.form.orgCode = this.orgCode;
-        this.form.token = this.token;
+        let url = "";
+        this.dialogType == 'xz'?url='/country/addCustomCountry':url='/country/updateCustomCountryType'
         this.$api.post(
-          this.Global.aport4 + "/warningSortRuleController/saveOrUpdate",
+          this.Global.aport5 + url,
           this.form,
           r => {
             if (r.success) {
               this.$message({
-                message: "保存成功！",
+                message: "操作成功！",
                 type: "success"
               });
               this.addsDialogVisible = false;
@@ -353,8 +325,8 @@ export default {
     reset(val) {
       let p = {
         pd: {
-          ID: val.ID,
-          SFYX: val.SFYX == "1" ? "0" : "1" //无效是0，有效是1
+          uuid: val.uuid,
+          sfyx: val.sfyx == "1" ? "0" : "1" //无效是0，有效是1
         },
         userCode: this.userCode,
         userName: this.userName,
@@ -363,7 +335,7 @@ export default {
         token: this.token
       };
       this.$api.post(
-        this.Global.aport4 + "/warningSortRuleController/updateSFYXByID",
+        this.Global.aport5 + "/country/enableDisable",
         p,
         r => {
           if (r.success) {

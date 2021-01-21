@@ -2823,7 +2823,7 @@ export default {
         this.CurrentPage = 1;
         this.DetailPd={
           slrqYM:params.name,
-          qzzl:'205'
+          qzzl:params.seriesName=='居留'?'205':params.seriesName=='签证'?'202':params.seriesName=='停留'?'207':''
         }
         this.DetailList(this.CurrentPage,this.pageSize,this.DetailUrl,this.DetailPd)
       })
