@@ -109,7 +109,7 @@
     <el-dialog :title="dialogText" :visible.sync="addsDialogVisible" width="1000px" >
       <el-form :model="form" ref="addForm">
         <el-row :gutter="1"  class="mb-6">
-            <el-col :span="24"  class="yzform" data-scope="demo" data-name="MXLX" data-type="input"
+            <el-col :span="24"  class="yzform" data-scope="demo" data-name="mc" data-type="input"
              v-validate-easy="[['required']]">
               <span class="yy-input-text">名称：</span>
               <el-input placeholder="请输入内容" size="small" v-model="form.mc" class="yy-input-input"></el-input>
@@ -187,7 +187,9 @@ export default {
       options: this.pl.ps,
       tableData: [],
       mapf: {}, //详情
-      form: {},
+      form: {
+        countryList:[],
+      },
       detailsDialogVisible: false,
       addsDialogVisible: false,
       dialogText: "新增",
@@ -289,7 +291,7 @@ export default {
       } else {
         this.dialogText = "新增";
         this.dialogType = "xz"
-        this.form = {};
+        this.form = {countryList:[]};
       }
     },
     qxItem(addForm) {
@@ -299,6 +301,13 @@ export default {
     addItem(addForm) {
       this.V.$submit("demo", (canSumit, data) => {
         if (!canSumit) return;
+        if(this.form.countryList.length==0){
+          this.$message({
+            message: "自定义项不能为空！",
+            type: "warning"
+          });
+          return
+        }
         let url = "";
         this.dialogType == 'xz'?url='/country/addCustomCountry':url='/country/updateCustomCountryType'
         this.$api.post(

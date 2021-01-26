@@ -80,7 +80,7 @@ vueValidateEasy.install = function (Vue, options) {
   }
   Vue.prototype.V.$reset = function (scope) {
     errTip.resetErrorTip(scope)
-    formElements.resetValue(scope)
+    // formElements.resetValue(scope)
   },
 
     Vue.prototype.V.$resetSingle = function (directiveEl) {

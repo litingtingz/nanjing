@@ -174,8 +174,9 @@ export default {
   },
   mounted() {
     window.ffvm = this;
-    createMapL();
     this.getGX();
+    createMapL();
+    
   },
   methods: {
     pageSizeChange(val) {

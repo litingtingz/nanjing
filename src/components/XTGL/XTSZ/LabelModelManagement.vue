@@ -133,14 +133,14 @@
     <el-dialog :title="dialogText" :visible.sync="addsDialogVisible" width="1000px" >
       <el-form :model="form" ref="addForm">
         <el-row :gutter="1"  class="mb-6">
-            <el-col :span="24"  class="yzform" data-scope="demo" data-name="MXLX" data-type="input"
+            <el-col :span="24"  class="yzform" data-scope="demo" data-name="mc" data-type="input"
              v-validate-easy="[['required']]">
               <span class="yy-input-text">名称：</span>
               <el-input placeholder="请输入内容" size="small" v-model="form.mc" class="yy-input-input"></el-input>
             </el-col>
             <el-col :span="24"  class="yzform">
               <span class="yy-input-text">描述：</span>
-              <el-input placeholder="请输入内容" size="small" v-model="form.mark"  id="mxmc"  class="yy-input-input"></el-input>
+              <el-input placeholder="请输入内容" size="small" v-model="form.mark" class="yy-input-input"></el-input>
             </el-col>
             <el-col :span="24"  class="yzform">
               <span class="yy-input-text" style="vertical-align: top;">自定义项：</span>

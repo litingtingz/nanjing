@@ -26,7 +26,7 @@
                    国家地区：{{baseinfo.gjdq_desc}}
                  </el-col>
                  <el-col :span="8">
-                   出生日期：{{baseinfo.csrq}}
+                   出生日期：{{(baseinfo.csrq).substring(0,10)}}
                  </el-col>
                  <el-col :span="8">
                    证件号码：{{baseinfo.zjhm}}
