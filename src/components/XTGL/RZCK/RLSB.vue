@@ -1,37 +1,107 @@
 <template lang="html">
 <div class="yyryhm">
       <div class="ryhm">
-               <div class="tkin">
+       <el-row type="flex">
+         <el-col :span="24">
+        <!-- 外层布局容器开始 -->
+        <el-container>
+          <!-- 左侧侧边栏容器开始 -->
+          <el-aside class="kuang">
+           <el-row :gutter="1" >
+             <el-col :span="24" style="margin-top:50px">
                <el-upload
+                 v-if="imageUrls.length==0"
                  ref="upload"
-                 class="avatar-uploader tkimimg"
+                 class="avatar-uploader"
+                 multiple
                  :action="actions"
                  :show-file-list="false"
+                 :file-list="fileList"
                  :on-change='changeUpload'
                  :on-success="handleAvatarSuccess"
                  :before-upload="beforeAvatarUpload">
-                 <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-               </el-upload>
-                  <div class="bnt" @click="getrlsb()"> </div>
-              </div>
-                <transition name="slide-fade">
-              <div class="tkinr" v-if="lh">
-                 <el-row :gutter="1" style="text-align:left;color:rgba(19,210,247,1)">
-                   <el-col :span="24" style="margin-top:50px;">
-                    <span style="float:left;"> 相 似 度：</span> <slider :min='0' :max='100' v-model="per" class="input-input"></slider>
-                   </el-col>
-                   <el-col :span="24" style="margin-top:90px;">人员性别：
-                     <el-button :class="tshow ? 'sex' : 'sexx'"  circle @click="getXB(1)">男</el-button>
-                     <el-button :class="bshow ? 'sex' : 'sexx'"  circle @click="getXB(2)">女</el-button>
-                   </el-col>
-                   <el-col :span="24" style="margin-top:85px;">年龄范围：
-                     <el-input-number v-model="num1"  size="small" controls-position="right" @change="handleChange" :min="1" :max="150" ></el-input-number>  -
-                     <el-input-number v-model="num2" size="small" controls-position="right" @change="handleChange" :min="1" :max="150" ></el-input-number>
-                   </el-col>
-                 </el-row>
-              </div>
-              </transition>
+                <i  class="el-icon-plus avatar-uploader-icon"></i>  
+               </el-upload>            
+             </el-col>
+             <!-- 图片上传成功时 -->
+             <el-col  :span="24" class="wsc" ref="wsc">
+               <div v-if="imageUrls.length">
+                    <div class="scbut" @click="scbut()">上传图片</div>
+                    <div class="tpline"></div>
+                      <div  class="kk">
+                        <div v-for="(p,i) of imageUrls" :key="i" style="border: 1px solid rgb(33, 150, 228);flex-basis: 45%; margin-bottom: 20px; margin-right:10px;height:330px" >
+                              <!-- <img  :src="p" class="avatar"  style="padding:10px"> -->
+                              <a href="#" style="cursor:pointer">
+                                <img  :src="p.url" :class="sbtp===i?'ava':'avatar'"  @click="getImg(i,p)" style="padding:10px">
+                              </a>
+                               <el-col :span="24">
+                                  <span class="input-text" style="float:left;margin-top:10px"> &nbsp;相似度：</span>
+                                  <slider :min='0' :max='100' v-model="pxr" class="input-input" input-size="mini" style="margin-top:20px;"></slider>
+                                </el-col>
+                                <el-col :span="24">
+                                  <span class="input-text" style="float:left;margin-top:10px">人员性别：</span>
+                                    <el-button style="margin-top:10px;float:left" :class="p.xshow ? 'sex' : 'sexx'"  circle @click="getXB(1,i)">男</el-button>
+                                    <el-button style="margin-top:10px" :class="p.fshow ? 'sex' : 'sexx'"  circle @click="getXB(2,i)">女</el-button>
+                                </el-col>
+                                <el-col :span="24">
+                                  <span class="input-text"  style="float:left;margin-top:10px;">年龄范围：</span>
+                                    <el-input-number style="margin-top:10px;margin-left:-40px" v-model="p.num1"  size="small" controls-position="right" @change="handleChange" :min="1" :max="150" ></el-input-number>  -
+                                    <el-input-number style="margin-top:10px" v-model="p.num2" size="small" controls-position="right" @change="handleChange" :min="1" :max="150" ></el-input-number>
+                                </el-col>
+                        </div>
+                 </div>
+               </div>   
+             </el-col>
+           </el-row>
+           <div class="bnt" @click="getrlsb()"> </div>
+           <!-- <div class="bnt" @click="submitUpload()"> </div> -->
+           <div class="arrow_line" style="left:0px;top:0px; border-bottom-width:0;border-right-width:0"></div>
+           <div class="arrow_line" style="left:530px;top:0px; border-bottom-width:0;border-left-width:0"></div>
+           <div class="arrow_line" style="left:0px;bottom:0px; border-top-width:0;border-right-width:0"></div>
+           <div class="arrow_line" style="left:530px;bottom:0px; border-top-width:0;border-left-width:0"></div>
+         </el-aside>
+         <!-- 左侧侧边栏容器结束 -->
+         <!-- 右侧侧边栏容器开始 -->
+          <el-container class="kuangr">
+                  <!-- 第一次调用接口 -->
+                  <!-- <div class="pd" v-if="first"> -->
+                    <!-- 初始化查询如果没有重点国家的人员做判断 -->
+                    <div style="padding-top: 15%;width:100%" v-if="tshow">{{cont}}</div>
+                    <!-- 初始化调用接口获取重点国家的人员 -->
+                    <div  v-if="bshow" style="width:calc(100%)">
+                       <div class="total">共{{TotalResult}}条记录</div>
+                         <div class="yline"></div>
+                           <div style="overflow-y:auto; height:430px;">
+                             <div v-for="item in result" >
+                               <el-row class="crry">
+                                  <el-col :span="9" style="padding:10px 5px;">
+                                    <img :src="item.imageBase64" :class="item.istsry==='y'?'yzd':'imgcs'" width="110" height="140">
+                                  </el-col>
+                                  <el-col  :span="15" class="crryfont" >
+                                  <p style="text-align:right;padding-right:5px;margin-top:5px; color:#FFFF04; font-size:16px; font-weight:400;">
+                                    {{item.xsd | filteint}}<br/>匹配</p>
+                                  <p class="slh" style="margin-top:-38px;">国家地区：<span>{{item.gjdq}}</span></p>
+                                  <p class="slh" >证件号码：<span>{{item.sfzh}}</span></p>
+                                  <p class="slh" >人员性别：<span>{{item.xb}}</span></p>
+                                  <p class="slh" >中文姓名：<span>{{item.xm}}</span></p>
+                                  <p class="slh" >英文姓名：<span>{{item.ywxm}}</span></p>
+                                  <!-- <p class="slh" >英文姓名：<span :title="item.ywx+item.ywm">{{item.ywx}}{{item.ywm}}</span></p> -->
+                                  </el-col>
+                               </el-row>
+                             </div>
+                           </div> 
+                        </div> 
+                   <!-- </div> -->
+                  <div class="arrow_line" style="left:565px;top:0px; border-bottom-width:0;border-right-width:0"></div>
+                  <div class="arrow_line" style="right:0px;top:0px; border-bottom-width:0;border-left-width:0"></div>
+                  <div class="arrow_line" style="left:565px;bottom:0px; border-top-width:0;border-right-width:0"></div>
+                  <div class="arrow_line" style="right:0px;bottom:0px; border-top-width:0;border-left-width:0"></div>
+         </el-container>
+        <!-- 右侧侧边栏容器结束 -->
+      </el-container>
+      <!-- 外层布局容器结束 -->
+      </el-col>
+         </el-row>
       </div>
 </div>
 </template>
@@ -41,74 +111,286 @@ export default {
   components: { slider },
   data() {
     return {
-      pd: {},
-      per: 80,
+      pd: { xb: "1" },
       limitNum: 1,
       fileList2: [],
+      TotalResult: 0,
       uploadDialogVisible: false,
       actions: "",
-      num1: 20,
-      num2: 60,
+      // num1: 20,
+      // num2: 60,
       cont: "暂无数据",
-      base64: "",
+      base64: [],
       imgs: {},
       imageUrl: "",
       tshow: false,
       bshow: true,
-      lh: false,
-      hnum: 1
+      // xshow: false,
+      // fshow: true,
+      hnum: 1,
+      pxr: this.Global.xsd,
+      //代码重写
+      lh:false,
+      fileList:[],
+      // pic:[],
+      // dialogImageUrl: [],
+      imageUrls:[],//将上传图片存放此数组
+      sbtp:0,//
+      result:[],
+      results:[],
+      trip:[],
+      zdry:false,
+      cc:[],
+      first:'',
+      firstFile:[]
+      //接口假数据
     };
   },
+  // activated()：
+  // 在vue对象存活的情况下，进入当前存在activated()函数的页面时，一进入页面就触发；
+  // 可用于初始化页面数据等
   activated() {
-    this.imageUrl = "";
-    this.lh = false;
-    this.hnum = 1;
-  },
-  mounted() {
-    this.$store.dispatch("getXB");
+    //console.log("------", this.$route.query.row);
+    if (this.$route.query.row) {
+      this.pd.xb = this.$route.query.row.xb;
+      this.pxr = this.$route.query.row.xsd;
+      this.num1 = this.$route.query.row.age1;
+      this.num2 = this.$route.query.row.age2;
+      this.imageUrl = this.$route.query.row.base64._v;
+      this.base64 = this.$route.query.row.base64._v;
+      //this.submitUpload();
+    }
+    //上传到服务器的路径
     this.actions = window.IPConfig.IP + this.Global.aport3 + "/getTp";
-    // this.actions = "http://10.0.30.163:9439/getTp";
+    // if(this.handleAvatarSuccess){
+    //   this.second=true;
+    //   //this.first=false;
+    //   // 调用第二个版本的页面
+    // }
   },
+  mounted(){
+      // 页面初始化
+       //初始化第一次请求接口获得数据
+        let p = this.$store.state.wtoken
+        //var url='http://10.0.9.175:9439/rlsb';
+        var url = this.Global.aport3 + "/selectTsryList";
+        this.$api.post(url, p, r => {
+          if (r.status) {
+            // this.imgs = r.data;
+            // 根据接口返回的数据渲染页面
+            console.log(r.selectdata);
+            //判断
+            // if(this.result.length!==0){
+            //     this.result=[]
+            // }
+            this.result = r.selectdata;
+            console.log('result===',this.result);
+            this.tshow = false;
+            this.bshow = true;
+            this.TotalResult = r.total;         
+            // this.uplo adDialogVisible=true;
+          } else {
+            this.cont = "查询无数据";
+            this.tshow = true;
+            this.bshow = false;
+            this.$message.error(r.msg);
+          }
+        });
+  },
+
   methods: {
-    getXB(n) {
+    //控制重新选择图片事件
+    getImg(i){
+      //alert(i)
+      this.sbtp=i
+      if(this.result.length!==0){  
+           this.result=[];
+      }
+      if(!this.TotalResult){
+            this.TotalResult = 0;
+      }
+      console.log('3333333333333333333');
+      // this.TotalResult=r.total
+      // this.handleAvatarSuccess(res, file)
+      
+      this.result=this.results[this.firstFile[i]];
+      console.log('3333333333=====',this.result)
+      this.TotalResult=this.result.length==0?0:this.result[0].size
+      //this.TotalResult=this.results[this.firstFile[i]].total;
+      this.tshow = false;
+      this.bshow = true;
+    },
+    //页面上传按钮跳转事件
+    scbut(){      
+      if(this.imageUrls!==[]){        
+        this.imageUrls=[];
+        console.log('122222222222');
+        this.$refs.wsc.innerHTML=`
+                       <el-upload
+                 v-if="imageUrls.length==0"
+                 ref="upload"
+                 class="avatar-uploader"
+                 multiple
+                 :action="actions"
+                 :show-file-list="false"
+                 :file-list="fileList"
+                 :on-change='changeUpload'
+                 :on-success="handleAvatarSuccess"
+                 :before-upload="beforeAvatarUpload">
+                <i  class="el-icon-plus avatar-uploader-icon"></i>  
+               </el-upload>
+        `;
+      }
+        //初始化第一次请求接口获得数据
+        let p = this.$store.state.wtoken;
+        this.firstFile=[];
+        this.base64=[];
+        //var url='http://10.0.9.175:9439/rlsb';
+        var url = this.Global.aport3 + "/selectTsryList";
+        this.$api.post(url, p, r => {
+          if (r.status) {
+            // this.imgs = r.data;
+            // 根据接口返回的数据渲染页面
+            console.log(r.selectdata);
+            // 判断
+            // if(this.result.length!==0){
+            //     this.result=[]
+            // }
+            this.result = r.selectdata;
+            console.log('result===',this.result);
+            this.tshow = false;
+            this.bshow = true;
+            this.TotalResult = r.total;         
+            // this.uplo adDialogVisible=true;
+          } else {
+            this.cont = "查询无数据";
+            this.tshow = true;
+            this.bshow = false;
+            this.$message.error(r.msg);
+          }
+        });
+    },
+    //人脸识别按钮
+    getrlsb() {
+      if (this.hnum == 1) {
+        this.$message.error("请上传图片!");
+        return;
+      }
+      //点击人脸识别按钮重新调用接口
+      // this.getBase64(file.raw).then(res=>{
+      //   // console.log('res:',res)
+      //   this.base64 = res
+      //   // console.log('base64===', this.base64);
+      // });
+
+        // 传参
+        this.cc=[];
+        for(var i=0;i<this.base64.length;i++){
+          let ccs={};
+          ccs.image = this.base64[i];
+          ccs.serverip=this.$store.state.serverip;
+          ccs.token=this.$store.state.wtoken;
+          ccs.xb=this.pd.xb,
+          ccs.xsd=this.Global.xsd;
+          this.cc.push(ccs)
+        }
+
+      // let p = [
+      //   {
+      //     image:this.base64,
+      //     serverip:this.$store.state.serverip,
+      //     token: this.$store.state.wtoken,
+      //     xb:this.pd.xb,
+      //     xsd:this.Global.xsd
+      //   },
+      //   {
+      //     image:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/2wBDAAMCAg2122",
+      //     serverip:"",
+      //     token:"",
+      //     xsd:"60"
+      //   }
+      // ]
+      console.log('211111111111')
+        if(this.result.length!==0){  
+           this.result.length=0;
+        }
+        if(!this.TotalResult){
+            this.TotalResult = 0;
+        }
+
+        var url = this.Global.aport3 + "/rlsb";
+        this.$api.post(url,this.cc, r => {
+          if (r.status) {
+            console.log('22222222222222222222222')
+              this.results=r.data;
+              console.log(this.results);
+              this.result=r.data[this.firstFile[0]];
+              console.log('base64前7位',this.result);
+              console.log('result=======2===',this.result);
+              this.TotalResult=this.result.length===0?0:this.result[0].size
+              // this.TotalResult=r.total
+              this.tshow = false;
+              this.bshow = true;
+            // this.imgs = r.data;
+            // this.uplo adDialogVisible=true;
+          } else {
+            this.cont = "查询无数据";
+            this.tshow = true;
+            this.bshow = false;
+            this.$message.error(r.msg);
+          }
+        });
+    },
+    //控制性别按钮的事件
+    getXB(n,i) {
       this.pd.xb = n;
       if (n == 2) {
-        this.tshow = true;
-        this.bshow = false;
+        this.imageUrls[i].xshow = true;
+        this.imageUrls[i].fshow = false;
       } else {
-        this.tshow = false;
-        this.bshow = true;
+        this.imageUrls[i].xshow = false;
+        this.imageUrls[i].fshow = true;
       }
     },
     handleChange(value) {
-      console.log(value);
+      // console.log(value);
     },
+
+    // 文件上传成功时的钩子
     handleAvatarSuccess(res, file) {
-      console.log(res);
-      console.log(file);
-      this.imageUrl = URL.createObjectURL(file.raw);
-      console.log("==", this.imageUrl);
+      let obj= {};
+      obj.xshow = false;
+      obj.fshow = true;
+      //obj.sbtp = true;
+      obj.num1 = 20;
+      obj.num2 = 60;
+      obj.uid = file.uid;
+      //获取当前图片----存取当前图片的路径
+      obj.url = URL.createObjectURL(file.raw)
+      this.getBase64(file.raw).then(res=>{
+        // console.log('res:',res)
+        obj.image = res; 
+        this.imageUrls.push(obj);   
+        let k1 = res.substr(res.length-7,res.length-1);
+        this.firstFile.push(res.substr(res.length-7,res.length-1));
+        console.log('k1',k1);
+        this.base64.push(res);
+      });
+       
+      this.tshow=true;
+      this.bshow=false;
     },
+
+    //文件状态改变时的钩子，添加文件，上传成功，上传失败时都会被调用
     changeUpload(file, fileList) {
-      // const loading = this.$loading({
-      //   lock: true,
-      //   text: 'Loading',
-      //   spinner: 'el-icon-loading',
-      //   background: 'rgba(0, 0, 0, 0.7)'
+      // this.getBase64(file.raw).then(res=>{
+      //   // console.log('res:',res)
+      //   this.base64 = res
+      //   // console.log('base64===', this.base64);
       // });
-      //  setTimeout(() => {
-      //    loading.close();
-      //   this.base64= this.getBase64(file.raw);
-      //   console.log('---==---',this.base64);
-      // }, 500);
-
-      this.pd.base64 = this.getBase64(file.raw);
-
-      this.pd.age1 = this.num1;
-      this.pd.age2 = this.num2;
-
-      this.lh = true;
     },
+
+    //上传文件之前的钩子，参数为上传的文件，若返回 false 或者返回 Promise 且被 reject，则停止上传。
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg" || file.type === "image/png";
       const isLt2M = file.size / 1024 / 1024 < 10;
@@ -122,16 +404,18 @@ export default {
       }
       this.hnum = 0;
       return isJPG && isLt2M;
+      this.getBase64(file.raw);
     },
     handleChange(value) {
-      console.log(value);
+      //console.log(value);
     },
     handleRemove(file, fileList) {
-      console.log(file, fileList);
+      // console.log(file, fileList);
     },
     handlePreview(file) {
-      console.log(file);
+      // console.log(file);
     },
+
     upSuccess(r) {
       if (r.success) {
         this.$message({
@@ -141,113 +425,261 @@ export default {
       }
       // this.uploadDialogVisible = false;
     },
-    submitUpload() {
-      console.log("=====", this.$refs.upload.uploadFiles);
-      if (this.$refs.upload.uploadFiles.length == 0) {
-        this.$message({
-          message: "请先选择图片！",
-          type: "warning"
-        });
-        return;
-      }
-      // let p={
-      //   // "token":this.$store.state.wtoken,
-      //   // "serverip":this.$store.state.serverip,
-      //   "token":'1111',
-      //   "serverip":'222',
-      //   "image":this.pd.base64,
-      //   "xb":this.pd.xb,
-      //   "csrq":this.pd.csrq,
-      //   "xsd":this.pd.xsd
-      // };
+    // submitUpload() {
+    //   if (
+    //     this.$refs.upload.uploadFiles.length == 0 &&
+    //     this.imageUrl == "" &&
+    //     this.hnum != 1
+    //   ) {
+    //     this.$message({
+    //       message: "请先选择图片！",
+    //       type: "warning"
+    //     });
+    //     return;
+    //   }
+    //   let p = [
+    //     {
+    //       token: this.$store.state.wtoken,
+    //       serverip: this.$store.state.serverip,
+    //       image: this.base64,
+    //       xb: this.pd.xb,
+    //       csrq: this.pd.csrq,
+    //       xsd: this.Global.xsd
+    //     },
+    //   ];
+    //   //console.log("xsd", this.Global.xsd);
+    //   //var url='http://10.0.9.175:9439/rlsb';
+    //   var url = this.Global.aport3 + "/rlsb";
 
-      // var url='http://10.0.8.231:9439/rlsb';
-      // var url=this.Global.aport3+"/rlsb";
-      //
-      // this.$api.post(url,p,r => {
-      //   if(r.status){
-      //       this.imgs=r.data;
-      //       this.tshow=false;
-      //       this.bshow=true;
-      //
-      //       // this.uploadDialogVisible=true;
-      //   }else {
-      //
-      //     this.cont="查询无数据";
-      //     this.tshow=true;
-      //     this.bshow=false;
-      //     this.$message.error(r.msg);
-      //   }
-      // });
+    //   this.$api.post(url, p, r => {
+    //     if (r.status) {
+    //       this.imgs = r.data;
+    //       this.tshow = false;
+    //       this.bshow = true;
+    //       this.TotalResult = r.total;
+          
+    //       //this.getBase64(file.raw);
+    //       // this.uplo adDialogVisible=true;
+    //     } else {
+    //       this.cont = "查询无数据";
+    //       this.tshow = true;
+    //       this.bshow = false;
+    //       this.$message.error(r.msg);
+    //     }
+    //   });
+    //    //this.$refs.upload.submit();
+    // },
 
-      //  this.$refs.upload.submit();
-    },
     getBase64(file) {
       return new Promise(function(resolve, reject) {
         let reader = new FileReader();
         let imgResult = "";
         reader.readAsDataURL(file);
+        // 文件读取成功时触发
         reader.onload = function() {
+          // 获取base64编码
           imgResult = reader.result;
+          resolve(imgResult)
         };
+        //出错时触发
         reader.onerror = function(error) {
           reject(error);
         };
+        //读取完成触发，无论成功或者失败
         reader.onloadend = function() {
           resolve(imgResult);
         };
       });
-    },
-    getrlsb() {
-      if (this.hnum == 1) {
-        this.$message.error("请上传图片!");
-        return;
+    }
+  },
+
+  //   getBase64(file) {
+  //     return new Promise(function(resolve, reject) {
+  //       var article_image, image_base64;
+  //       let reader = new FileReader();
+  //       let imgResult = "";
+  //       //获取base64编码
+  //       reader.readAsDataURL(file);
+  //       //文件读取成功时触发
+  //       reader.onload = function() {
+  //         image_base64 = this.result.split(",")[1];
+  //         article_image = image_base64;
+  //         //imgResult = reader.result;
+  //         var params = {
+  //                 imgdata: article_image
+  //         };
+  //         var url = this.Global.aport3 + "/rlsb";
+  //         let p = {
+  //             token: this.$store.state.wtoken,
+  //             serverip: this.$store.state.serverip,
+  //             // "token":'1111',
+  //             // "serverip":'222',
+  //             image: this.base64,
+  //             xb: this.pd.xb,
+  //             csrq: this.pd.csrq,
+  //             xsd: this.Global.xsd,
+  //             //     image1: this.base64,
+  //             //     xb: this.pd.xb,
+  //             //     csrq: this.pd.csrq,
+  //             //     xsd: this.Global.xsd
+  //        };
+         
+  //       this.$api.post(url, p, r => {
+  //         if (r.status) {
+  //           this.imgs = r.data;
+  //           this.tshow = false;
+  //           this.bshow = true;
+  //           this.TotalResult = r.total;
+  //           this.pic.push(res.data.result.url);
+  //           this.dialogImageUrl.push({
+  //                 'url':res.data.result.url
+  //           })
+  //           // this.uplo adDialogVisible=true;
+  //         } else {
+  //           this.cont = "查询无数据";
+  //           this.tshow = true;
+  //           this.bshow = false;
+  //           this.$message.error(r.msg);
+  //         }
+  //       });
+  //       };
+  //       //出错时触发
+  //       reader.onerror = function(error) {
+  //         reject(error);
+  //       };
+  //       //读取完成触发，无论成功或者失败
+  //       // reader.onloadend = function() {
+  //       //   resolve(imgResult);
+  //       // };
+  //     });
+  //   }
+  // },
+  filters: {
+    filteint(n) {
+      var ss = (n+'').split(".");
+      //console.log(ss);
+      if (ss.length > 1) {
+        return parseInt(n * 100) + "%";
       }
-      this.pd.xsd = this.Global.xsd;
-      this.$router.push({ name: "TZSF", query: { row: this.pd } });
+      return n;
     }
   }
 };
 </script>
 
+
+
 <style scoped>
+.kk{
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 530px;
+  overflow-y:auto; 
+  height:430px;  
+  margin-top: 26px;
+}
+
+.nzd{
+  border: 1px solid red;
+}
+/* .imgsb{
+
+} */
+
 .ryhm {
   text-align: center;
   margin: auto;
-  display: flex;
-  justify-content: center;
+}
+.slh {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  position: relative !important;
+  padding-left: 8px;
+}
+.slh span {
+  color: #13d2f7;
+}
+.rowcont1 {
+  width: 390px !important;
+  line-height: 50px;
+  font-size: 16px;
+  padding-right: 10px;
+}
+.rowcont2 {
+  width: 380px !important;
+  font-size: 16px;
+  padding-left: 10px;
+  margin-top: 30px;
+}
+.input-text {
+  text-align: left !important;
+  width: 40% !important;
+  padding-left: 10px;
+  color: #55d5f4;
+}
+.input-input {
+  width: 45% !important;
+}
+.colleft {
+  /* text-align: left; */
 }
 .yyryhm {
   background: url(../../../assets/img/tb/bgry.png) repeat;
-  min-height: 690px;
-  padding: 66px 0 10px 0;
+  min-height: 650px;
+  min-width: 1100px;
+  padding: 20px;
+}
+.kuang {
+  padding: 10px;
+  width: 550px !important; 
+  height: 600px;
+  color: #13d2f7;
+  border: 2px solid rgba(11, 154, 251, 0.9);
+  overflow-x: hidden;
+}
+.kuangr {
   width: 100%;
+  padding: 10px;
+  margin-left: 15px;
+  min-height: 600px;
+  color: #13d2f7;
+  border: 2px solid rgba(11, 154, 251, 0.9);
 }
-.tkin {
-  width: 280px;
-  /* float: left; */
+.crry {
+  width: 47%;
+  border: 2px solid rgba(33, 148, 226, 1);
+  border-radius: 3px;
+  float: left;
+  margin: 5px 10px 10px 10px;
+  background: url(../../../assets/img/tb/brj.png) no-repeat top right
+    rgba(1, 95, 159, 0.47);
 }
-.tkimimg {
-  height: 340px;
-  background: url(../../../assets/img/tb/txk.png) no-repeat;
-}
-.tkinr {
-  background: url(../../../assets/img/tb/line.png) no-repeat;
-  padding-left: 350px;
-  margin-left: -50px;
+.crryfont {
+  font-size: 14px;
+  color: rgba(205, 229, 254, 1);
+  text-align: left;
 }
 .bnt {
-  margin-top: -91px;
-  margin-left: 60px;
-  width: 160px;
+  margin-top: 40px;
+  margin-left: 160px;
+  width: 200px;
   height: 44px;
   cursor: pointer;
-  background: url(../../../assets/img/tb/bnt1.png) no-repeat;
+  background: url(../../../assets/img/tb/bnt01.png) no-repeat;
 }
 .bnt:hover {
-  width: 160px;
+  width: 200px;
   height: 44px;
-  background: url(../../../assets/img/tb/bnt2.png) no-repeat;
+  background: url(../../../assets/img/tb/bnt02.png) no-repeat;
+}
+.arrow_line {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 3px solid #01fbef;
 }
 .sex {
   width: 30px;
@@ -273,14 +705,67 @@ export default {
   line-height: 5px;
   background: rgba(14, 180, 223, 1);
   border: 1px solid rgba(19, 210, 247, 1);
+  /* margin-left: -40px; */
+
+}
+.yline {
+  width: 100%;
+  height: 1px;
+  background: rgba(33, 148, 226, 1);
+  margin-bottom: 10px;
+}
+.tpline{
+  width: 100%;
+  height: 1px;
+  background: rgb(33, 150, 228);
+  margin-bottom: 10px;
+  margin-top: -20px;
+  position: relative;
+  top: 10px;
+  left: 0;
+}
+.total {
+  padding-left: 15px;
+  line-height: 40px;
+  color: #13d2f7;
+  text-align: left;
+}
+.scbut{
+  text-align: center;
+  line-height: 26px;
+  color: #13d2f7;
+  cursor: pointer;
+  position: absolute;
+  top:5px;
+  left: 0px;
+  /* margin-bottom: 10px; */
+  border: 1px solid rgb(33, 150, 228);
+  width: 70px;
+  height: 25px;
+}
+.scbut:hover{
+  color: #ffffff;
+  border: 1px solid #fff;
+}
+.imgcs {
+  border-radius: 15px;
+  border: 1px solid rgba(11, 154, 251, 0.6);
+  padding: 5px;
+  background: #0b5298;
+}
+.yzd {
+  border-radius: 15px;
+  border: 1px solid red;
+  padding: 5px;
+  background: #0b5298;
 }
 .slider {
-  margin-left: 80px !important;
-  margin-top: 5px;
+  margin-left: 90px !important;
+  margin-top: 12px;
 }
 </style>
 <style>
-.tkin .avatar-uploader .el-upload {
+.yyryhm .avatar-uploader .el-upload {
   width: 160px;
   height: 160px;
   background: rgba(24, 201, 250, 0.2);
@@ -292,7 +777,7 @@ export default {
   margin-top: 49px;
 }
 
-.tkin .avatar-uploader-icon {
+.yyryhm .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
   width: 160px;
@@ -301,12 +786,21 @@ export default {
   text-align: center;
   background: url(../../../assets/img/tb/tx.png) no-repeat;
 }
-.tkin .avatar {
+.yyryhm .avatar {
   width: 160px;
   height: 160px;
   display: block;
+  margin-left: 30px;
 }
-.tkin .el-icon-plus:before {
+.ava{
+  width: 160px;
+  height: 160px;
+  display: block;
+  margin-left: 30px;
+  border-radius: 10px;
+  border: 2px solid #fff;
+}
+.yyryhm .el-icon-plus:before {
   content: none;
 }
 .yyryhm .el-input-number--small {
@@ -336,18 +830,5 @@ export default {
 .yyryhm .el-button.is-circle {
   border-radius: 50%;
   padding: 2px;
-}
-/* 可以设置不同的进入和离开动画 */
-/* 设置持续时间和动画函数 */
-.slide-fade-enter-active {
-  transition: all 0.2s ease;
-}
-.slide-fade-leave-active {
-  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
-}
-.slide-fade-enter, .slide-fade-leave-to
-/* .slide-fade-leave-active for below version 2.1.8 */ {
-  transform: translateX(900px);
-  opacity: 0;
 }
 </style>

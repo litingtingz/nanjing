@@ -191,7 +191,12 @@ export default {
         image: this.base64,
         xb: this.pd.xb,
         csrq: this.pd.csrq,
-        xsd: this.Global.xsd
+        xsd: this.Global.xsd,
+        //     image1: this.base64,
+        //     xb: this.pd.xb,
+        //     csrq: this.pd.csrq,
+        //     xsd: this.Global.xsd
+
       };
       console.log("xsd", this.Global.xsd);
       // var url='http://10.0.9.175:9439/rlsb';
@@ -218,13 +223,17 @@ export default {
       return new Promise(function(resolve, reject) {
         let reader = new FileReader();
         let imgResult = "";
+        //获取base64编码
         reader.readAsDataURL(file);
+        //文件读取成功时触发
         reader.onload = function() {
           imgResult = reader.result;
         };
+        //出错时触发
         reader.onerror = function(error) {
           reject(error);
         };
+        //读取完成触发，无论成功或者失败
         reader.onloadend = function() {
           resolve(imgResult);
         };
