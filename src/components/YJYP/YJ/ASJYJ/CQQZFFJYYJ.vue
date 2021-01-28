@@ -176,7 +176,6 @@ export default {
     window.ffvm = this;
     this.getGX();
     createMapL();
-    
   },
   methods: {
     pageSizeChange(val) {

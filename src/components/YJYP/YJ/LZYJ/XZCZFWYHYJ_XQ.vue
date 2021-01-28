@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="yymain tshu">
     <div class="yycontent" style="margin-top: 0px!important;">
-      <div class="mb-15">
+      <div class="mb-15 position-re">
         <div class="yylbt mb-15">地址信息</div>
         <el-row type="flex" class="yyf">
          <el-col :span="24" class="stu-left">
@@ -18,13 +18,21 @@
                <span>警务责任区：</span>
                   {{baseData.JWZRQ}}
              </el-col>
-             <el-col :span="24" class="stu-col-row2">
+             <!-- <el-col :span="24" class="stu-col-row2">
                <span>详情地址：</span>
                   {{baseData.XXDZDESC}}
+             </el-col> -->
+             <el-col :span="24" class="stu-col-row2" style="height:40px">
+               <span style="vertical-align:top">详情地址：</span>
+                  <!-- {{baseData.XXDZDESC}} -->
+                  <el-tooltip class="item" effect="dark" :content="baseData.XXDZDESC" placement="top-start">
+                    <div class="dz-cus">{{baseData.XXDZDESC}}</div>
+                  </el-tooltip>
              </el-col>
            </el-row>
          </el-col>
         </el-row>
+        <el-button type="primary" size="small" class="address-btn" @click="addressHandle">{{sfyxDzMap.yx=='0'?'无效地址':'有效地址'}}</el-button>
       </div>
       <div class="mb-15">
         <div class="yylbt mb-15">临住信息</div>
@@ -200,9 +208,9 @@
          </el-table-column>
          <el-table-column
          label="操作" width="80">
-         <template slot-scope="scope">
+         <div slot-scope="scope">
          <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="anjDetail(scope.row)"></el-button>
-         </template>
+         </div>
          </el-table-column>
        </el-table>
 
@@ -264,6 +272,13 @@ export default {
       detailsDialogVisible:false,
       form:{},
       queryClzt:'',
+
+      sfyxDzMap:{
+        mc:'',
+        bm:'',
+        mark:'',
+        yx:''
+      },
     }
   },
   activated(){
@@ -271,6 +286,7 @@ export default {
     this.row=this.$route.query.row;
     this.queryClzt=this.$route.query.row.CLZT;
     this.baseData=this.row;
+    this.getSfyxDz();
     this.getcwzxx(this.row.BZHDZID);
     this.leiType=this.$route.query.leiType;
     this.getList(this.CurrentPage, this.pageSize, this.pd);
@@ -298,6 +314,32 @@ export default {
      this.withname=this.$store.state.uname;
   },
   methods: {
+    getSfyxDz(){
+      this.$api.post(this.Global.aport4+'/api/ywwxdzController/getYwWxdzByBm',{bm:this.row.BZHDZID},r=>{
+        if(r.success){
+          let data = r.data.resultList
+          this.sfyxDzMap.bm = this.row.BZHDZID;
+          this.sfyxDzMap.mc = data.includes('mc')?data.mc:''
+          this.sfyxDzMap.mark = data.includes('mark')?data.mark:''
+          this.sfyxDzMap.yx = data.includes('yx')?data.yx:''
+        }
+      })
+    },
+    addressHandle(){
+      let p=Object.assign({
+        userCode:this.$store.state.uid,
+        userName:this.$store.state.uname,
+        orgJB:this.$store.state.juState,
+        orgCode:this.$store.state.orgid,
+        token:this.$store.state.token,
+      },this.sfyxDzMap)
+      p.yx = this.sfyxDzMap.yx=='0'?'1':this.sfyxDzMap.yx=='1'?'0':'0'
+      this.$api.post(this.Global.aport4+'/api/ywwxdzController/setOnOrOff',p,r=>{
+        if(r.success){
+          this.sfyxDzMap.yx = p.yx
+        }
+      })
+    },
     pageSizeChange(val) {
       this.pageSize=val;
       this.getList(this.CurrentPage, this.pageSize, this.pd);

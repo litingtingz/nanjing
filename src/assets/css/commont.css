@@ -592,3 +592,16 @@
 .compare-icon{
   font-weight: bold!important; 
 }
+.address-btn{
+  position: absolute;
+  right: 32px;
+  top: 78px;
+}
+.dz-cus{
+  display: inline-block;
+  width: 70%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  word-break: break-all;
+}

@@ -74,7 +74,7 @@
     </div>
     <div class="yycontent">
        <div class="yylbt mb-15">甄别信息列表</div>
-       <COUNT :ccPd="ccPd" :random="random" :typeCount="true"></COUNT>
+       <!-- <COUNT :ccPd="ccPd" :random="random" :typeCount="true"></COUNT> -->
         <el-row class="mb-15">
          <el-button type="primary"  size="small" @click="$router.go(-1)" style="float:right;margin-top:-35px">返回</el-button>
        </el-row>

@@ -37,6 +37,9 @@
 .text-center {
   text-align: center;
 }
+.position-re{
+  position: relative;
+}
 html,body{
   /* height: 100%; */
   background: #146AB3;
