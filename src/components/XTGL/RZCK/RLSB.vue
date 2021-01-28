@@ -29,24 +29,14 @@
                     <div class="scbut" @click="scbut()">上传图片</div>
                     <div class="tpline"></div>
                       <div  class="kk">
-                        <div v-for="(p,i) of imageUrls" :key="i" style="border: 1px solid rgb(33, 150, 228);flex-basis: 45%; margin-bottom: 20px; margin-right:10px;height:330px" >
+                        <div v-for="(p,i) of imageUrls" :key="i" style="border: 1px solid rgb(33, 150, 228);flex-basis: 45%; margin-bottom: 10px; margin-right:10px;height:170px" >
                               <!-- <img  :src="p" class="avatar"  style="padding:10px"> -->
                               <a href="#" style="cursor:pointer">
                                 <img  :src="p.url" :class="sbtp===i?'ava':'avatar'"  @click="getImg(i,p)" style="padding:10px">
                               </a>
                                <el-col :span="24">
-                                  <span class="input-text" style="float:left;margin-top:10px"> &nbsp;相似度：</span>
-                                  <slider :min='0' :max='100' v-model="pxr" class="input-input" input-size="mini" style="margin-top:20px;"></slider>
-                                </el-col>
-                                <el-col :span="24">
-                                  <span class="input-text" style="float:left;margin-top:10px">人员性别：</span>
-                                    <el-button style="margin-top:10px;float:left" :class="p.xshow ? 'sex' : 'sexx'"  circle @click="getXB(1,i)">男</el-button>
-                                    <el-button style="margin-top:10px" :class="p.fshow ? 'sex' : 'sexx'"  circle @click="getXB(2,i)">女</el-button>
-                                </el-col>
-                                <el-col :span="24">
-                                  <span class="input-text"  style="float:left;margin-top:10px;">年龄范围：</span>
-                                    <el-input-number style="margin-top:10px;margin-left:-40px" v-model="p.num1"  size="small" controls-position="right" @change="handleChange" :min="1" :max="150" ></el-input-number>  -
-                                    <el-input-number style="margin-top:10px" v-model="p.num2" size="small" controls-position="right" @change="handleChange" :min="1" :max="150" ></el-input-number>
+                                  <span class="input-text" style="float:left;margin-top:5px"> &nbsp;相似度：</span>
+                                  <slider :min='0' :max='100' v-model="pxr" class="input-input" input-size="mini" style="margin-top:17px;"></slider>
                                 </el-col>
                         </div>
                  </div>
@@ -56,9 +46,9 @@
            <div class="bnt" @click="getrlsb()"> </div>
            <!-- <div class="bnt" @click="submitUpload()"> </div> -->
            <div class="arrow_line" style="left:0px;top:0px; border-bottom-width:0;border-right-width:0"></div>
-           <div class="arrow_line" style="left:530px;top:0px; border-bottom-width:0;border-left-width:0"></div>
+           <div class="arrow_line" style="left:380px;top:0px; border-bottom-width:0;border-left-width:0"></div>
            <div class="arrow_line" style="left:0px;bottom:0px; border-top-width:0;border-right-width:0"></div>
-           <div class="arrow_line" style="left:530px;bottom:0px; border-top-width:0;border-left-width:0"></div>
+           <div class="arrow_line" style="left:380px;bottom:0px; border-top-width:0;border-left-width:0"></div>
          </el-aside>
          <!-- 左侧侧边栏容器结束 -->
          <!-- 右侧侧边栏容器开始 -->
@@ -75,14 +65,14 @@
                              <div v-for="item in result" >
                                <el-row class="crry">
                                   <el-col :span="9" style="padding:10px 5px;">
-                                    <img :src="item.imageBase64" :class="item.istsry==='y'?'yzd':'imgcs'" width="110" height="140">
+                                    <img :src="item.imageBase64"  width="110" height="140">
                                   </el-col>
                                   <el-col  :span="15" class="crryfont" >
                                   <p style="text-align:right;padding-right:5px;margin-top:5px; color:#FFFF04; font-size:16px; font-weight:400;">
                                     {{item.xsd | filteint}}<br/>匹配</p>
-                                  <p class="slh" style="margin-top:-38px;">国家地区：<span>{{item.gjdq}}</span></p>
-                                  <p class="slh" >证件号码：<span>{{item.sfzh}}</span></p>
+                                  <p class="slh" style="margin-top:-38px;">国家地区：<span :class="item.istsry==='y'?'gjj':'gj'">{{item.gjdq}}</span></p>
                                   <p class="slh" >人员性别：<span>{{item.xb}}</span></p>
+                                  <p class="slh" >证件号码：<span>{{item.sfzh}}</span></p>
                                   <p class="slh" >中文姓名：<span>{{item.xm}}</span></p>
                                   <p class="slh" >英文姓名：<span>{{item.ywxm}}</span></p>
                                   <!-- <p class="slh" >英文姓名：<span :title="item.ywx+item.ywm">{{item.ywx}}{{item.ywm}}</span></p> -->
@@ -92,9 +82,9 @@
                            </div> 
                         </div> 
                    <!-- </div> -->
-                  <div class="arrow_line" style="left:565px;top:0px; border-bottom-width:0;border-right-width:0"></div>
+                  <div class="arrow_line" style="left:415px;top:0px; border-bottom-width:0;border-right-width:0"></div>
                   <div class="arrow_line" style="right:0px;top:0px; border-bottom-width:0;border-left-width:0"></div>
-                  <div class="arrow_line" style="left:565px;bottom:0px; border-top-width:0;border-right-width:0"></div>
+                  <div class="arrow_line" style="left:415px;bottom:0px; border-top-width:0;border-right-width:0"></div>
                   <div class="arrow_line" style="right:0px;bottom:0px; border-top-width:0;border-left-width:0"></div>
          </el-container>
         <!-- 右侧侧边栏容器结束 -->
@@ -575,8 +565,9 @@ export default {
   justify-content: center;
   flex-direction: row;
   flex-wrap: wrap;
-  width: 530px;
+  width: 380px;
   overflow-y:auto; 
+  overflow-x: hidden;
   height:430px;  
   margin-top: 26px;
 }
@@ -597,10 +588,17 @@ export default {
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
   position: relative !important;
-  padding-left: 8px;
+  padding-left: 0px;
 }
 .slh span {
   color: #13d2f7;
+}
+.gj {
+  color: #13d2f7  !important;
+}
+.gjj{
+  color: red  !important;
+  font-weight: bold;
 }
 .rowcont1 {
   width: 390px !important;
@@ -616,12 +614,21 @@ export default {
 }
 .input-text {
   text-align: left !important;
-  width: 40% !important;
-  padding-left: 10px;
+  width: 45% !important;
+  padding-left: 2px;
   color: #55d5f4;
 }
-.input-input {
+/* .input-text1 {
+  text-align: left !important;
   width: 45% !important;
+  padding-left: 2px;
+  color: #55d5f4;
+} */
+.input-input {
+  /* float: left; */
+  /* margin-left: -10px; */
+  margin-top: 8px;
+  width: 25% !important;
 }
 .colleft {
   /* text-align: left; */
@@ -634,7 +641,7 @@ export default {
 }
 .kuang {
   padding: 10px;
-  width: 550px !important; 
+  width: 400px !important; 
   height: 600px;
   color: #13d2f7;
   border: 2px solid rgba(11, 154, 251, 0.9);
@@ -649,11 +656,11 @@ export default {
   border: 2px solid rgba(11, 154, 251, 0.9);
 }
 .crry {
-  width: 47%;
+  width: 31%;
   border: 2px solid rgba(33, 148, 226, 1);
   border-radius: 3px;
   float: left;
-  margin: 5px 10px 10px 10px;
+  margin: 5px 7px 7px 7px;
   background: url(../../../assets/img/tb/brj.png) no-repeat top right
     rgba(1, 95, 159, 0.47);
 }
@@ -664,7 +671,7 @@ export default {
 }
 .bnt {
   margin-top: 40px;
-  margin-left: 160px;
+  margin-left: 90px;
   width: 200px;
   height: 44px;
   cursor: pointer;
@@ -755,7 +762,8 @@ export default {
 }
 .yzd {
   border-radius: 15px;
-  border: 1px solid red;
+  /* border: 1px solid red; */
+  color: red;
   padding: 5px;
   background: #0b5298;
 }
@@ -787,16 +795,17 @@ export default {
   background: url(../../../assets/img/tb/tx.png) no-repeat;
 }
 .yyryhm .avatar {
-  width: 160px;
-  height: 160px;
+  width: 100px;
+  height: 100px;
   display: block;
-  margin-left: 30px;
+  /* margin-left: px; */
+  margin: 0px auto;
 }
 .ava{
-  width: 160px;
-  height: 160px;
+  width: 100px;
+  height: 100px;
   display: block;
-  margin-left: 30px;
+  margin: 0px auto;
   border-radius: 10px;
   border: 2px solid #fff;
 }
@@ -808,16 +817,22 @@ export default {
   line-height: 30px;
 }
 .yyryhm .el-input-number.is-controls-right .el-input__inner {
-  padding-left: 5px;
-  padding-right: 23px;
+  /* margin-left:10px; */
+  width: 30px;
+  height: 28px;
+  padding-left: 3px;
+  padding-right:10px;
   background: #054473;
+  font-size: 10px;
   border: 1px solid rgba(19, 210, 247, 1);
   color: #13d2f7;
 }
 .yyryhm .el-input-number--small .el-input-number__decrease,
 .yyryhm .el-input-number--small .el-input-number__increase {
-  width: 15px !important;
-  font-size: 13px;
+  width: 10px !important;
+  font-size: 10px;
+  /* float: right; */
+  right:10px !important;
   background: linear-gradient(
     0deg,
     rgba(0, 255, 234, 1),

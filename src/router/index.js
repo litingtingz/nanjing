@@ -18,6 +18,12 @@ export default new Router({
     component:resolve => require(['@/components/indexNew1'], resolve),
     },
     {
+      path:'/NEWRYHX_XQ',
+      name:'NEWRYHX_XQ',
+      meta: {logined:true},
+      component:resolve => require(['@/components/YJYP/YP/LXSYP/NewRyhx_xq'], resolve),
+      },
+    {
     path:'/wgCenter',
     name:'wgCenter',
     meta: {logined:true},
