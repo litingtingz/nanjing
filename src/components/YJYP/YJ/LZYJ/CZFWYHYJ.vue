@@ -385,8 +385,8 @@ export default {
     this.juState=this.$store.state.juState;
     this.token=this.$store.state.token;
     // this.getFJ();
-    this.getFj();
-    this.getZrq();
+    // this.getFj();
+    // this.getZrq();
 
   },
 

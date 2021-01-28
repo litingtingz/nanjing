@@ -4,7 +4,7 @@
      <div class="top">
        <i class="el-icon-search" style="line-height:2.2;margin-right:5px"></i>
        <el-input placeholder="" v-model="content" class="inputs" @keyup.enter.native="CurrentPage=1;getList(CurrentPage,pageSize)">
-          <el-select v-model="type" slot="prepend" placeholder="请选择" max="500" style="width:100px;">
+          <el-select v-model="type" slot="prepend" placeholder="请选择" max="500" style="width:100px;" @change="typeChange">
             <el-option label="综合" value="all"></el-option>
             <el-option label="单位" value="org"></el-option>
             <el-option label="人员" value="user"></el-option>
@@ -60,7 +60,7 @@
             </el-row>
             </el-card>
         </el-row>
-        <el-row v-for="(item,index) in items" :key="index" v-else>
+        <el-row v-for="(item,ind) in items" :key="ind" v-else>
           <el-card class="box-card" style="margin:5px 0;">
             <el-row type="flex">
               <el-col :span="24">
@@ -70,10 +70,13 @@
                     <el-row type="flex"  class="t-detail">
                       <el-col :span="22">
                         <el-row class="t-mb15">
-                          <el-col :span="6" class="t-el-content"><div class="t-el-text">性别：</div><div class="t-el-sub">{{item.xb}}</div></el-col>
-                          <el-col :span="6" class="t-el-content"><div class="t-el-text">出生日期：</div><div class="t-el-sub">{{item.csrq}}</div></el-col>
+                          <el-col v-for="(card,cards) in cardData" :key="cards" :span="6" class="t-el-content">
+                            <div class="t-el-text">{{card.mc}}：</div>
+                            <div class="t-el-sub">{{item[card.dm]}}</div>
+                          </el-col>
+                          <!-- <el-col :span="6" class="t-el-content"><div class="t-el-text">出生日期：</div><div class="t-el-sub">{{item.csrq}}</div></el-col>
                           <el-col :span="6" class="t-el-content"><div class="t-el-text">国家地区：</div><div class="t-el-sub">{{item.gjdqmc}}</div></el-col>
-                          <el-col :span="6" class="t-el-content"><div class="t-el-text">证件号码：</div><div class="t-el-sub">{{item.zjhm}}</div></el-col>
+                          <el-col :span="6" class="t-el-content"><div class="t-el-text">证件号码：</div><div class="t-el-sub">{{item.zjhm}}</div></el-col> -->
                         </el-row>
                         <el-row>
                           <el-col :span="24" class="t-el-content"><div class="t-el-text">命中信息：</div><div class="t-el-sub"><span v-html='item.cusHighlight'></span></div></el-col>
@@ -119,6 +122,7 @@ export default {
       pageSize: 5,
       TotalResult: 0,
       items:[],
+      dwitems:[],
       type:'',
       content:'',
       info:{lz:0,cz:0,qz:0,ajxx:0,crj:0},
@@ -126,7 +130,68 @@ export default {
       check:7,
       tipShow:false,
       cardData:[],
-
+      dwData:[
+        {
+          mc:'单位名称',
+          dm:'xb'
+        },
+        {
+          mc:'单位地址',
+          dm:'csrq'
+        },
+        {
+          mc:'所属分局',
+          dm:'gjdqmc'
+        },
+        {
+          mc:'所属派出所',
+          dm:'gjdqmc'
+        },
+        {
+          mc:'所属责任区',
+          dm:'gjdqmc'
+        },
+      ],
+      ajData:[
+        {
+          mc:'案件名称',
+          dm:'xb'
+        },
+        {
+          mc:'案件编号',
+          dm:'csrq'
+        },
+        {
+          mc:'案件类别',
+          dm:'gjdqmc'
+        },
+        {
+          mc:'受理单位',
+          dm:'gjdqmc'
+        },
+        {
+          mc:'受理时间',
+          dm:'gjdqmc'
+        },
+      ],
+      dzData:[
+        {
+          mc:'详细地址',
+          dm:'xb'
+        },
+        {
+          mc:'所属分局',
+          dm:'csrq'
+        },
+        {
+          mc:'所属派出所',
+          dm:'gjdqmc'
+        },
+        {
+          mc:'所属责任区',
+          dm:'gjdqmc'
+        },
+      ],
     }
   },
     activated(){
@@ -145,6 +210,15 @@ export default {
     handleCurrentChange(val) {
       this.getList(val, this.pageSize,this.datatype);
       console.log(`当前页: ${val}`);
+    },
+    typeChange(){
+      if(this.type == 'org'){
+        this.cardData = this.dwData
+      }else if(this.type == 'aj'){
+        this.cardData = this.ajData
+      }else if(this.type == 'addr'){
+        this.cardData = this.dzData
+      }
     },
     getListType(currentPage,showCount,type){
       if(type=='lz'){this.check=0}
