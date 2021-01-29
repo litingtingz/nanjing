@@ -225,7 +225,7 @@
               </div>
             </el-col> -->
             <el-col :xl="12" :lg="12">
-              <p class="chart-title mb-10">前五国家</p>
+              <p class="chart-title mb-10">前五国家/地区</p>
               <!-- <div class="chart-outer ml-10">
                 <div class="chart-outer-label">分析维度</div>
                 <el-select class="chart-select" v-model="analyArr.type_3" @change="analyFun(3)" placeholder="请选择" size="medium">

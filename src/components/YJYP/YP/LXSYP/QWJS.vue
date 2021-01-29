@@ -100,8 +100,8 @@ export default {
     }
   },
     activated(){
-      this.type=this.$route.query.stype;
-      this.content=this.$route.query.zjhmes;
+      this.type=this.$route.query.stype;//查询类型
+      this.content=this.$route.query.zjhmes;//查询证件号码
       this.getList(this.CurrentPage, this.pageSize,this.$store.state.queryType);
     },
   mounted() {
@@ -143,8 +143,7 @@ export default {
     getList(currentPage,showCount,type){
       this.check=7;
       this.tipShow=false;
-      if(this.content!=this.$route.query.zjhmes || this.type!=this.$route.query.stype)
-      {
+      if(this.content!=this.$route.query.zjhmes || this.type!=this.$route.query.stype){
         this.$router.push({name:'QWJS',query:{zjhmes:this.content,stype:this.type}});
       }
       this.items=[];
@@ -158,7 +157,7 @@ export default {
         "userCode":this.$store.state.uid,
         "userName":this.$store.state.uname
       };
-      if(type!="" && type!=undefined){
+      if(type!="" && type!=undefined){//type
          this.datatype=type;
          this.getListType(currentPage,showCount,type);
          this.$api.post(this.Global.aport6+"/api/es/search/generalSearch",p,r=>{
@@ -170,22 +169,22 @@ export default {
          })
       }else {
         this.datatype="";
-      if(this.content==undefined || this.content==""){
-        this.$message.error("请输入查询内容!");return ;
-      }
-      if(this.type==undefined || this.type==""){
-        this.$message.error("请选择类型!");return ;
-      }
-     this.$api.post(this.Global.aport6+"/api/es/search/generalSearch",p,r=>{
-       if(r.success){
-         (r.respondResult.respondData==null||r.respondResult.respondData.length==0)?this.items=[]:this.items=r.respondResult.respondData;
-         this.items.length==0?this.tipShow=true:this.tipShow=false;
-         (r.respondResult.respondCount==null||r.respondResult.respondCount=={})?this.info={lz:0,cz:0,qz:0,ajxx:0,crj:0}:this.info=r.respondResult.respondCount;
-         this.TotalResult=r.respondResult.totalSize;
-       }else{
-         this.info={lz:0,cz:0,qz:0,ajxx:0,crj:0}
-       }
-     })
+        if(this.content==undefined || this.content==""){
+          this.$message.error("请输入查询内容!");return ;
+        }
+        if(this.type==undefined || this.type==""){
+          this.$message.error("请选择类型!");return ;
+        }
+        this.$api.post(this.Global.aport6+"/api/es/search/generalSearch",p,r=>{
+          if(r.success){
+            (r.respondResult.respondData==null||r.respondResult.respondData.length==0)?this.items=[]:this.items=r.respondResult.respondData;
+            this.items.length==0?this.tipShow=true:this.tipShow=false;
+            (r.respondResult.respondCount==null||r.respondResult.respondCount=={})?this.info={lz:0,cz:0,qz:0,ajxx:0,crj:0}:this.info=r.respondResult.respondCount;
+            this.TotalResult=r.respondResult.totalSize;
+          }else{
+            this.info={lz:0,cz:0,qz:0,ajxx:0,crj:0}
+          }
+        })
        }
       this.$store.commit('getQueryType',this.datatype);
     },

@@ -6,7 +6,7 @@
        <el-input placeholder="" v-model="content" class="inputs" @keyup.enter.native="CurrentPage=1;getList(CurrentPage,pageSize)">
           <el-select v-model="type" slot="prepend" placeholder="请选择" max="500" style="width:100px;" @change="typeChange">
             <el-option label="综合" value="all"></el-option>
-            <el-option label="单位" value="org"></el-option>
+            <el-option label="单位" value="swdw"></el-option>
             <el-option label="人员" value="user"></el-option>
             <el-option label="案件" value="aj"></el-option>
             <el-option label="地址" value="addr"></el-option>
@@ -64,26 +64,17 @@
           <el-card class="box-card" style="margin:5px 0;">
             <el-row type="flex">
               <el-col :span="24">
-                <div class="shover" @click="$router.push({name:'RYHX_XQ',query:{zjhm:item.zjhm,zjhmes:content,stype:type,gjdq:item.gjdq}})">
+                <div class="shover" @click="getRYXX(item)">
                   <div class="list">
                     <p style="margin-bottom:15px!important"><b>{{item.ywxm}}</b></p>
                     <el-row type="flex"  class="t-detail">
-                      <el-col :span="22">
+                      <el-col :span="24">
                         <el-row class="t-mb15">
                           <el-col v-for="(card,cards) in cardData" :key="cards" :span="6" class="t-el-content">
                             <div class="t-el-text">{{card.mc}}：</div>
                             <div class="t-el-sub">{{item[card.dm]}}</div>
                           </el-col>
-                          <!-- <el-col :span="6" class="t-el-content"><div class="t-el-text">出生日期：</div><div class="t-el-sub">{{item.csrq}}</div></el-col>
-                          <el-col :span="6" class="t-el-content"><div class="t-el-text">国家地区：</div><div class="t-el-sub">{{item.gjdqmc}}</div></el-col>
-                          <el-col :span="6" class="t-el-content"><div class="t-el-text">证件号码：</div><div class="t-el-sub">{{item.zjhm}}</div></el-col> -->
-                        </el-row>
-                        <el-row>
-                          <el-col :span="24" class="t-el-content"><div class="t-el-text">命中信息：</div><div class="t-el-sub"><span v-html='item.cusHighlight'></span></div></el-col>
-                        </el-row>
-                      </el-col>
-                      <el-col :span="2">
-                        <!-- <el-button type="text" title="详情">详情</el-button> -->
+                        </el-row>                     
                       </el-col>
                     </el-row>
                   </div>
@@ -111,7 +102,66 @@
           </el-pagination>
         </div>
     </div>
-
+    <el-dialog :title="DetailTitle" :visible.sync="DetailDialogVisible">
+           <el-table
+              :data="DiaTableData"
+              style="width: 100%">
+                <el-table-column
+                  label="照片">
+                  <template slot-scope="scope">
+                    <div v-if="scope.row.photo">
+                     <el-popover placement="right" title="" trigger="hover">
+                       <img :src="scope.row.photo"  style="max-width:700px; max-height:700px;"/>
+                       <img slot="reference" :src="scope.row.photo" :alt="scope.row.photo"  width="50" height="50">
+                     </el-popover>
+                    </div>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="xb"
+                  label="性别">
+                </el-table-column>
+                <el-table-column
+                  prop="csrq"
+                  label="出生日期">
+                </el-table-column>
+                <el-table-column
+                  prop="gjdqmc"
+                  label="国家地区">
+                </el-table-column>                                    
+                <el-table-column
+                  prop="zjhm"
+                  label="证件号码">
+                  <div slot-scope="scope">
+                    <span
+                      style="color:yellow; cursor:pointer"
+                      @click="gotos(scope.row.zjhm,scope.row.gjdq)">{{scope.row.zjhm}}</span>
+                  </div>
+                </el-table-column>
+            </el-table>
+            <div class="middle-foot mt-10">
+               <div class="page-msg">
+                 <div class="crrcolor">
+                 共{{TotalResult}}条记录
+                 </div>
+               </div>
+               <el-pagination
+                  background
+                 @current-change="DetailhandleCurrentChange"
+                 :current-page.sync ="DetailCurrentPage"
+                 :page-size="DetailpageSize"
+                 layout="prev, pager, next"
+                 :total="DetailTotalResult">
+               </el-pagination>
+             </div>
+           <div slot="footer">
+             <img src="../assets/img/qx.png" border="0" @click="DetailDialogVisible = false" style="cursor:pointer" >
+           </div>
+          <div class="arrow_line" style="left:0px;top:0px; border-bottom-width:0;border-right-width:0"></div>
+          <div class="arrow_line" style="right:0px;top:0px; border-bottom-width:0;border-left-width:0"></div>
+          <div class="arrow_line" style="left:0px;bottom:0px; border-top-width:0;border-right-width:0"></div>
+          <div class="arrow_line" style="right:0px;bottom:0px; border-top-width:0;border-left-width:0"></div>
+      </el-dialog>
    </div>
 </template>
 <script scoped>
@@ -133,70 +183,79 @@ export default {
       dwData:[
         {
           mc:'单位名称',
-          dm:'xb'
+          dm:'dwzwmc'
         },
         {
           mc:'单位地址',
-          dm:'csrq'
+          dm:'dwdz'
         },
         {
           mc:'所属分局',
-          dm:'gjdqmc'
+          dm:'ssfjmc'
         },
         {
           mc:'所属派出所',
-          dm:'gjdqmc'
+          dm:'sspcsmc'
         },
         {
           mc:'所属责任区',
-          dm:'gjdqmc'
+          dm:'sszrqmc'
         },
       ],
       ajData:[
         {
           mc:'案件名称',
-          dm:'xb'
+          dm:'ajmc'
         },
         {
           mc:'案件编号',
-          dm:'csrq'
+          dm:'asjbh'
         },
         {
           mc:'案件类别',
-          dm:'gjdqmc'
+          dm:'asjlxmc'
         },
         {
           mc:'受理单位',
-          dm:'gjdqmc'
+          dm:'sldwmc'
         },
         {
           mc:'受理时间',
-          dm:'gjdqmc'
+          dm:'slsj'
         },
       ],
       dzData:[
         {
           mc:'详细地址',
-          dm:'xb'
+          dm:'xxdz'
         },
         {
           mc:'所属分局',
-          dm:'csrq'
+          dm:'ssfjmc'
         },
         {
           mc:'所属派出所',
-          dm:'gjdqmc'
+          dm:'sspcsmc'
         },
         {
           mc:'所属责任区',
-          dm:'gjdqmc'
+          dm:'sszrqmc'
         },
       ],
+      DetailTitle:'详情',
+      dialogType:'',
+      DetailDialogVisible:false,
+      DiaTableData:[],
+      DetailPd:{},
+      DetailUrl:'',
+      DetailCurrentPage:1,
+      DetailpageSize:5,
+      DetailTotalResult:0,
     }
   },
     activated(){
-      this.type=this.$route.query.stype;
-      this.content=this.$route.query.zjhmes;
+      this.type=this.$route.query.stype;//查询类型
+      this.content=this.$route.query.zjhmes;//查询证件号码
       this.getList(this.CurrentPage, this.pageSize,this.$store.state.queryType);
     },
   mounted() {
@@ -205,14 +264,62 @@ export default {
   methods: {
     pageSizeChange(val) {
       this.getList(this.CurrentPage, val,this.datatype);
-      console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
       this.getList(val, this.pageSize,this.datatype);
-      console.log(`当前页: ${val}`);
+    },
+    DetailhandleCurrentChange(val){
+      this.DetailCurrentPage = val
+      this.getListRYXX(this.DetailCurrentPage,this.DetailpageSize,this.DetailUrl,this.DetailPd)
+    },
+    getListRYXX(currentPage,showCount,url,pd){
+      pd.page=currentPage;
+      pd.pageSize=showCount;
+      pd.userName=this.$store.state.uname;
+      pd.userCode=this.$store.state.uid;
+      pd.token=this.$store.state.token;
+      this.$api.post(this.Global.aport6 + url,pd,r=>{
+        if(r.success){
+          this.DiaTableData = r.respondResult.respondData
+          this.DetailTotalResult = r.respondResult.totalSize
+        }
+      })
+    },
+    getRYXX(data){
+      if(this.type == 'swdw'){
+        this.DetailTitle="单位人员信息详情";
+        this.dialogType="dw";
+        this.DetailUrl="/api/es/search/searchSsdw";
+        this.DetailPd={
+          paramMap:{
+            dwdz:data.dwdz,
+            dzzwmc:data.dzzwmc
+          }
+        }
+      }else if(this.type == 'aj'){
+        this.DetailTitle="案件人员信息详情";
+        this.dialogType="aj";
+        this.DetailUrl="/api/es/search/searchAj";
+        this.DetailPd={
+          paramMap:{
+            dtid:data.dtid,
+          }
+        }
+      }else if(this.type == 'addr'){
+        this.DetailTitle="地址人员信息详情";
+        this.dialogType="dz";
+        this.DetailUrl="/api/es/search/searchAddr";
+        this.DetailPd={
+          paramMap:{
+            xxdz:data.xxdz,
+          }
+        }
+      }
+      this.DetailDialogVisible=true;
+      this.getListRYXX(this.DetailCurrentPage,this.DetailpageSize,this.DetailUrl,this.DetailPd)
     },
     typeChange(){
-      if(this.type == 'org'){
+      if(this.type == 'swdw'){
         this.cardData = this.dwData
       }else if(this.type == 'aj'){
         this.cardData = this.ajData
@@ -220,6 +327,7 @@ export default {
         this.cardData = this.dzData
       }
     },
+    //点击 各类型 查询
     getListType(currentPage,showCount,type){
       if(type=='lz'){this.check=0}
       if(type=='cz'){this.check=1}
@@ -243,12 +351,10 @@ export default {
         }
       })
     },
-
     getList(currentPage,showCount,type){
       this.check=7;
       this.tipShow=false;
-      if(this.content!=this.$route.query.zjhmes || this.type!=this.$route.query.stype)
-      {
+      if(this.content!=this.$route.query.zjhmes || this.type!=this.$route.query.stype){//全文检索数据被人员画像查询覆盖
         this.$router.push({name:'QWJS',query:{zjhmes:this.content,stype:this.type}});
       }
       this.items=[];
@@ -262,34 +368,34 @@ export default {
         "userCode":this.$store.state.uid,
         "userName":this.$store.state.uname
       };
-      if(type!="" && type!=undefined){
+      if(type!="" && type!=undefined){//如果点击条数查询相应数据
          this.datatype=type;
-         this.getListType(currentPage,showCount,type);
-         this.$api.post(this.Global.aport6+"/api/es/search/generalSearch",p,r=>{
+         this.getListType(currentPage,showCount,type);//得到数据
+         this.$api.post(this.Global.aport6+"/api/es/search/searchCount",p,r=>{//查询 各类型下的 条数
            if(r.success){
              if(r.respondResult.respondCount!=undefined){
               this.info=r.respondResult.respondCount;
              }
            }
          })
-      }else {
+      }else {//点击查询
         this.datatype="";
-      if(this.content==undefined || this.content==""){
-        this.$message.error("请输入查询内容!");return ;
-      }
-      if(this.type==undefined || this.type==""){
-        this.$message.error("请选择类型!");return ;
-      }
-     this.$api.post(this.Global.aport6+"/api/es/search/generalSearch",p,r=>{
-       if(r.success){
-         (r.respondResult.respondData==null||r.respondResult.respondData.length==0)?this.items=[]:this.items=r.respondResult.respondData;
-         this.items.length==0?this.tipShow=true:this.tipShow=false;
-         (r.respondResult.respondCount==null||r.respondResult.respondCount=={})?this.info={lz:0,cz:0,qz:0,ajxx:0,crj:0}:this.info=r.respondResult.respondCount;
-         this.TotalResult=r.respondResult.totalSize;
-       }else{
-         this.info={lz:0,cz:0,qz:0,ajxx:0,crj:0}
-       }
-     })
+        if(this.content==undefined || this.content==""){
+          this.$message.error("请输入查询内容!");return ;
+        }
+        if(this.type==undefined || this.type==""){
+          this.$message.error("请选择类型!");return ;
+        }
+        this.$api.post(this.Global.aport6+"/api/es/search/searchAll",p,r=>{//查询所有数据
+          if(r.success){
+            (r.respondResult.respondData==null||r.respondResult.respondData.length==0)?this.items=[]:this.items=r.respondResult.respondData;//数据
+            this.items.length==0?this.tipShow=true:this.tipShow=false;
+            (r.respondResult.respondCount==null||r.respondResult.respondCount=={})?this.info={lz:0,cz:0,qz:0,ajxx:0,crj:0}:this.info=r.respondResult.respondCount;//各类型数据条数
+            this.TotalResult=r.respondResult.totalSize;//数据条数
+          }else{
+            this.info={lz:0,cz:0,qz:0,ajxx:0,crj:0}
+          }
+        })
        }
       this.$store.commit('getQueryType',this.datatype);
     },
