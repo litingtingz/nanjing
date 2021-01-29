@@ -32,7 +32,7 @@ export default new Router({
     {
     path:'/zgLeft',
     name:'zgLeft',
-    meta: {logined:true},
+    meta: {logined:true},   
     component:resolve => require(['@/components/zgLeft'], resolve),
     },
     {

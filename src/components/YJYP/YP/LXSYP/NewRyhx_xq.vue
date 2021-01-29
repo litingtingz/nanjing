@@ -82,53 +82,80 @@
                       <el-carousel-item>
                               <el-row :gutter="20" class="list">
                                 <el-col :span="4" :offset="0">
-                                  <div class="item" style="height:100px;background-color:yellow;">
-                                    1
+                                  <div class="item" style="height:80px;background-color: #90C8F9;">
+                                    <div class="title">出入境记录</div>
+                                    <div class="bj">3</div>
+                                    <div class="sl">15</div>
+                                    <div class="ci">次</div>
                                   </div>
                                 </el-col>
                                 <el-col :span="4" :offset="0">
-                                  <div class="item" style="height:100px;background-color:#ccc;">
-                                    2
+                                  <div class="item" style="height:80px;background-color: #1c87b1;">
+                                    <div class="title">临住记录</div>
+                                    <div class="bj">3</div>
+                                    <div class="sl">15</div>
+                                    <div class="ci">次</div>
                                   </div>
                                 </el-col>
                                 <el-col :span="4" :offset="0">
-                                  <div class="item" style="height:100px;background-color:#3e8e8e;">
-                                    3
+                                  <div class="item" style="height:80px;background-color: #46B1E7;">
+                                    <div class="title">常住记录</div>
+                                    <div class="bj">3</div>
+                                    <div class="sl">15</div>
+                                    <div class="ci">次</div>
                                   </div>
                                 </el-col>
                                 <el-col :span="4" :offset="0">
-                                  <div class="item" style="height:100px;background-color:yellow;">
-                                    4
+                                  <div class="item" style="height:80px;background-color: #dbc560;">
+                                    <div class="title">案事件记录</div>
+                                    <div class="bj">3</div>
+                                    <div class="sl">15</div>
+                                    <div class="ci">条</div>                                     
                                   </div>
                                 </el-col>
                                 <el-col :span="4" :offset="0">
-                                  <div class="item" style="height:100px;background-color:#ccc;">
-                                    5
-                                  </div>
+                                  <div class="item" style="height:80px;background-color:#41C6DF;">
+                                    <div class="title">留学生申请记录</div>
+                                    <div class="bj">3</div>
+                                    <div class="sl">15</div>
+                                    <div class="ci">条</div>                                     
+                                   </div>
                                 </el-col>
                                 <el-col :span="4" :offset="0">
-                                  <div class="item" style="height:100px;background-color:#f00;">
-                                    6
-                                  </div>
+                                  <div class="item" style="height:80px;background-color:#EEBE76;">
+                                    <div class="title">留学生在校记录</div>
+                                    <div class="bj">3</div>
+                                    <div class="sl">15</div>
+                                    <div class="ci">条</div>                                     
+                                 </div>
                                 </el-col>
                               </el-row>
                             </el-carousel-item>
                             <el-carousel-item>
                               <el-row :gutter="20" class="list">
                                 <el-col :span="4" :offset="0">
-                                  <div class="item" style="height:100px;background-color:yellow;">
-                                    7
-                                  </div>
+                                  <div class="item" style="height:80px;background-color:yellow;">
+                                    <div class="title">留学生在校记录</div>
+                                    <div class="bj">3</div>
+                                    <div class="sl">15</div>
+                                    <div class="ci">条</div>                                    
+                                 </div>
                                 </el-col>
                                 <el-col :span="4" :offset="0">
-                                  <div class="item" style="height:100px;background-color:#ccc;">
-                                    8
-                                  </div>
+                                  <div class="item" style="height:80px;background-color:#ccc;">
+                                    <div class="title">留学生在校记录</div>
+                                    <div class="bj">3</div>
+                                    <div class="sl">15</div>
+                                    <div class="ci">条</div>                                    
+                                </div>
                                 </el-col>
                                 <el-col :span="4" :offset="0">
-                                  <div class="item" style="height:100px;background-color:#3e8e8e;">
-                                    9
-                                  </div>
+                                  <div class="item" style="height:80px;background-color:#3e8e8e;">
+                                    <div class="title">留学生在校记录</div>
+                                    <div class="bj">3</div>
+                                    <div class="sl">15</div>
+                                    <div class="ci">条</div>                                    
+                                </div>
                                 </el-col>
                               </el-row>
                             </el-carousel-item>
@@ -137,30 +164,32 @@
              </el-row>
              <!-- 右侧下边面板部分 -->
              <el-container>
-               <!-- 标签栏设置开始 -->
-               <!-- <el-aside  width="220px">
-                    <div style="height:335px;background-color:#fff;margin-top:15px;margin-left:10px">
-                        <h1 align="center">标签</h1>
-                    </div>
-               </el-aside> -->
-               <!-- 标签栏设置结束 -->
                <!-- 主要面板部分开始 -->
               <el-main style="height:400px;margin-top:20px;padding:0px 10px">
                   <el-row :gutter="20">
-                    <el-col :lg="24" :xl="12" style="margin-bottom:20px">
-                      <el-card shadow="always">
+                    <el-col :span="12" style="margin-bottom:20px">
                         <div class="mb">
-                          <span>留学生申请信息</span>
-                          <ul>
-                            <li>南京工业大学</li>
-                            <li></li>
-                            <li></li>
-                          </ul>
+                          <span class="tbt">留学生申请信息</span>
+                            <table >
+                                <tr>
+                                    <td>1</td>
+                                    <td>2</td>
+                                    <td>3</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>5</td>
+                                    <td>6</td>
+                                </tr>
+                                <tr>
+                                    <td>7</td>
+                                    <td>8</td>
+                                    <td>9</td>
+                                </tr>
+                            </table>
                         </div>
-                      </el-card>
                     </el-col>
-                    <el-col :lg="24" :xl="12" style="margin-bottom:20px">
-                      <el-card shadow="always">
+                    <el-col :span="12" style="margin-bottom:20px">
                         <div class="mb">
                           <span>留学生申请信息</span>                      
                           <ul>
@@ -169,12 +198,10 @@
                             <li></li>
                           </ul>
                         </div>
-                      </el-card>
                     </el-col>
                   </el-row>
                   <el-row :gutter="20">
-                    <el-col :lg="24" :xl="12" style="margin-bottom:20px">
-                      <el-card shadow="always">
+                    <el-col :span="12" style="margin-bottom:20px">
                         <div class="mb">
                           <span>留学生申请信息</span>
                           <ul>
@@ -185,8 +212,7 @@
                         </div>
                       </el-card>
                     </el-col>
-                    <el-col :lg="24" :xl="12" style="margin-bottom:20px">
-                      <el-card shadow="always" >
+                    <el-col :span="12" style="margin-bottom:20px">
                         <div class="mb">
                           <span>留学生申请信息</span>                      
                           <ul>
@@ -195,12 +221,10 @@
                             <li></li>
                           </ul>
                         </div>
-                      </el-card>
                     </el-col>
                   </el-row>
                   <el-row :gutter="20">
-                    <el-col :lg="24" :xl="12" style="margin-bottom:20px">
-                      <el-card shadow="always">
+                    <el-col :span="12" style="margin-bottom:20px">
                         <div class="mb">
                           <span>留学生申请信息</span>
                           <ul>
@@ -209,10 +233,8 @@
                             <li></li>
                           </ul>
                         </div>
-                      </el-card>
                     </el-col>
-                    <el-col :lg="24" :xl="12" style="margin-bottom:20px">
-                      <el-card shadow="always">
+                    <el-col :span="12" style="margin-bottom:20px">
                         <div class="mb">
                           <span>留学生申请信息</span>                      
                           <ul>
@@ -221,12 +243,10 @@
                             <li></li>
                           </ul>
                         </div>
-                      </el-card>
                     </el-col>
                   </el-row>
                   <el-row :gutter="20">
-                    <el-col :lg="24" :xl="12" style="margin-bottom:20px">
-                      <el-card shadow="always">
+                    <el-col :span="12" style="margin-bottom:20px">
                         <div class="mb">
                           <span>留学生申请信息</span>
                           <ul>
@@ -235,10 +255,8 @@
                             <li></li>
                           </ul>
                         </div>
-                      </el-card>
                     </el-col>
-                    <el-col :lg="24" :xl="12" style="margin-bottom:20px">
-                      <el-card shadow="always">
+                    <el-col :span="12" style="margin-bottom:20px">
                         <div class="mb">
                           <span>留学生申请信息</span>                      
                           <ul>
@@ -247,12 +265,10 @@
                             <li></li>
                           </ul>
                         </div>
-                      </el-card>
                     </el-col>
                   </el-row>
                   <el-row :gutter="20">
-                    <el-col :lg="24" :xl="12" style="margin-bottom:20px">
-                      <el-card shadow="always">
+                    <el-col :span="12" style="margin-bottom:20px">
                         <div class="mb">
                           <span>留学生申请信息</span>
                           <ul>
@@ -261,10 +277,8 @@
                             <li></li>
                           </ul>
                         </div>
-                      </el-card>
                     </el-col>
-                    <el-col :lg="24" :xl="12" style="margin-bottom:20px">
-                      <el-card shadow="always">
+                    <el-col :span="12" style="margin-bottom:20px">
                         <div class="mb">
                           <span>留学生申请信息</span>                      
                           <ul>
@@ -273,12 +287,10 @@
                             <li></li>
                           </ul>
                         </div>
-                      </el-card>
                     </el-col>
                   </el-row>
                   <el-row :gutter="20">
-                    <el-col :lg="24" :xl="12" style="margin-bottom:20px">
-                      <el-card shadow="always">
+                    <el-col :span="12" style="margin-bottom:20px">
                         <div class="mb">
                           <span>留学生申请信息</span>
                           <ul>
@@ -287,10 +299,8 @@
                             <li></li>
                           </ul>
                         </div>
-                      </el-card>
                     </el-col>
-                    <el-col :lg="24" :xl="12" style="margin-bottom:20px">
-                      <el-card shadow="always">
+                    <el-col :span="12" style="margin-bottom:20px">
                         <div class="mb">
                           <span>留学生申请信息</span>                      
                           <ul>
@@ -299,7 +309,6 @@
                             <li></li>
                           </ul>
                         </div>
-                      </el-card>
                     </el-col>
                   </el-row>
               </el-main>
@@ -404,8 +413,20 @@ export default{
                   year: '2019',
                   bgcolor: '#4886a8',
                   size: '28',
-                },
-                ]
+                },],
+                tableData: [{
+                    date: '2016-05-02',
+                    name: '王小虎',
+                    address: ' 1518 '
+                }, {
+                    date: '2016-05-04',
+                    name: '王小虎',
+                    address: ' 1517 弄'
+                }, {
+                    date: '2016-05-01',
+                    name: '王小虎',
+                    address: ' 1519 弄'
+                },]
     }
   },
   methods:{
@@ -446,31 +467,163 @@ export default{
   margin-bottom: 20px;
 }
 .list{
-  padding: 0 20px;
+  padding: 0 10px;
 }
-.item {
-  width: 100%;
+@media screen and (min-width:1700px){
+    .item {
+        width: 92%;
+        padding-left: 20px;
+        padding-top: 20px;
+        border-radius: 5px;
+    }
+    .title{
+        color: #fff;
+        font-size: 18px;
+        float: left;   
+    }
+    .bj{
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background-color: #fff;
+        text-align: center;
+        font-size: 20px;
+        line-height: 25px;
+        color: red;
+        float: left;
+        margin-left:10px;
+        margin-top: -2px;
+    }
+    .sl{
+        clear: both;
+        font-size: 26px;
+        color: #fff;
+        margin-top:30px;
+        /* margin-left:-130px; */
+    }
+    .ci{
+        font-size: 15px;
+        color: #fff;
+        margin-left: 33px;
+        margin-top: -16px;
+    }
 }
+@media screen and (min-width:1366px) and (max-width:1700px){
+    .item {
+        width: 99%;
+        padding-left: 10px;
+        padding-top: 20px;
+        border-radius: 5px;
+    }   
+   .title{
+        color: #fff;
+        font-size: 15px;
+        float: left;   
+    }
+    .bj{
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: #fff;
+        text-align: center;
+        font-size: 17px;
+        line-height:20px;
+        color: red;
+        float: left;
+        margin-left:4px;
+        margin-top: -2px;
+    }
+    .sl{
+        clear: both;
+        font-size: 20px;
+        color: #fff;
+        margin-top:30px;
+        /* margin-left:px; */
+    }
+    .ci{
+        /* display: inline-block; */
+        font-size: 13px;
+        color: #fff;
+        margin-left: 26px;
+        margin-top: -13px;
+    }
+}
+@media screen and (max-width:1366px){
+    .item {
+        width: 99%;
+        padding-left: 10px;
+        padding-top: 20px;
+        border-radius: 5px;
+    }   
+   .title{
+        color: #fff;
+        font-size: 15px;
+        float: left;   
+    }
+    .bj{
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: #fff;
+        text-align: center;
+        font-size: 17px;
+        line-height:20px;
+        color: red;
+        float: left;
+        margin-left:4px;
+        margin-top: -2px;
+    }
+    .sl{
+        clear: both;
+        font-size: 20px;
+        color: #fff;
+        margin-top:30px;
+        /* margin-left:px; */
+    }
+    .ci{
+        /* display: inline-block; */
+        font-size: 13px;
+        color: #fff;
+        margin-left: 26px;
+        margin-top: -13px;
+    }
+    /* 表格样式 */
+    /* .el-table_1_column_1 .cell{
+        width: 80px !important;
+    }   */
+    .table{
+        width: 100% !important;
+        margin:5px auto 0px;
+    }  
+}
+
 .mb{
-  height: 110px;
-  background-color: #fff;
+    height: 155px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+.tbt{
+    display: inline-block;
+    font-size: 15px;
+    margin-left: 15px;
+    margin-top: 8px;
+    font-weight: bold;
+    color: #9E9E9E;
+}
+.table{
+    width: 95% !important;
+    margin:5px auto 0px;
 }
 .el-card__body{
   padding:5px 10px !important;
 }
 .el-collapse-item__header{
-  /* margin-left: 20px !important; */
   padding-left: 20px !important;
   font-size: 18px !important;
   font-weight: bold !important; 
   z-index: 1000;
 }
-/* .my_timeline_prev, .my_timeline_next {
-    float: left;
-    display: inline-block;
-    background-color: green;
-    cursor: pointer;
-} */
+
 .my_timeline_prev {
     width: 200px;
     float: left;
@@ -499,8 +652,6 @@ export default{
 .my_timeline_node.active {
     background-color: #fff !important;
     border: 6px solid #0577b4;
-    /* border: 6px solid #4886a8; */
-
 }
 .my_timeline_item_line {
     width: 100%;
