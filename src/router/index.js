@@ -671,7 +671,7 @@ export default new Router({
           path: 'QWJS',
           name: 'QWJS',
           meta:{title:['数据分析','人员画像','全文检索']},
-          component: resolve => require(['@/components/YJYP/YP/LXSYP/QWJS'], resolve),
+          component: resolve => require(['@/components/YJYP/YP/LXSYP/QWJSNew'], resolve),
         },
         {
           path: 'GJCX',
@@ -902,6 +902,13 @@ export default new Router({
           meta:{title:['日常管理','临住信息','微临住']},
           component: resolve => require(['@/components/YWCZ/LZXX/WLZ'], resolve),
         },
+        //===========================二版新 地址线索排查=================================
+        {
+          path: 'DZXSPC',
+          name: 'DZXSPC',
+          meta:{title:['日常管理','临住信息','地址线索排查']},
+          component: resolve => require(['@/components/YWCZ/LZXX/DZXSPC'], resolve),
+        },
         {
           path: 'LZCQBJ',
           name: 'LZCQBJ',
@@ -1012,6 +1019,13 @@ export default new Router({
           name: 'HKXX',
           meta:{title:['日常管理','数据导入','航空信息导入']},
           component: resolve => require(['@/components/YWCZ/SJDR/HKXX'], resolve),
+        },
+        //====================二版新增 202表数据导入========================================
+        {
+          path: 'TZTBDR',
+          name: 'TZTBDR',
+          meta:{title:['日常管理','数据导入','202表数据导入']},
+          component: resolve => require(['@/components/YWCZ/SJDR/TZTBDR'], resolve),
         },
         {
           path: 'TBRY',
@@ -1218,19 +1232,19 @@ export default new Router({
         {
           path: 'TZSF',
           name: 'TZSF',
-          meta:{title:['数据分析','图帧人像','图帧身份','图帧身份'],father:'RLSB'},
+          meta:{title:['数据分析','图侦人像','图侦身份','图侦身份'],father:'RLSB'},
           component: resolve => require(['@/components/XTGL/RZCK/TZSF'], resolve),
         },
         {
           path: 'RLSB',
           name: 'RLSB',
-          meta:{title:['数据分析','图帧人像','图帧身份','图帧身份']},
+          meta:{title:['数据分析','图侦人像','图侦身份','图侦身份']},
           component: resolve => require(['@/components/XTGL/RZCK/RLSB'], resolve),
         },
         {
           path: 'JWRYGJ',
           name: 'JWRYGJ',
-          meta:{title:['数据分析','图帧人像','图帧身份','境外人员轨迹']},
+          meta:{title:['数据分析','图侦人像','图侦身份','境外人员轨迹']},
           component: resolve => require(['@/components/XTGL/RZCK/JWRYGJ'], resolve),
         },
         /* 背景审查 */
