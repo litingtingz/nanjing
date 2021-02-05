@@ -135,44 +135,44 @@
 
            <el-table-column
              label="操作" width="90">
-             <template slot-scope="scope">
-             <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="details(scope.row)"></el-button>
-             <el-button type="text"  class="a-btn"  title="编辑"  icon="el-icon-edit" @click="edits(1,scope.row)"></el-button>
-             <el-button type="text"  class="a-btn"  title="删除"  icon="el-icon-delete" @click="deletes(scope.row)"></el-button>
-             </template>
+             <div slot-scope="scope">
+                <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="details(scope.row)"></el-button>
+                <el-button type="text"  class="a-btn"  title="编辑"  icon="el-icon-edit" @click="edits(1,scope.row)"></el-button>
+                <el-button type="text"  class="a-btn"  title="删除"  icon="el-icon-delete" @click="deletes(scope.row)"></el-button>
+             </div>
            </el-table-column>
          </el-table>
-     <div class="middle-foot">
-        <div class="page-msg">
-          <div class="">
-                  共{{TotalResult}}条记录
-          </div>
-          <div class="">
-            每页显示
-            <el-select v-model="pageSize" @change="pageSizeChange(pageSize)" placeholder="10" size="mini" class="page-select">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-            条
-          </div>
-          <div class="">
-    共{{Math.ceil(TotalResult/pageSize)}}页
+        <div class="middle-foot">
+            <div class="page-msg">
+              <div class="">
+                      共{{TotalResult}}条记录
+              </div>
+              <div class="">
+                每页显示
+                <el-select v-model="pageSize" @change="pageSizeChange(pageSize)" placeholder="10" size="mini" class="page-select">
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+                条
+              </div>
+              <div class="">
+        共{{Math.ceil(TotalResult/pageSize)}}页
+              </div>
+            </div>
+            <el-pagination
+              background
+              @current-change="handleCurrentChange"
+              :current-page.sync ="CurrentPage"
+              :page-size="pageSize"
+              layout="prev, pager, next"
+              :total="TotalResult">
+            </el-pagination>
           </div>
         </div>
-        <el-pagination
-          background
-          @current-change="handleCurrentChange"
-          :current-page.sync ="CurrentPage"
-          :page-size="pageSize"
-          layout="prev, pager, next"
-          :total="TotalResult">
-        </el-pagination>
-      </div>
-    </div>
 
       <el-dialog title="上传模板" :visible.sync="uploadDialogVisible"  width="640px">
 
@@ -410,7 +410,6 @@ export default {
       options:this.pl.options,
       tableData: [],
       isadd:0,
-
     }
   },
   mounted() {

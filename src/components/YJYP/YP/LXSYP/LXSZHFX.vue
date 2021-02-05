@@ -171,7 +171,7 @@
               </el-row>
              </el-col>
                 <el-col :span="2" class="down-btn-area">
-                  <el-button type="success" size="small" @click="CurrentPage=1;getList(CurrentPage,pageSize,pd)" class="mb-15">查询</el-button>
+                  <el-button type="success" size="small" @click="CurrentPage=1;getList(CurrentPage,pageSize,pd,1)" class="mb-15">查询</el-button>
                   <el-button type="primary" size="small"  class="t-ml0" @click="download">导出</el-button>
                   <!-- <el-button type="" size="small" @click="" class="mb-15"> 重置</el-button> -->
                 </el-col>
@@ -331,7 +331,7 @@
 
       </div>
 
-    </template>
+</template>
     <script>
     import LXSXXZX from '../../../common/lxsZx_xq'
     export default {
@@ -431,6 +431,7 @@
             },
           ],
           checkedList:[],
+          checkedListOld:[],
           checkItemReal:[],
           tableHead:[
             {
@@ -629,7 +630,10 @@
             confirmButtonText: '确定',
           });
         },
-        getList(currentPage, showCount, pd) {
+        getList(currentPage, showCount, pd,type) {
+          if(!type){
+            this.checkedList = this.checkedListOld
+          }
           this.checkItemReal=[];
           for(var i=0;i<this.checkedList.length;i++){
             for(var j=0;j<this.checkItem.length;j++){
@@ -662,6 +666,7 @@
                 this.tableData = r.data.resultList;
                 this.TotalResult = r.data.totalResult;
                 this.configHeader=[];
+                this.checkedListOld = this.checkedList;
                 let _this = this;
                 for(var i=0;i<_this.checkItemReal.length;i++){
                   var obj={};
