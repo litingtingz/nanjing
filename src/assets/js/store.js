@@ -97,6 +97,7 @@ var store = new Vuex.Store({
     queryType:'',
     tokenT:localStorage.getItem('tokenT') || '',
     cusCountry:[],
+    backstatus: [],//数据状态
   },
   mutations: {
     getOne(state,data){
@@ -377,7 +378,10 @@ var store = new Vuex.Store({
     },
     getCusCon(state,data){
       state.cusCountry=data;
-    }
+    },
+    getBackstatus(state, data) {
+      state.backstatus = data;
+    },
   },
   actions: {
     getZjxy(context){
@@ -775,6 +779,14 @@ var store = new Vuex.Store({
         api.post(global_.aport5 + '/country/getCustomDmMc', {}, r => {
           context.commit('getCusCon', sortByKey(r.data,'dm'))
           resolve(payload)
+        })
+      })
+    },
+    aGetBackstatus(context, payload) {
+      return new Promise((resolve) => {
+        api.post(global_.aport3 + '/dm/getDmList', { tableName: 'dm_zfztb', sjly: payload }, r => {
+          context.commit('getBackstatus', r)
+          resolve(r)
         })
       })
     },

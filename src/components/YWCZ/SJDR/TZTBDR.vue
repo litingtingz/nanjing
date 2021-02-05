@@ -88,7 +88,8 @@
         <el-table-column
           :key="i"
           :prop="lb.dm"
-          :label="lb.cm">
+          :label="lb.cm"
+          :width="lb.width">
         </el-table-column>
       </template>
         <el-table-column
@@ -151,8 +152,8 @@
         </el-row>
       </el-form>
     </el-dialog>
-    <div v-if="editsDialogVisible">
-      <el-dialog :title="dialogText" :visible.sync="editsDialogVisible">
+    <div>
+      <el-dialog :title="dialogText" :visible.sync="editsDialogVisible" :width="'1300px'">
         <el-form   ref="editform">
           <el-row :gutter="2"  class="mb-6">
             <el-col :span="8" class="input-item">
@@ -199,7 +200,7 @@
               </el-date-picker>
             </el-col>
             <el-col :span="8" class="input-item">
-              <span class="input-text">申请日期：</span>
+              <span class="input-text">申请时间：</span>
               <el-date-picker class="input-input"
                 v-model="editform.SQRQ" format="yyyy-MM-dd"
                 type="date" size="small" value-format="yyyy-MM-dd"
@@ -209,7 +210,7 @@
             <el-col :span="8" class="input-item">
               <span class="input-text">入学时间：</span>
               <el-date-picker class="input-input"
-                v-model="editform.SQRQ" format="yyyy-MM-dd"
+                v-model="editform.RXSJ" format="yyyy-MM-dd"
                 type="date" size="small" value-format="yyyy-MM-dd"
                 placeholder="选择时间" >
               </el-date-picker>
@@ -222,34 +223,114 @@
               <span class="input-text">实际留学城市：</span>
               <el-select v-model="editform.SJLXCSDM" placeholder="请选择" @change="getLable(3,editform.SJLXCSDM)"  filterable clearable default-first-option size="small" class="input-input">
                 <el-option
-                  v-for="(item,ind2) in $store.state.xb"
-                  :key="ind2"
+                  v-for="(item,ind3) in $store.state.xzqh"
+                  :key="ind3"
                   :label="item.dm+' - '+item.mc"
                   :value="item.dm">
                 </el-option>
               </el-select>
             </el-col>
-
-
-
-
-            <el-col  :span="12" class="input-item">
-              <span class="input-text">布控时间段：</span>
-              <div class="input-input t-flex ">
-                <el-date-picker
-                  v-model="editform.BKRQSTART" format="yyyy-MM-dd"
-                  type="date" size="small" value-format="yyyy-MM-dd"
-                  placeholder="开始时间" >
-                </el-date-picker>
-                <span class="septum">-</span>
-                <el-date-picker
-                    v-model="editform.BKRQEND" format="yyyy-MM-dd"
-                    type="date" size="small" value-format="yyyy-MM-dd"
-                    placeholder="结束时间" >
-                </el-date-picker>
-            </div>
+            <el-col :span="8" class="input-item">
+              <span class="input-text">最高学历：</span>
+              <el-input placeholder="请输入内容" size="small" v-model="editform.ZGXL"  class="input-input"></el-input>
+            </el-col>
+            <el-col :span="8" class="input-item">
+              <span class="input-text">婚姻状况：</span>
+              <el-select v-model="editform.HYZKDM" placeholder="请选择" @change="getLable(4,editform.HYZKDM)"  filterable clearable default-first-option size="small" class="input-input">
+                <el-option
+                  v-for="(item,ind4) in $store.state.hyzt"
+                  :key="ind4"
+                  :label="item.dm+' - '+item.mc"
+                  :value="item.dm">
+                </el-option>
+              </el-select>
+            </el-col>
+            <el-col :span="8" class="input-item">
+              <span class="input-text">宗教信仰：</span>
+              <el-select v-model="editform.ZJXYDM" placeholder="请选择" @change="getLable(5,editform.ZJXYDM)"  filterable clearable default-first-option size="small" class="input-input">
+                <el-option
+                  v-for="(item,ind5) in $store.state.zjxy"
+                  :key="ind5"
+                  :label="item.dm+' - '+item.mc"
+                  :value="item.dm">
+                </el-option>
+              </el-select>
+            </el-col>
+            <el-col :span="8" class="input-item">
+              <span class="input-text">工作或学习单位：</span>
+              <el-input placeholder="请输入内容" size="small" v-model="editform.GZHXXDW"  class="input-input"></el-input>
+            </el-col>
+            <el-col :span="8" class="input-item">
+              <span class="input-text">专业中文名称：</span>
+              <el-input placeholder="请输入内容" size="small" v-model="editform.ZYZWMC"  class="input-input"></el-input>
+            </el-col>
+            <el-col :span="8" class="input-item">
+              <span class="input-text">报到开始日期：</span>
+              <el-date-picker class="input-input"
+                v-model="editform.BDKSRQ" format="yyyy-MM-dd"
+                type="date" size="small" value-format="yyyy-MM-dd"
+                placeholder="选择时间" >
+              </el-date-picker>
+            </el-col>
+            <el-col :span="8" class="input-item">
+              <span class="input-text">报到截止日期：</span>
+              <el-date-picker class="input-input"
+                v-model="editform.BDJZRQ" format="yyyy-MM-dd"
+                type="date" size="small" value-format="yyyy-MM-dd"
+                placeholder="选择时间" >
+              </el-date-picker>
+            </el-col>
+            <el-col :span="8" class="input-item">
+              <span class="input-text">学习开始日期：</span>
+              <el-date-picker class="input-input"
+                v-model="editform.XXKSRQ" format="yyyy-MM-dd"
+                type="date" size="small" value-format="yyyy-MM-dd"
+                placeholder="选择时间" >
+              </el-date-picker>
+            </el-col>
+            <el-col :span="8" class="input-item">
+              <span class="input-text">学习截止日期：</span>
+              <el-date-picker class="input-input"
+                v-model="editform.XXJZRQ" format="yyyy-MM-dd"
+                type="date" size="small" value-format="yyyy-MM-dd"
+                placeholder="选择时间" >
+              </el-date-picker>
+            </el-col>
+             <el-col :span="8" class="input-item">
+              <span class="input-text">授课语言：</span>
+              <el-input placeholder="请输入内容" size="small" v-model="editform.SKYY"  class="input-input"></el-input>
+            </el-col>
+             <el-col :span="8" class="input-item">
+              <span class="input-text">入学学期：</span>
+              <el-input placeholder="请输入内容" size="small" v-model="editform.RXXQ"  class="input-input"></el-input>
             </el-col>
           </el-row>
+           <el-row :gutter="2" v-show="dialogText=='编辑'">
+              <el-col :span="8" class="input-item">
+                <span class="input-text">操作人：</span>
+                <el-input placeholder="请输入内容" size="small" :disabled="true" v-model="editform.CZR"  class="input-input"></el-input>
+              </el-col>
+              <el-col :span="8" class="input-item">
+                <span class="input-text">操作时间：</span>
+                <el-input placeholder="请输入内容" size="small" :disabled="true" v-model="editform.CZSJ"  class="input-input"></el-input>
+              </el-col>
+              <el-col :span="8" class="input-item">
+                <span class="input-text">操作单位：</span>
+                <el-input placeholder="请输入内容" size="small" :disabled="true" v-model="editform.CZDWID"  class="input-input"></el-input>
+              </el-col>
+              <el-col :span="8" class="input-item">
+                <span class="input-text">修改人：</span>
+                <el-input placeholder="请输入内容" size="small" :disabled="true" v-model="editform.XGR"  class="input-input"></el-input>
+              </el-col>
+              <el-col :span="8" class="input-item">
+                <span class="input-text">修改时间：</span>
+                <el-input placeholder="请输入内容" size="small" :disabled="true" v-model="editform.XGSJ"  class="input-input"></el-input>
+              </el-col>
+              <el-col :span="8" class="input-item">
+                <span class="input-text">修改单位：</span>
+                <el-input placeholder="请输入内容" size="small" :disabled="true" v-model="editform.XGDWID"  class="input-input"></el-input>
+              </el-col>
+            </el-row>
           </el-form>
           <div slot="footer" class="dialog-footer">
               <el-button type="primary" @click="editsItem('editForm')" size="small">确 定</el-button>
@@ -257,54 +338,119 @@
           </div>
       </el-dialog>
     </div>
-    <el-dialog title="详情" :visible.sync="detailsDialogVisible">
-      <el-form   ref="mapForm">
+    <el-dialog title="详情" :visible.sync="detailsDialogVisible" :width="'1300px'">
+      <el-form   ref="mapForm" :disabled="true">
         <el-row :gutter="2"  class="mb-6">
-            <el-col :span="12" class="input-item">
-            <span class="input-text">标题：</span>
-            <span class="input-input detailinput">  {{mapForm.BT}}</span>
+            <el-col :span="8" class="input-item">
+            <span class="input-text">英文姓名：</span>
+            <span class="input-input detailinput">  {{mapForm.YWXM}}</span>
             </el-col>
-            <el-col :span="12" class="input-item">
-            <span class="input-text">姓名：</span>
-            <span class="input-input detailinput">  {{mapForm.XM}}</span>
+            <el-col :span="8" class="input-item">
+            <span class="input-text">中文姓名：</span>
+            <span class="input-input detailinput">  {{mapForm.ZWXM}}</span>
             </el-col>
-            <el-col :span="12" class="input-item">
+            <el-col :span="8" class="input-item">
               <span class="input-text">性别：</span>
               <span class="input-input detailinput">  {{mapForm.XBMC}}</span>
             </el-col>
-            <el-col :span="12" class="input-item">
-            <span class="input-text">证件号码：</span>
-            <span class="input-input detailinput">  {{mapForm.ZJHM}}</span>
+            <el-col :span="8" class="input-item">
+            <span class="input-text">国家地区：</span>
+            <span class="input-input detailinput">  {{mapForm.GJDQMC}}</span>
             </el-col>
-            <el-col :span="12" class="input-item">
-            <span class="input-text">身份证号：</span>
-            <span class="input-input detailinput">  {{mapForm.SFZH}}</span>
+            <el-col :span="8" class="input-item">
+            <span class="input-text">护照号码：</span>
+            <span class="input-input detailinput">  {{mapForm.HZHM}}</span>
             </el-col>
-            <el-col :span="12" class="input-item">
+            <el-col :span="8" class="input-item">
               <span class="input-text">出生日期：</span>
               <span class="input-input detailinput">  {{mapForm.CSRQ}}</span>
             </el-col>
-            <el-col :span="12" class="input-item">
-              <span class="input-text">国家地区：</span>
-              <span class="input-input detailinput">  {{mapForm.GJDQMC}}</span>
+            <el-col :span="8" class="input-item">
+              <span class="input-text">申请时间：</span>
+              <span class="input-input detailinput">  {{mapForm.SQRQ}}</span>
             </el-col>
-            <el-col :span="12" class="input-item">
-              <span class="input-text" title="布控开始时间">布控开始时间：</span>
-              <span class="input-input detailinput">  {{mapForm.BKRQSTART}}</span>
+            <el-col :span="8" class="input-item">
+              <span class="input-text">入学时间：</span>
+              <span class="input-input detailinput">  {{mapForm.RXSJ}}</span>
             </el-col>
-            <el-col :span="12" class="input-item">
-              <span class="input-text" title="布控结束时间">布控结束时间：</span>
-              <span class="input-input detailinput">  {{mapForm.BKRQEND}}</span>
+            <el-col :span="8" class="input-item">
+              <span class="input-text">学校名称：</span>
+              <span class="input-input detailinput">  {{mapForm.XXMC}}</span>
+            </el-col>
+            <el-col :span="8" class="input-item">
+              <span class="input-text" title="实际留学城市">实际留学城市：</span>
+              <span class="input-input detailinput">  {{mapForm.SJLXCSMC}}</span>
+            </el-col>
+            <el-col :span="8" class="input-item">
+              <span class="input-text">最高学历：</span>
+              <span class="input-input detailinput">  {{mapForm.ZGXL}}</span>
+            </el-col>
+            <el-col :span="8" class="input-item">
+              <span class="input-text">婚姻状况：</span>
+              <span class="input-input detailinput">  {{mapForm.HYZKMC}}</span>
+            </el-col>
+            <el-col :span="8" class="input-item">
+              <span class="input-text" title="宗教信仰">宗教信仰：</span>
+              <span class="input-input detailinput">  {{mapForm.ZJXYMC}}</span>
+            </el-col>
+            <el-col :span="8" class="input-item">
+              <span class="input-text">工作或学习单位：</span>
+              <span class="input-input detailinput">  {{mapForm.GZHXXDW}}</span>
+            </el-col>
+            <el-col :span="8" class="input-item">
+              <span class="input-text">专业中文名称：</span>
+              <span class="input-input detailinput">  {{mapForm.ZYZWMC}}</span>
+            </el-col>
+             <el-col :span="8" class="input-item">
+              <span class="input-text" title="报到开始日期">报到开始日期：</span>
+              <span class="input-input detailinput">  {{mapForm.BDKSRQ}}</span>
+            </el-col>
+            <el-col :span="8" class="input-item">
+              <span class="input-text" title="报到截止日期：">报到截止日期：</span>
+              <span class="input-input detailinput">  {{mapForm.BDJZRQ}}</span>
+            </el-col>
+            <el-col :span="8" class="input-item">
+              <span class="input-text" title="学习开始日期">学习开始日期：</span>
+              <span class="input-input detailinput">  {{mapForm.XXKSRQ}}</span>
+            </el-col>
+            </el-col>
+             <el-col :span="8" class="input-item">
+              <span class="input-text" title="学习截止日期">学习截止日期：</span>
+              <span class="input-input detailinput">  {{mapForm.XXJZRQ}}</span>
+            </el-col>
+            <el-col :span="8" class="input-item">
+              <span class="input-text" title="授课语言">授课语言：</span>
+              <span class="input-input detailinput">  {{mapForm.SKYY}}</span>
+            </el-col>
+            <el-col :span="8" class="input-item">
+              <span class="input-text" title="入学学期">入学学期：</span>
+              <span class="input-input detailinput">  {{mapForm.RXXQ}}</span>
             </el-col>
         </el-row>
         <el-row :gutter="2">
-            <el-col :span="12" class="input-item">
+            <el-col :span="8" class="input-item">
               <span class="input-text">操作人：</span>
-              <span class="input-input detailinput">  {{mapForm.CZR}}</span>
+              <span class="input-input detailinput">{{mapForm.CZR}}</span>              
             </el-col>
-            <el-col :span="12" class="input-item">
-              <span class="input-text">操作日期：</span>
-              <span class="input-input detailinput">  {{mapForm.CZSJ}}</span>
+            <el-col :span="8" class="input-item">
+              <span class="input-text">操作时间：</span>
+              <span class="input-input detailinput">{{mapForm.CZSJ}}</span>  
+            </el-col>
+            <el-col :span="8" class="input-item">
+              <span class="input-text">操作单位：</span>
+              <span class="input-input detailinput">{{mapForm.CZDWID}}</span>  
+            </el-col>
+            <el-col :span="8" class="input-item">
+              <span class="input-text">修改人：</span>
+              <span class="input-input detailinput">{{mapForm.XGR}}</span>  
+            </el-col>
+            <el-col :span="8" class="input-item">
+              <span class="input-text">修改时间：</span>
+              <span class="input-input detailinput">{{mapForm.XGSJ}}</span>  
+            </el-col>
+            <el-col :span="8" class="input-item">
+              <span class="input-text">修改单位：</span>
+              <span class="input-input detailinput">{{mapForm.XGDWID}}</span>                
             </el-col>
         </el-row>
 
@@ -340,10 +486,15 @@ export default {
         {
           dm:'YWXM',
           cm:'英文姓名',
+          width:'150'
         },
         {
           dm:'ZWXM',
           cm:'中文姓名',
+        },
+        {
+          dm:'GJDQMC',
+          cm:'国籍地区'
         },
         {
           dm:'XBMC',
@@ -351,11 +502,7 @@ export default {
         },
         {
           dm:'CSRQ',
-          cm:'出生日期'
-        },
-        {
-          dm:'GJDQMC',
-          cm:'国家地区'
+          cm:'出生日期',
         },
         {
           dm:'HZHM',
@@ -363,7 +510,7 @@ export default {
         },
         {
           dm:'SQRQ',
-          cm:'申请日期'
+          cm:'申请时间'
         },
         {
           dm:'RXSJ',
@@ -372,6 +519,10 @@ export default {
         {
           dm:'XXMC',
           cm:'学校名称'
+        },
+        {
+          dm:'XXDM',
+          cm:'学校代码'
         },
         {
           dm:'SJLXCSMC',
@@ -391,11 +542,12 @@ export default {
         },
         {
           dm:'GZHXXDW',
-          cm:'工作或学习单位'
+          cm:'工作或学习单位',
+          width:'150'
         },
         {
           dm:'ZYZWMC',
-          cm:'专业中文'
+          cm:'专业中文吗名称'
         },
         {
           dm:'BDKSRQ',
@@ -441,13 +593,15 @@ export default {
       options:this.pl.options,
       tableData: [],
       isadd:0,
-
     }
   },
   mounted() {
     this.lbData = this.lbDataAll//页面加载 列表选中项 == 列表总数据源
     this.$store.dispatch('getGjdq');
     this.$store.dispatch('getXB');
+    this.$store.dispatch('getXzqh');
+    this.$store.dispatch('getHyzt');
+    this.$store.dispatch('getZjxy');
     this.getList(this.CurrentPage, this.pageSize, this.pd);
   },
   methods: {
@@ -493,10 +647,24 @@ export default {
       }
       if(t==3){//实际留学城市
         let obj = {};
-         obj = this.$store.state.gjdq.find((item)=>{
+         obj = this.$store.state.xzqh.find((item)=>{
              return item.dm === val;
          });
          this.editform.SJLXCSMC = obj.mc;
+      }
+      if(t==4){//婚姻状况
+        let obj = {};
+         obj = this.$store.state.hyzt.find((item)=>{
+             return item.dm === val;
+         });
+         this.editform.HYZKMC = obj.mc;
+      }
+      if(t==5){//宗教信仰
+        let obj = {};
+         obj = this.$store.state.zjxy.find((item)=>{
+             return item.dm === val;
+         });
+         this.editform.ZJXYMC = obj.mc;
       }
     },
     handleSelectionChange(val) {
@@ -531,27 +699,23 @@ export default {
     edits(t,n){
       this.editsDialogVisible=true;
       if(t==1){
-      this.isadd=1;
-      // this.$set(this.editform,'ZJHM',n.ZJHM);
-      this.editform=Object.assign({}, n);
-
-      // console.log(this.editform.ZJHM,n.ZJHM);
-      this.dialogText="编辑";
-    }else {
-      this.isadd=0;
-      this.editform={CSRQ:"",ZJHM:""};
-      this.dialogText="新增";
-    }
-    this.V.$reset('demo');
-
+        this.isadd=1;
+        this.editform=Object.assign({}, n);
+        this.dialogText="编辑";
+      }else {
+        this.isadd=0;
+        this.editform={CSRQ:"",ZJHM:""};
+        this.dialogText="新增";
+      }
+      this.V.$reset('demo');
     },
     editsItem(){
       this.V.$submit('demo',(canSumit,data) =>{
         if(!canSumit) return;
         this.editform.token=this.$store.state.token;
-        var url=this.Global.aport3+'/drlzbk/addLZBK';
-        if(this.isadd==1){
-          url=this.Global.aport3+'/drlzbk/updateLZBK';
+        var url=this.Global.aport3+'/zdlxs/addZdlxs';
+        if(this.isadd==1){//编辑
+          url=this.Global.aport3+'/zdlxs/updateZdlxs';
         }
         this.$api.post(url, this.editform,
         r => {
@@ -568,8 +732,6 @@ export default {
           } else {
             this.$message.error(r.Message);
           }
-          // this.$refs[afrom].resetFields();
-
         }, e => {
           this.$message.error('失败了');
         });
@@ -586,7 +748,7 @@ export default {
       type: 'warning'
     }).then(() => {
       // http://10.0.30.53:9439/drlzbk/deleteLZBKById
-      this.$api.post(this.Global.aport3+'/drlzbk/deleteLZBKById', p,
+      this.$api.post(this.Global.aport3+'/zdlxs/deleteZdlxsById', p,
         r => {
           if(r.code=="1000001"){
               window.location.href ="#/";
@@ -655,7 +817,7 @@ export default {
       this.$refs.upload.submit();
     },
     download() {
-       window.location.href = window.IPConfig.IP +"/"+this.Global.aport3 + '/webapp/templateFile/临住布控导入模板.xlsx'
+       window.location.href = window.IPConfig.IP +"/"+this.Global.aport3 + '/webapp/templateFile/202数据导入模板.xlsx'
     },
   }
 }

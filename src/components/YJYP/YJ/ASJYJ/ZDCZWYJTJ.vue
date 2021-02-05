@@ -9,13 +9,13 @@
                   <span class="input-text">住宿日期：</span>
                   <div class="input-input t-flex t-date">
                     <el-date-picker
-                       v-model="pd.ZSSJ_DateRange.begin" format="yyyy-MM-dd"
+                       v-model="pd.ZSRQ_DateRange.begin" format="yyyy-MM-dd"
                        type="date" size="small" value-format="yyyy/MM/dd"
                        placeholder="开始时间" >
                     </el-date-picker>
                     <span class="septum">-</span>
                     <el-date-picker
-                        v-model="pd.ZSSJ_DateRange.end" format="yyyy-MM-dd"
+                        v-model="pd.ZSRQ_DateRange.end" format="yyyy-MM-dd"
                         type="date" size="small" value-format="yyyy/MM/dd"
                         placeholder="结束时间" >
                     </el-date-picker>
@@ -89,7 +89,7 @@ export default {
   data() {
     return {
       pd: {
-        ZSSJ_DateRange:{
+        ZSRQ_DateRange:{
           dataType:'date',
           begin:'',
           end:''
@@ -225,10 +225,16 @@ export default {
           if(deepCli.dwmc=='合计'){
             p.FJ=''
           }
+          this.$router.push({name:'ZDCZWYJ',query:{row:p}});
         }else if(deepCli.level=='2'){
           p.PCS=deepCli.dwbm
           if(deepCli.ssfj){
             p.FJ=deepCli.ssfj
+            this.$router.push({name:'ZDCZWYJ',query:{row:p}});
+          }else if(deepCli.dwmc=='合计'){
+            p.PCS='';
+            p.FJ='';
+            this.$router.push({name:'ZDCZWYJ',query:{row:p}});
           }else{
             let data={
               currentPage: 1,
@@ -239,13 +245,10 @@ export default {
               if(r.success){
                 p.FJ = r.data.FJDM
                 this.$router.push({name:'ZDCZWYJ',query:{row:p}});
-                return
               }
             })
           }
         }
-        console.log('p==',p)
-        this.$router.push({name:'ZDCZWYJ',query:{row:p}});
     },
     download(pd,deepCli){
       // if(this.levelSave=='2'){deepCli = this.levelTwo};

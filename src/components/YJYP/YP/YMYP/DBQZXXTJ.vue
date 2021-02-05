@@ -215,9 +215,9 @@
 
              <el-table-column
                label="操作" width="70">
-               <template slot-scope="scope">
-               <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="details(scope.row)"></el-button>
-               </template>
+               <div slot-scope="scope">
+                <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="details(scope.row)"></el-button>
+               </div>
              </el-table-column>
          </el-table>
          <div class="middle-foot">
@@ -321,7 +321,7 @@
     </el-dialog>
     <!--===================简表结束======================-->
       </div>
-    </template>
+</template>
     <script>
     import QZSQ from '../../../common/qzsq_xq'
     import Trans from "@/components/common/Transfer.vue"
@@ -422,6 +422,7 @@
             },
           ],
           checkedList:[],
+          checkedListOld:[],
           checkItemReal:[],
           tableHead:[
             {
@@ -620,6 +621,9 @@
           });
         },
         getList(currentPage, showCount, pd,type) {
+          if(!type){
+            this.checkedList = this.checkedListOld
+          }
           this.checkItemReal=[];
           for(var i=0;i<this.checkedList.length;i++){
             for(var j=0;j<this.checkItem.length;j++){
@@ -656,6 +660,7 @@
                 this.TotalResult = r.data.totalResult;
                 this.totalAllResult = r.data.totalAllResult;
                 this.configHeader=[];
+                this.checkedListOld = this.checkedList;
                 let _this = this;
                 for(var i=0;i<_this.checkItemReal.length;i++){
                   var obj={};

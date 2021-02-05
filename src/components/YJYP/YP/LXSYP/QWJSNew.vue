@@ -256,12 +256,20 @@ export default {
     }
   },
     activated(){
-      this.type=this.$route.query.stype;//查询类型
-      this.content=this.$route.query.zjhmes;//查询证件号码
+      this.type=this.$route.query.stype;//查询类
+      this.content=this.$route.query.zjhmes;//查询内容
       this.getList(this.CurrentPage, this.pageSize,this.$store.state.queryType);
     },
   mounted() {
     // this.getList(this.CurrentPage, this.pageSize);
+    this.type=this.$route.query.stype;//查询类型
+    if(this.type == 'ssdw'){
+        this.cardData = this.dwData
+      }else if(this.type == 'aj'){
+        this.cardData = this.ajData
+      }else if(this.type == 'addr'){
+        this.cardData = this.dzData
+      }
   },
   methods: {
     pageSizeChange(val) {

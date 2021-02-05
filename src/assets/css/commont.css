@@ -770,6 +770,86 @@ position: absolute;
   border-bottom: 3px solid #2576dc;
 }
 .table-btn-box {
-position: absolute;
-right: 0;
+  position: absolute;
+  right: 0;
+}
+.el-form .divider-text{
+  font-size: 16px;
+  font-weight: bold;
+}
+.el-form .el-divider--horizontal{
+  margin: 10px 0 18px;
+}
+.form-line{
+  margin-left: 73px!important;
+  line-height: 30px!important;
+}
+.hc-dialog .el-dialog__body{
+  line-height: 30px!important;
+}
+.cus-children:not(:last-child){
+  padding-bottom: 10px;
+  border-bottom: 1px dotted #ccc;
+}
+.cus-children:not(:first-child){
+  padding-top: 15px;
+}
+.cus-adress{
+  border: 1px solid #ccc;
+  padding: 15px!important;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  margin-left: 53px!important;
+  margin-right: 58px!important;
+}
+.cus-adress .el-form-item__label{
+  width: 145px!important;
+}
+.cus-adress .el-form-item__content{
+  margin-left: 145px!important;
+}
+.upload-box{
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+}
+.dz-upload{
+  display: inline-flex;
+  justify-content: space-between;
+  width: 70%;
+}
+.upload-box .el-upload--picture-card{
+  width: 100px;
+  height: 100px;
+  line-height: 25px;
+}
+.upload-box .upload-text{
+  margin-top: 20px;
+}
+.upload-box .upload-text .upload-text-span{
+  font-size: 12px;
+  color:#8c939d
+}
+.upload-box .el-upload-list--picture-card .el-upload-list__item{
+  width: 100px;
+  height: 100px;
+}
+.adress-btn{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column;
+}
+.timeLine .el-card{
+  margin-bottom: 10px;
+}
+.timeLine{
+  max-height: 900px;
+  overflow-y: auto;
+  line-height: 20px!important;
+}
+.timeLine h4,.timeLine p{
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
 }

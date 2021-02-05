@@ -168,12 +168,12 @@
                 </el-table-column>
            <!-- 循环生成动态表格 -->
               <template v-for="(lb,i) in lbData">
-              <el-table-column
-                :key="i"
-                :prop="lb.dm"
-                :label="lb.cm">
-              </el-table-column>
-            </template>
+                <el-table-column
+                  :key="i"
+                  :prop="lb.dm"
+                  :label="lb.cm">
+                </el-table-column>
+              </template>
                 <!-- <el-table-column
                   prop="XM"
                   label="姓名">
@@ -212,9 +212,9 @@
                 </el-table-column> -->
                 <el-table-column
                   label="操作" width="100">
-                  <template slot-scope="scope">
-                  <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="$router.push({name:'NMFX_XQ',query:{row:scope.row,jumpTo:'main'}})"></el-button>
-                  </template>
+                  <div slot-scope="scope">
+                    <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="$router.push({name:'NMFX_XQ',query:{row:scope.row,jumpTo:'main'}})"></el-button>
+                  </div>
                 </el-table-column>
               </el-table>
               </div>
@@ -366,6 +366,7 @@ export default {
     ],
     checkedList:[],
     checkItemReal:[],
+    checkedListOld:[],
     tableHead:[
       {
         code:'GJDQ_DESC',
@@ -577,6 +578,9 @@ export default {
         }
       }
       this.checkItemReal=[];
+      if(!type){
+        this.checkedList = this.checkedListOld
+      }
       for(var i=0;i<this.checkedList.length;i++){
         for(var j=0;j<this.checkItem.length;j++){
           if(this.checkedList[i] == this.checkItem[j].code){
@@ -614,6 +618,7 @@ export default {
             this.TotalResult = r.data.totalResult;
             this.ALLResult=r.data.totalAllResult;
             this.configHeader=[];
+            this.checkedListOld = this.checkedList;
             let _this = this;
             for(var i=0;i<_this.checkItemReal.length;i++){
               var obj={};

@@ -187,12 +187,12 @@
              </el-table-column>
              <!-- 循环生成动态表格 -->
               <template v-for="(lb,i) in lbData">
-              <el-table-column
-                :key="i"
-                :prop="lb.dm"
-                :label="lb.cm">
-              </el-table-column>
-            </template>
+                <el-table-column
+                  :key="i"
+                  :prop="lb.dm"
+                  :label="lb.cm">
+                </el-table-column>
+              </template>
              <!-- <el-table-column
                prop="CNAME"
                label="中文姓名">
@@ -243,9 +243,9 @@
              </el-table-column> -->
              <el-table-column
                label="操作" width="70">
-               <template slot-scope="scope">
-               <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="details(scope.row)"></el-button>
-               </template>
+               <div slot-scope="scope">
+                  <el-button type="text"  class="a-btn"  title="详情"  icon="el-icon-document" @click="details(scope.row)"></el-button>
+               </div>
              </el-table-column>
          </el-table>
          <div class="middle-foot">
@@ -301,7 +301,7 @@
     <!--===================简表结束======================-->
       </div>
 
-    </template>
+</template>
     <script>
     import LXSXX from '../../../common/lxsxx_xq'
     import Trans from "@/components/common/Transfer.vue"
@@ -425,6 +425,7 @@
             },
           ],
           checkedList:[],
+          checkedListOld:[],
           checkItemReal:[],
           tableHead:[
             {
@@ -616,6 +617,9 @@
           });
         },
         getList(currentPage, showCount, pd,type) {
+          if(!type){
+            this.checkedList = this.checkedListOld
+          }
           this.checkItemReal=[];
           for(var i=0;i<this.checkedList.length;i++){
             for(var j=0;j<this.checkItem.length;j++){
@@ -653,6 +657,7 @@
                 this.tableData = r.data.resultList;
                 this.TotalResult = r.data.totalResult;
                 this.configHeader=[];
+                this.checkedListOld = this.checkedList;
                 let _this = this;
                 for(var i=0;i<_this.checkItemReal.length;i++){
                   var obj={};

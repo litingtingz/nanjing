@@ -674,6 +674,7 @@ export default {
         }
       ],
       checkedList: [],
+      checkedListOld:[],
       checkItemReal: [],
       tableHead: [
         {
@@ -832,8 +833,9 @@ export default {
           width: "100"
         }
       ],
-      lbData: [] //列表简表动态加载数据====简表选中项
+      lbData: [], //列表简表动态加载数据====简表选中项
       //简表结束
+      
     };
   },
   mounted() {
@@ -1104,6 +1106,9 @@ export default {
       this.areaPd = val;
     },
     getList(currentPage, showCount, pd, type) {
+      if(!type){
+        this.checkedList = this.checkedListOld
+      }
       this.checkItemReal = [];
       for (var i = 0; i < this.checkedList.length; i++) {
         for (var j = 0; j < this.checkItem.length; j++) {
@@ -1146,6 +1151,7 @@ export default {
             this.TotalResult = r.data.totalResult;
             this.totalAllResult = r.data.totalAllResult;
             this.configHeader = [];
+            this.checkedListOld = this.checkedList;
             let _this = this;
             for (var i = 0; i < _this.checkItemReal.length; i++) {
               var obj = {};

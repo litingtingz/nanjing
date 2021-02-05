@@ -8,7 +8,7 @@
             <el-input placeholder=" " v-model="zjhm" class="inputs" max="500" @keyup.enter.native="getList()">
               <el-select v-model="selecttype" slot="prepend" placeholder="请选择" style="width:100px;">
                  <el-option label="综合" value="all"></el-option>
-                 <el-option label="组织" value="org"></el-option>
+                 <el-option label="单位" value="ssdw"></el-option>
                  <el-option label="人员" value="user"></el-option>
                  <el-option label="案件" value="aj"></el-option>
                  <el-option label="地址" value="addr"></el-option>
