@@ -41,8 +41,6 @@
           <span class="input-text">出入境日期：</span>
           <span class="input-input detailinput">  {{crjinfo.ioDate}}</span>
         </el-col>
-
-
         <el-col :span="8" class="input-item">
           <span class="input-text">出入境时间：</span>
           <span class="input-input detailinput">  {{crjinfo.ioTime}}</span>
@@ -67,10 +65,10 @@
           <span class="input-text">前往地：</span>
           <span class="input-input detailinput">  {{crjinfo.destination}}</span>
         </el-col>
-        <el-col :span="8" class="input-item">
+        <!-- <el-col :span="8" class="input-item">
           <span class="input-text">发证机关：</span>
           <span class="input-input detailinput">  {{crjinfo.grantCertOrg.value==undefined?'':crjinfo.grantCertOrg.value}}</span>
-        </el-col>
+        </el-col> -->
         <el-col :span="8" class="input-item">
           <span class="input-text">发证日期：</span>
           <span class="input-input detailinput">  {{crjinfo.grantCertString}}</span>
@@ -142,10 +140,12 @@ export default {
        this.$api.post(this.Global.aport4+'/eS_CRJJLBController/getEntityByRGUID', p,
         r => {
           this.crjinfo=r.data;
+          console.log('this.crjinfo',this.crjinfo)
       })
     },
     getData2(){//人员画像
       this.crjinfo=this.xid;
+       console.log('this.crjinfo',this.crjinfo)
     },
   },
 }
