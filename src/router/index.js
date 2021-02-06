@@ -254,6 +254,13 @@ export default new Router({
           meta:{title:['日常管理','常住信息','教育厅招生审核']},
           component: resolve => require(['@/components/YJYP/YJ/LXSYJ/JYTZSYJ'], resolve),
         },
+        // 短信发送
+        {
+          path: 'DXFS',
+          name: 'DXFS',
+          meta:{title:['日常管理','常住信息','短信发送']},
+          component: resolve => require(['@/components/YJYP/YJ/LXSYJ/DXFS'], resolve),
+        },        
         {
           path: 'JYTZSYJ-XQ',
           name: 'JYTZSYJ-XQ',

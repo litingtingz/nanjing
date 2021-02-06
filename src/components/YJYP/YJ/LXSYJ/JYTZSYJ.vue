@@ -313,9 +313,12 @@ export default {
       CurrentPage: 1,
       pageSize: 10,
       TotalResult: 0,
+      // 表头数组
       pd: {BJSJ_DateRange:{}},
+      //预警时间对象
       pd0:{},
       options: this.pl.ps,
+      // 接口返回的数据渲染表格
       tableData: [],
       getallfj:[],
       PSC:[],
@@ -342,6 +345,7 @@ export default {
       this.getPSC(this.pd.FJ);
       this.pd.PCS = this.orgCode;
     }
+    //查询方法
     this.getList(this.CurrentPage, this.pageSize, this.pd);
   },
   mounted() {
@@ -361,6 +365,7 @@ export default {
     this.getFj();
   },
   methods: {
+    // 当某一列的表头被点击时会触发该事件
     titleShow(e,el){
       el.target.title = e.label;
     },
@@ -386,6 +391,7 @@ export default {
       this.jbDialogVisible = false;
     },
     //=================================================简表结束=====================
+    // 分局
     getFj(){
       this.$api.post(this.Global.aport5+'/djbhl/getallfj',{},
        r =>{
@@ -399,10 +405,11 @@ export default {
       this.$api.post(this.Global.aport5+'/djbhl/getpcsbyfjdm',{pd:{fjdm:i}},
       r =>{
         if(r.success){
-          this.PSC=r.data;
+          this.PSC=r.data
         }
       })
     },
+    // 当用户手动勾选数据行的 Checkbox 时触发的事件
     selectfn(a,b){
       this.multipleSelection = a;
       this.dataSelection()
@@ -421,6 +428,7 @@ export default {
       }
       // console.log('this.selectionAll',this.selectionAll);
     },
+    // 下载
     download(){
       if(this.tableData.length==0){
          this.$message.error('无可导出数据！');
@@ -480,6 +488,7 @@ export default {
       this.pageSize=val;
       this.getList(this.CurrentPage,val, this.pd);
     },
+    // 当前页改变时会触发
     handleCurrentChange(val) {
       this.CurrentPage=val;
       this.getList(val, this.pageSize, this.pd);
@@ -487,13 +496,17 @@ export default {
     getArea(val){
       this.areaPd = val;
     },
+    //查询方法
     getList(currentPage, showCount, pd,type) {
       this.pd.MXLX='LXS_ZSYJ';
       this.pd.BJSJ_DateRange.begin=this.pd0.beginBJSJ;
       this.pd.BJSJ_DateRange.end=this.pd0.endBJSJ;
+      //判断对象是否包含特定的自身属性
       if(pd.hasOwnProperty('YJID')){
         delete pd['YJID']
       }
+      //合并对象，第一个参数是目标对象，后面的参数都是源对象
+      // 代表将pd与this.areaPd重新合并为一个新对象
       pd = Object.assign({},pd,this.areaPd);
       if(type==1){
         this.selectionAll=[];
@@ -522,6 +535,7 @@ export default {
             for(var i=0;i<this.tableData.length;i++){
               for(var j=0;j<this.selectionAll.length;j++){
                 if(this.tableData[i].YJID==this.selectionAll[j].YJID){
+                  //默认选中某行
                   this.$refs.multipleTable.toggleRowSelection(this.tableData[i],true);
                 }
               }

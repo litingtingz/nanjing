@@ -33,10 +33,9 @@
                     v-for="(p,i) of labs"
                     :key="i"
                     :name="1+''"
-                    style="padding-left:20px"
                     class="aaaa"
                   >
-                    <div v-for="(ele,i) of p" :key="i" :class="i%2?'aaa':'bbb'">{{ele.tagMc}}</div>
+                    <el-tag :type="i%2?'warning':'success'" v-for="(ele,i) of p" :key="i" >{{ele.tagMc}}</el-tag>
                   </el-collapse-item>
                 </el-collapse>
               </el-drawer>
@@ -103,7 +102,7 @@
             <!-- 右侧下边面板部分 -->
             <el-container>
               <!-- 主要面板部分开始 -->
-              <el-main style="height:389px;width:110%;margin-top:20px;margin-left:12px;padding:0px" class="t-main">
+              <el-main style="height:389px;width:100%;margin-top:20px;margin-left:12px;padding:0px" class="t-main">
                 <!-- 出入境表格 -->
                 <el-row :gutter="10">
                   <!-- 表格内容开始 -->
@@ -289,49 +288,51 @@
           <!-- 右侧面板结束 -->
         </el-container>
         <!-- 底部时间轴开始 -->
-        <div style="width:100%;height:30px;font-weight:bold;font-size:18px;margin-top:3px">人员入住信息</div>
-        <el-row :gutter="20"  style="background-color:#fff;height:300px;margin-left:5px" class="axis">
-          <el-col :span="24" class="time-box">
-            <div class="ul_box" :style="{ width: timeLineList.length * 250 + 50 + 'px' }">
-              <ul style="margin-left: 10px;"  >
-                <li class="my_timeline_item" v-for="(item, index) in timeLineList" :key="index"  >
-                  <!--圈圈节点-->
-                  <div class="my_timeline_node" :style="{backgroundColor: item.bgcolor,width: item.size + 'px',height: item.size + 'px',}"
-                    @click="changeActive(index)"
-                    :class="{ active: index == timeIndex }"
-                  ></div>
-                  <!--时间轴线-->
-                  <div class="my_timeline_item_line" v-if="index !== timeLineList.length - 1"></div>
-                  <!-- 控制节点下面的字样式 -->
-                  <div class="my_timeline_item_content"
-                    :style="{
-                      color: item.color,
-                      fontSize: item.fontsize + 'px',
-                    }"
-                  >
-                    {{ item.trackTime }}
-                  </div>
-                  <!-- 描述的线 -->
-                  <div :class="index%2 ? 'content-line-top' : 'content-line-bottom'"></div>
-                  <!-- 内容显示区 -->
-                  <div :class="index%2 ? 'content-top' : 'content-bottom'">
-                    <!-- <el-main class="time-main"> -->
-                        <div v-for="(p,i) of item.trackDataList" :key="i" class="time_content">
-                              <p style="margin:2px 0px;line-height:18px;margin-left:10px">{{p.colComment}}：{{p.colVal}}</p>
-                        </div>
-                    <!-- </el-main> -->
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </el-col>
-        </el-row>
+        <el-container style="width:99%">
+            <el-row :gutter="20"  style="background-color:#fff;height:350px;width:100%;margin-left:0px;margin-top:6px" class="axis">
+              <div style="width:80%;height:30px;font-weight:bold;font-size:16px;margin-top:5px;margin-left:5px;color:#818181">人员入住信息</div>
+              <el-col :span="24" class="time-box">
+                <div class="ul_box" :style="{ width: timeLineList.length * 250 + 50 + 'px' }">
+                  <ul style="margin-left: 10px;"  >
+                    <li class="my_timeline_item" v-for="(item, index) in timeLineList" :key="index"  >
+                      <!--圈圈节点-->
+                      <div class="my_timeline_node" :style="{backgroundColor: item.bgcolor,width: item.size + 'px',height: item.size + 'px',}"
+                        @click="changeActive(index)"
+                        :class="{ active: index == timeIndex }"
+                      ></div>
+                      <!--时间轴线-->
+                      <div class="my_timeline_item_line" v-if="index !== timeLineList.length - 1"></div>
+                      <!-- 控制节点下面的字样式 -->
+                      <div class="my_timeline_item_content"
+                        :style="{
+                          color: item.color,
+                          fontSize: item.fontsize + 'px',
+                        }"
+                      >
+                        {{ item.trackTime }}
+                      </div>
+                      <!-- 描述的线 -->
+                      <div :class="index%2 ? 'content-line-top' : 'content-line-bottom'"></div>
+                      <!-- 内容显示区 -->
+                      <div :class="index%2 ? 'content-top' : 'content-bottom'">
+                        <!-- <el-main class="time-main"> -->
+                            <div v-for="(p,i) of item.trackDataList" :key="i" class="time_content">
+                                  <p style="margin:2px 10px;line-height:18px;">{{p.colComment}}：{{p.colVal}}</p>
+                            </div>
+                        <!-- </el-main> -->
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </el-col>
+            </el-row>
+        </el-container>
         <!-- 底部时间轴结束 -->
       </div>
     </div>
     <!-- 弹出的表格开始 -->
     <!-- 1.出入境记录 -->
-    <el-dialog :visible.sync="dialog1" class="xcc">
+    <el-dialog title="出入境列表" :visible.sync="dialog1" class="xcc">
        <el-table class="w-jb"  width="80%"  :header-cell-style="{color:'#1c6cb4',}"
             :data="tableData1.length==0?tableData1:tableData1.slice((CurrentPage1-1)*pageSize11,CurrentPage1*pageSize11)"
         >
@@ -384,7 +385,7 @@
         </div>
     </el-dialog>
     <!-- 2.临住信息表格记录 -->
-    <el-dialog :visible.sync="dialog2" class="xcc">
+    <el-dialog title="临住信息列表" :visible.sync="dialog2" class="xcc">
        <el-table class="w-jb"  width="80%"  :header-cell-style="{color:'#1c6cb4',}"
             :data="tableData2.length==0?tableData2:tableData2.slice((CurrentPage2-1)*pageSize22,CurrentPage2*pageSize22)"
         >
@@ -443,7 +444,7 @@
         </div>
     </el-dialog>    
     <!-- 3.常住信息表格记录 -->
-    <el-dialog :visible.sync="dialog3" class="xcc">
+    <el-dialog title="常住信息列表" :visible.sync="dialog3" class="xcc">
        <el-table class="w-jb"  width="80%"  :header-cell-style="{color:'#1c6cb4',}"
               :data="tableData3.length==0?tableData3:tableData3.slice((CurrentPage3-1)*pageSize33,CurrentPage3*pageSize33)">
               <el-table-column
@@ -501,7 +502,7 @@
         </div>
     </el-dialog>
     <!-- 4.案发时间记录 -->
-    <el-dialog :visible.sync="dialog4" class="xcc">
+    <el-dialog title="案发时间列表" :visible.sync="dialog4" class="xcc">
        <el-table class="w-jb"  width="80%"  :header-cell-style="{color:'#1c6cb4',}"
              :data="tableData4.length==0?tableData4:tableData4.slice((CurrentPage4-1)*pageSize44,CurrentPage4*pageSize44)">
              <el-table-column
@@ -555,7 +556,7 @@
         </div>
     </el-dialog>
     <!-- 5.明航进出港信息 -->
-    <el-dialog :visible.sync="dialog5" class="xcc">
+    <el-dialog title="民航进出港列表" :visible.sync="dialog5" class="xcc">
        <el-table class="w-jb"  width="80%"  :header-cell-style="{color:'#1c6cb4',}"
               :data="tableData5.length==0?tableData5:tableData5.slice((CurrentPage5-1)*pageSize55,CurrentPage5*pageSize55)">
             <el-table-column
@@ -609,7 +610,7 @@
         </div>
     </el-dialog>
     <!-- 6.单位信息 -->
-    <el-dialog :visible.sync="dialog6" class="xcc">
+    <el-dialog title="单位信息列表" :visible.sync="dialog6" class="xcc">
        <el-table class="w-jb"  width="80%"  :header-cell-style="{color:'#1c6cb4',}"
               :data="tableData6.length==0?tableData6:tableData6.slice((CurrentPage6-1)*pageSize66,CurrentPage6*pageSize66)">
            <el-table-column
@@ -659,7 +660,7 @@
         </div>
     </el-dialog>    
    <!--7.留学生基本信息--申请信息  -->
-    <el-dialog :visible.sync="dialog7" class="xcc">
+    <el-dialog title="留学生申请基本信息列表" :visible.sync="dialog7" class="xcc">
        <el-table class="w-jb"  width="80%"  :header-cell-style="{color:'#1c6cb4',}"
               :data="tableData7.length==0?tableData7:tableData7.slice((CurrentPage7-1)*pageSize77,CurrentPage7*pageSize77)">
           <el-table-column
@@ -709,7 +710,7 @@
         </div>
     </el-dialog> 
     <!-- 8.留学生信息--在校信息 -->
-    <el-dialog :visible.sync="dialog8" class="xcc">
+    <el-dialog title="留学生在校信息列表" :visible.sync="dialog8" class="xcc">
        <el-table class="w-jb"  width="80%"  :header-cell-style="{color:'#1c6cb4',}"
               :data="tableData8.length==0?tableData8:tableData8.slice((CurrentPage8-1)*pageSize88,CurrentPage8*pageSize88)">
              <el-table-column
@@ -759,7 +760,7 @@
         </div>
     </el-dialog>  
     <!-- 9.通报信息 -->
-    <el-dialog :visible.sync="dialog9" class="xcc">
+    <el-dialog title="通报信息列表" :visible.sync="dialog9" class="xcc">
        <el-table class="w-jb"  width="80%"  :header-cell-style="{color:'#1c6cb4',}"
               :data="tableData9.length==0?tableData9:tableData9.slice((CurrentPage9-1)*pageSize99,CurrentPage9*pageSize99)">
                    <el-table-column
@@ -1153,8 +1154,8 @@ export default {
       };
       // this.$api.post(this.Global.aport3+'/ryhxhx/getcrjjl', p,
       // 测试接口
-      this.$api.post(this.Global.aport3+'/UserInfoTestController/getcrjjl', p,
-      // this.$api.post(this.Global.aport3+'/UserInfoTestController/listCrjjl', p,
+      // this.$api.post(this.Global.aport3+'/UserInfoTestController/getcrjjl', p,
+       this.$api.post(this.Global.aport3+'/ryhxhx/listcrjjl', p,
         r => {
           // this.tableData1 = r.data;         
           this.tableData1 = r.data.resultList;     
@@ -1177,9 +1178,9 @@ export default {
         "nationality":this.gjdq,
         'token':this.token,
       };
-      // this.$api.post(this.Global.aport3+'/ryhxhx/getlzxx', p,
+      this.$api.post(this.Global.aport3+'/ryhxhx/getlzxx', p,
       // 测试接口
-      this.$api.post(this.Global.aport3+'/UserInfoTestController/getlzxx', p,
+      // this.$api.post(this.Global.aport3+'/UserInfoTestController/getlzxx', p,
         r => {
           this.tableData2 = r.data.info;
           this.TotalResult2=r.data.info.length;
@@ -1197,9 +1198,9 @@ export default {
         "nationality":this.gjdq,
         "token":this.token,
       };
-      // this.$api.post(this.Global.aport3+'/ryhxhx/getczxx', p,
+      this.$api.post(this.Global.aport3+'/ryhxhx/getczxx', p,
       // 测试接口
-      this.$api.post(this.Global.aport3+'/UserInfoTestController/getczxx', p,
+      // this.$api.post(this.Global.aport3+'/UserInfoTestController/getczxx', p,
         r => {
           this.tableData3 = r.data.info;
           this.TotalResult3=r.data.info.length;
@@ -1381,9 +1382,9 @@ export default {
         "zjhm":this.zjhm,
         "token":this.token,
       };
-      this.$api.post(this.Global.aport6+'/api/es/rytag/getRyTag', p,
+      // this.$api.post(this.Global.aport6+'/api/es/rytag/getRyTag', p,
       // 测试接口
-      // this.$api.post(this.Global.aport6+'/api/es/rytag/listRyTag', p,
+      this.$api.post(this.Global.aport6+'/api/es/rytag/listRyTag', p,
         r => {
           if(r.success){
             this.labs = r.respondResult;
@@ -1562,7 +1563,7 @@ export default {
   height: 44px;
   border-left: 1px solid #90C8F9;
   position: absolute;
-  left: 2.2%;
+  left: 2.9%;
   bottom: -21%;
 }
 /* 内容底部的样式 */
@@ -1595,7 +1596,7 @@ export default {
   height: 44px;
   border-left: 1px solid #90C8F9;
   position: absolute;
-  left: 2.2%;
+  left: 2.9%;
   top: -88%;
 }
 /* 内容在顶部的样式 */
@@ -1647,12 +1648,14 @@ export default {
   font-size:15px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-weight: bold;
+  margin: 0px;
 }
 .bbb{
   color: #e27713;
   font-size: 15px;
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
   font-weight: bold;
+  margin: 0px;
 }
 .t1 {
   margin-bottom: 20px;
@@ -1846,14 +1849,14 @@ export default {
   width: 100%;
   height: 10px;
   margin: -9px 0 0 15px;
-  border-top: 2px dotted #42B3E5;
+  border-top: 2px dotted #46cdd9;
   border-left: none;
 }
 /* 时间轴节点 */
 .my_timeline_item_content {
   margin: 4px 0 0 -42px;
   width: 100px;
-  background-color: #42B3E5;
+  background-color: #46cdd9;
   border-radius: 50px;
   text-align:center;
   line-height: 20px;
@@ -1869,7 +1872,7 @@ th .el-table_1_column_1 .is-leaf{
 </style>
 <style>
 /* 控制表头的样式 */
- .w-jb th{
+ .w-jb .el-table__header-wrapper th{
    background: #C9E3F7 !important;
    height: 26px !important;
  }
@@ -1887,30 +1890,43 @@ th .el-table_1_column_1 .is-leaf{
   padding-right: 0px  !important;
   /* margin-right: 10px; */
 }
-/* .tab-list:nth-child(2n){
-  margin-right: 10px;
-} */
 .t-main{
   width:100%;
   overflow-x: hidden;
 }
 .ztys .el-button--mini, .el-button--mini.is-round{
-  padding:3px 13px;
+  padding:0px 13px;
   margin-top: 5px;
   margin-left: 15px;
+  text-align:center;
+  line-height: 20px;
 }
 .time-main{
   padding:5px;
   overflow-y:scroll
 }
 .xcc .el-dialog__headerbtn{
-  margin-top: -13px;
+  margin-top: 8px;
 }
 .aaaa .el-collapse-item__header{
-  font-size: 20px;
-  font-family:serif ;
+  font-size: 16px;
+  margin: 5px 10px;
   font-weight: bold;
   height:25px;
   line-height: 20px;
+  color: #818181;
+}
+.aaaa .el-collapse-item__content{
+  margin-left: 20px;
+}
+.bqq .el-drawer__header{
+  padding:0px;
+  margin: 20px;
+  color: #122557;
+  text-align:center;
+  line-height: 25px;
+  font-size: 25px;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-weight: bold;
 }
 </style>

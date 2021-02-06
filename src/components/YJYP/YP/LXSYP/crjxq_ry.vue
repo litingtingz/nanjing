@@ -1,5 +1,5 @@
 <template lang="html">
-<el-form :model="crjinfo">
+<el-form :model="crjinfo" v-if="crjinfo">
     <el-row :gutter="2"  class="mb-6">
         <el-col :span="8" class="input-item">
           <span class="input-text">人员姓名：</span>
@@ -107,7 +107,7 @@ export default {
   props:['type','xid','random'],
   data(){
     return{
-      crjinfo:{},
+      crjinfo:null,
     }
   },
   mounted(){
