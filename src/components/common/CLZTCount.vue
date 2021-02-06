@@ -81,6 +81,16 @@ export default {
           "orderBy": {"dataType":"date","value":"LNSJ"},
           "orderType":'DESC',
         }
+      }else if(this.state=='CZW'){
+        url="/api/roomController/countCzw"
+        p={
+          pd:{
+           MXLX:this.ccPd.MXLX,
+           FJ:this.ccPd.FJ,
+           PCS:this.ccPd.PCS,
+         },
+         token:this.token
+        }
       }else{
         url='/warningInfoController/getClztCount';
         p={

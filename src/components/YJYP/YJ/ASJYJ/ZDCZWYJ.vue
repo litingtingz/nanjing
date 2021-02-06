@@ -351,10 +351,10 @@ export default {
         orgCode:this.orgCode,
         token:this.token
       };
-      this.$api.post(this.Global.aport4 +'/fangWuWarningInfoController/getInfoListByMxLx', p,
+      this.$api.post(this.Global.aport4 +'/api/roomController/listCzw', p,
         r => {
-          this.tableData = r.data.resultList;
-          this.TotalResult = r.data.totalResult;
+          this.tableData = r.data.dataList;
+          this.TotalResult = r.data.totalSize;
           if(this.selectionReal.length==0){//声明一个数组对象
             this.selectionReal=new Array(Math.ceil(this.TotalResult/showCount))
           }

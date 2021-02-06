@@ -918,6 +918,10 @@
   }
 }
 @media only screen and (max-width: 1550px){
+  #big-img-box {
+      top: 72%!important;
+      height: 540px!important;
+  }
   .clickClass{width:34%;height:55px;position: absolute;top: 0;left: 33%}
   .topbg{font-size: 18px;width: 90px;height: 74px;line-height: 90px; text-align: center;cursor: pointer; color: #eeeeee}
   /* 非首页 */

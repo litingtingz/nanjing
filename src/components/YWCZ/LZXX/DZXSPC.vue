@@ -81,7 +81,7 @@
          </el-col>
         <el-col :span="2" class="down-btn-area">
           <el-button type="success" size="small"  class="mb-15" @click="getList(CurrentPage,pageSize,pd,1)">查询</el-button>
-          <el-button type="primary" size="small"  class="t-ml0" @click="download">导出</el-button>
+          <!-- <el-button type="primary" size="small"  class="t-ml0" @click="download">导出</el-button> -->
         </el-col>
       </el-row>
     </div>
@@ -111,11 +111,11 @@
             <div class="table-btn-box" id="plBtn">
               <template>
                 <el-button size="mini" :type="'primary'" @click="exportFnc">导出</el-button>
-                <el-button size="mini" :type="'primary'" @click="importFnc">导入</el-button>
-                <el-button size="mini" :type="'primary'">模板下载</el-button>
-                <el-button size="mini" :type="'primary'">下发</el-button>
-                <el-button size="mini" :type="'primary'">上报</el-button>
-                <el-button size="mini" :type="'primary'" @click="xzFnc">新增</el-button>
+                <el-button size="mini" :type="'primary'" @click="importFnc" v-if="page==1">导入</el-button>
+                <el-button size="mini" :type="'primary'" @click="templateDownload">模板下载</el-button>
+                <el-button size="mini" :type="'primary'" @click="batchXf" v-if="page==1&&pageTab=='2'">下发</el-button>
+                <el-button size="mini" :type="'primary'" @click="batchSb" v-if="page==1&&pageTab=='5'">上报</el-button>
+                <el-button size="mini" :type="'primary'" @click="xzFnc" v-if="page==1">新增</el-button>
                 <el-button size="mini" type="primary"  @click="jbFnc">简表</el-button>
               </template>
             </div>
@@ -149,9 +149,9 @@
                   type="text"
                   class="a-btn"
                   title="详情"
-                  icon="el-icon-document-outline"
-                  v-if="scope.row.whetherUpdateState=='0'"
-                  @click="detailFnc(scope.row)"
+                  icon="el-icon-document"
+                  v-if="scope.row.whetherUpdateState==0"
+                  @click="editFnc(scope.row)"
                 ></el-button>
                 <el-button
                   type="text"
@@ -202,7 +202,10 @@
         @dialogCancel="jbDialogVisible=false"></Trans>
     </el-dialog>
     <!--===================处理======================-->
-    <el-dialog title="处理" :visible.sync="clDialogVisible" width="1200px" class="hc-dialog" top="3vh">
+    <el-dialog :title="clTitle" 
+      :visible.sync="clDialogVisible" 
+      width="1200px" class="hc-dialog" top="3vh" 
+      :modal-append-to-body="true">
       <el-row type="flex">
         <el-col :span="16">
           <el-form ref="editForm" :model="editData">
@@ -261,7 +264,7 @@
               </el-col>
               <el-col :span="24" class="input-item">
                 <span class="input-text">走访信息：</span>
-                <el-radio-group v-model="editData.backstatus" @change="radioChange" class="form-radio" :disabled="true">
+                <el-radio-group v-model="editData.backstatus" @change="radioChange" class="form-radio" :disabled="!(page==1&&(pageTab=='2'||pageTab=='3'))">
                   <el-radio
                     :label="item.dm"
                     v-for="(item,ind) in $store.state.backstatus"
@@ -271,16 +274,18 @@
               </el-col>
             </el-row>
             <el-row :gutter="30" align="center" class="cus-adress">
-              <el-col :span="24" v-for="(all,alls) in editData.userInforList" :key="alls" class="cus-children">
+              <el-col :span="24" v-for="(all,alls) in userInforList" :key="alls" class="cus-children">
                 <el-row type="flex">
                   <el-col :span="22">
                     <el-col :span="24" class="input-item">
                       <span class="input-text">境外人员证件号码：</span>
-                      <el-input size="mini" v-model="all.passportno"  class="input-input" :disabled="true"></el-input>
+                      <el-input size="mini" v-model="all.passportno"  class="input-input" 
+                      :disabled="editData.backstatus=='zfzt_1'||editData.backstatus=='zfzt_3'||!editData.backstatus||joinZf"></el-input>
                     </el-col>
                     <el-col :span="24" class="input-item">
                       <span class="input-text">境外人员国家地区：</span>
-                      <el-select v-model="all.nationality" filterable clearable default-first-option placeholder="请选择"  :disabled="true" size="mini" class="input-input">
+                      <el-select v-model="all.nationality" filterable clearable default-first-option placeholder="请选择"  
+                      :disabled="editData.backstatus=='zfzt_1'||editData.backstatus=='zfzt_3'||!editData.backstatus||joinZf" size="mini" class="input-input">
                         <el-option
                           v-for="(item,ind3) in $store.state.gjdq"
                           :key="ind3"
@@ -291,14 +296,15 @@
                     </el-col>
                     <el-col :span="24" class="input-item">
                       <span class="input-text">手机号码：</span>
-                      <el-input size="mini" v-model="all.phone"  class="input-input" :disabled="true"></el-input>
+                      <el-input size="mini" v-model="all.phone"  class="input-input" 
+                      :disabled="editData.backstatus=='zfzt_1'||editData.backstatus=='zfzt_3'||!editData.backstatus||joinZf"></el-input>
                     </el-col>
                     <el-col :span="24">
                       <span class="input-text">图片：</span>
                       <div class="dz-upload">
                           <el-upload
                             class="upload-box"
-                            :disabled="joinZf"
+                            :disabled="editData.backstatus=='zfzt_1'||editData.backstatus=='zfzt_3'||!editData.backstatus||joinZf"
                             :name="'arr_passport_photo'"
                             ref="load1"
                             action
@@ -318,7 +324,7 @@
                           <el-upload
                             class="upload-box"
                             :name="'arr_portrait_photo'"
-                            :disabled="joinZf"
+                            :disabled="editData.backstatus=='zfzt_1'||editData.backstatus=='zfzt_3'||!editData.backstatus||joinZf"
                             ref="load2"
                             action="111"
                             :limit="1"
@@ -337,7 +343,7 @@
                           <el-upload
                             class="upload-box"
                             :name="'arr_visa_photo'"
-                            :disabled="joinZf"
+                            :disabled="editData.backstatus=='zfzt_1'||editData.backstatus=='zfzt_3'||!editData.backstatus||joinZf"
                             ref="load3"
                             action="111"
                             :limit="1"
@@ -357,8 +363,8 @@
                     </el-col>
                   </el-col>
                   <el-col :span="2" class="adress-btn">
-                    <el-button :disabled="joinZf" type="primary" icon="el-icon-plus" size="mini" circle @click="Add_DZ()" v-if="editData.userInforList.length-1==alls"></el-button>
-                    <el-button :disabled="joinZf" type="danger" icon="el-icon-minus" size="mini" circle @click="deleteModel_DZ(alls)" v-if="editData.userInforList.length>1" style="margin-left:0"></el-button>
+                    <el-button :disabled="editData.backstatus=='zfzt_1'||editData.backstatus=='zfzt_3'||!editData.backstatus||joinZf" type="primary" icon="el-icon-plus" size="mini" circle @click="Add_DZ()" v-if="userInforList.length-1==alls"></el-button>
+                    <el-button :disabled="editData.backstatus=='zfzt_1'||editData.backstatus=='zfzt_3'||!editData.backstatus||joinZf" type="danger" icon="el-icon-minus" size="mini" circle @click="deleteModel_DZ(alls)" v-if="userInforList.length>1" style="margin-left:0"></el-button>
                   </el-col>
                 </el-row>
               </el-col>
@@ -383,6 +389,41 @@
           </div>
         </el-col>
       </el-row>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="singSbFnc" size="small" 
+        v-if="(page==1&&(pageTab=='2'||pageTab=='5'||(pageTab=='3')))||(page==2&&pageTab=='3'&&editData.whetherUpdateState==1)">上报</el-button>
+        <el-button type="primary" @click="singXfFnc" size="small"
+        v-if="(page==1&&(pageTab=='2'||pageTab=='5'))||(page==2&&pageTab=='1'&&editData.whetherUpdateState==1)">下发</el-button>
+        <el-button @click="clDialogVisible = false" size="small">取 消</el-button>
+      </div>
+    </el-dialog>
+    <!--===================上报&下发======================-->
+    <el-dialog :title="singClTitle" :visible.sync="singDialogVisible" width="800px">
+      <el-form ref="sxForm" :model="xsData">
+        <el-row :gutter="30" align="center">
+          <el-col :span="24" class="input-item yzform" data-scope="xsJy" data-name="policestation" data-type="input"
+            v-validate-easy="[['required']]">
+            <span class="input-text"><font class="redx">*</font>所属派出所：</span>
+              <el-select 
+                v-model="xsData.policestation" 
+                placeholder="请选择"  
+                filterable clearable default-first-option size="mini" 
+                class="input-input">
+                <el-option
+                  v-for="(item,ind3) in sxGetPCS"
+                  :key="ind3"
+                  :label="item.DM+' - '+item.MC"
+                  :value="item.DM">
+                </el-option>
+              </el-select>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="batchXfSave" v-if="xfDialogType=='batchxf'" size="small">保 存</el-button>
+        <el-button type="primary" @click="singXfSave" v-if="xfDialogType=='singxf'" size="small">保 存</el-button>
+        <el-button @click="singDialogVisible = false" size="small">取 消</el-button>
+      </div>
     </el-dialog>
     <!--===================新增======================-->
     <el-dialog title="新增" :visible.sync="xzDialogVisible" width="800px">
@@ -443,6 +484,10 @@
         <el-button @click="xzDialogVisible = false" size="small">取 消</el-button>
       </div>
     </el-dialog>
+    <!--===================导入======================-->
+    <el-dialog title="新增" :visible.sync="drDialogVisible" width="800px">
+
+    </el-dialog>
     <div id="big-img-box" v-dragOnly v-if="isimgclick">
       <el-image-viewer :on-close="()=>{isimgclick=false}" :url-list="imgList" />
     </div>
@@ -450,7 +495,7 @@
 </template>
 <script>
 import Trans from "@/components/common/Transfer.vue";
-import compressImg from "@/assets/js/date.js"
+import {compressImg} from "@/assets/js/date.js"
 export default {
   components: { 
     Trans ,
@@ -530,11 +575,14 @@ export default {
       selectionAll: [],
       yuid: [],
       selectionReal: [],
+      serialList:[],
+      officeArr:[],
 
       page:1,
       pageTab:'2',
       //处理弹窗开始
       clDialogVisible:false,
+      clTitle:'处理',
       editData:{},
       userInforList:[],
       dzmodel:{
@@ -545,15 +593,25 @@ export default {
         arr_portrait_photo:[],
         arr_visa_photo:[],
       },
-      joinZf:true,
+      joinZf:false,
       isimgclick:false,
       imgList:[],
+
+      singClTitle:'下发',
+      xsData:{},
+      singDialogVisible:false,
+      sxGetPCS:[],
       cxData:{"2021-02-03":[{"CZSJ":"2021-02-03 19:21:18","XM":"测试用户","BZ":"23","CZRQ":"2021-02-03","XTYHBMMC":"江苏省苏州市公安局","CZZT":"下发"}],"2020-12-07":[{"CZSJ":"2020-12-07 19:30:03","XM":"郑晓东","BZ":"23","CZRQ":"2020-12-07","XTYHBMMC":"江苏省苏州市公安局苏州高新区分局横塘派出所","CZZT":"上报","ZFZT":"有境外人员"},{"CZSJ":"2020-12-07 19:28:54","XM":"郑晓东","BZ":"23","CZRQ":"2020-12-07","XTYHBMMC":"江苏省苏州市公安局苏州高新区分局横塘派出所","CZZT":"上报","ZFZT":"有境外人员"},{"CZSJ":"2020-12-07 19:28:17","XM":"郑晓东","BZ":"23","CZRQ":"2020-12-07","XTYHBMMC":"江苏省苏州市公安局苏州高新区分局横塘派出所","CZZT":"上报","ZFZT":"有境外人员"},{"CZSJ":"2020-12-07 19:27:54","XM":"郑晓东","BZ":"2","CZRQ":"2020-12-07","XTYHBMMC":"江苏省苏州市公安局苏州高新区分局横塘派出所","CZZT":"上报","ZFZT":"有境外人员"},{"CZSJ":"2020-12-07 19:27:42","XM":"郑晓东","BZ":"2","CZRQ":"2020-12-07","XTYHBMMC":"江苏省苏州市公安局苏州高新区分局横塘派出所","CZZT":"上报","ZFZT":"无境外人员"},{"CZSJ":"2020-12-07 19:27:35","XM":"郑晓东","BZ":"2","CZRQ":"2020-12-07","XTYHBMMC":"江苏省苏州市公安局苏州高新区分局横塘派出所","CZZT":"上报","ZFZT":"无效地址"},{"CZSJ":"2020-12-07 18:45:42","BZ":"2","CZRQ":"2020-12-07","CZZT":"系统自动下发"}]},
       //处理弹窗结束
       //新增弹窗开始
       xzDialogVisible:false,
       xzData:{},
       //新增弹窗结束
+      //导入
+      drDialogVisible:false,
+
+      xfDialogType:'',
+      expData:{},
 
       userCode: "",
       userName: "",
@@ -692,12 +750,17 @@ export default {
     },
     editFnc(data){
       this.editData = data;
-      this.$store.dispatch("aGetBackstatus", data.datatype)
-      this.getTimeData(data.serial)//时间轴
+      data.whetherUpdateState==1?this.clTitle="处理":this.clTitle="详情"
+      if((this.page==1&&this.pageTab=='5')||data.whetherUpdateState==0){
+        this.joinZf = true
+      }else{
+        this.joinZf = false
+      }
+      this.$store.dispatch("aGetBackstatus")
+      // this.getTimeData(data.serial)//时间轴
       this.$api.post(this.Global.aport3+'/issueDataAddress/getIssueDataAddressInfor',{ADDRESS_SERIAL:data.serial,token:this.token},r=>{
-        this.editData.userInforList = r.data;
-        if(this.editData.userInforList.length==0){
-          this.editData.userInforList=[{
+        if(r.data.length==0){
+          this.userInforList=[{
             passportno:'',
             nationality:'',
             phone:'',
@@ -705,37 +768,172 @@ export default {
             arr_portrait_photo:[],
             arr_visa_photo:[],
           }]
+        }else{
+          this.userInforList = r.data;
         }
         this.clDialogVisible=true;
       })
     },
-    detailFnc(data){
-
+    //单条上报
+    singSbFnc(){
+      if(!this.editData.backstatus){
+        this.$message({
+          message: '走访状态不能为空！',
+          type: 'warning'
+        });
+        return
+      }
+      console.log('this.editData===',this.editData)
+      //自定义部分校验不能为空
+      let p=this.editData;
+      p.token=this.token;
+      p.pageData = {
+        clzt: this.page,
+        cljg: this.pageTab,
+        userInforList:this.userInforList
+      }
+      this.$api.post(this.Global.aport3+'/issueDataAddress/updateReportData',p,r=>{
+        if(r.success){
+          this.$message({
+            message:r.data.message,
+            type: 'success'
+          });
+          this.getList(this.CurrentPage,this.pageSize,this.pd, 1)
+          this.clDialogVisible=false;
+        }
+      })
+    },
+    getInnerPCS(data){
+      this.$api.post(this.Global.aport5+'/djbhl/getpcsbyfjdm',{pd:{fjdm:data},userCode:this.userCode,userName:this.userName,orgJB:this.juState,orgCode:this.orgCode,token:this.token},
+        r =>{
+          if(r.success){
+            this.sxGetPCS=r.data;
+          }
+      })
+    },
+    singXfFnc(){
+      this.V.$reset('xsJy');
+      this.xfDialogType="singxf";
+      this.singDialogVisible=true;
+      this.getInnerPCS(this.editData.suboffice)
+    },
+    //单条下发
+    singXfSave(){
+      this.V.$submit('xsJy',(canSumit,data) =>{
+        if(!canSumit) return;
+        let p=Object.assign({},this.editData,this.xsData)
+        p.token=this.token;
+        p.pageData={
+          clzt: this.page,
+          cljg: this.pageTab
+        }
+        this.$api.post(this.Global.aport3+'/issueDataAddress/updateSendOutData',p,r=>{
+          if(r.success){
+            this.$message({
+              message:r.data.message,
+              type: 'success'
+            });
+            this.getList(this.CurrentPage,this.pageSize,this.pd, 1)
+            this.singDialogVisible=false;
+            this.clDialogVisible=false;
+          }   
+        })
+      })
+    },
+    //判断数组元素是否完全相等
+    isAllEqual(array) {
+      return !array.some(function(value) {
+        return value !== array[0];
+      });
+    },
+    //====================================批量按钮=======================================
+    //批量下发
+    batchXf(){
+      if(this.serialList.length==0){
+        this.$message({
+          message: "请先选择表格数据！",
+          type: "warning"
+        });
+        return false;
+      }
+      if(this.pageTab=='2'){
+        if(!this.isAllEqual(this.officeArr)){
+          this.$message({
+            message: "必须选择同一分局！",
+            type: "warning"
+          });
+          return false;
+        }
+      }
+      this.getInnerPCS(this.officeArr[0])
+      this.V.$reset('xsJy');
+      this.xfDialogType="batchxf";
+      this.singDialogVisible=true;
+    },
+    batchXfSave(){
+      this.V.$submit('xsJy',(canSumit,data) =>{
+        if(!canSumit) return;
+        let p=this.xsData;
+        p.serialList=this.serialList;
+        p.token=this.token;
+        p.clzt=this.page;
+        p.cljg=this.pageTab;
+        this.$api.post(this.Global.aport3+'/issueDataAddress/issueDataAddressTrigger',p,r=>{
+          if(r.success){
+            this.$message({
+              message:r.data.message,
+              type: 'success'
+            });
+            this.getList(this.CurrentPage,this.pageSize,this.pd, 1)
+            this.singDialogVisible=false;
+          }   
+        })
+      })
+    },
+    //批量上报
+    batchSb(){
+      if(this.serialList.length==0){
+        this.$message({
+          message: "请先选择表格数据！",
+          type: "warning"
+        });
+        return false;
+      }
+      let p={
+        serialList:this.serialList,
+        token:this.token,
+        clzt:this.page,
+        cljg:this.pageTab,
+      }
+      this.$api.post(this.Global.aport3+'/issueDataAddress/reportDataSuboffice',p,r=>{
+        if(r.success){
+          this.$message({
+            message: r.data.message,
+            type: "success"
+          });
+          this.getList(this.CurrentPage,this.pageSize,this.pd, 1)
+        }
+      })
+    },
+    //模板下载
+    templateDownload(){
+      // window.location.href = window.IPConfig.IP +"/"+this.Global.aport3 + '/webapp/templateFile/地址线索排查导入模板.xlsx'
+      window.location.href = this.Global.aport3 + '/webapp/templateFile/地址线索排查导入模板.xlsx'
     },
     radioChange(){},
     //放大查看图片
-    handlePictureCardPreview(){
+    handlePictureCardPreview(file){
       this.isimgclick = true;
       this.imgList = [file.url]
     },
     //删除照片
     handleRemove(item,key,file,fileList){
-      this.editData.userInforList[key][item] = [];
-      console.log('shanchu',file,fileList)
+      this.userInforList[key][item] = [];
     },
     //图片上传change事件  base64交互
     imgOnChange(item,key,file,fileList){
-      console.log('+++',key,file.raw.type,fileList)
-      // var reader = new FileReader()
-      // reader.readAsDataURL(file.raw)
-      // reader.onload = () => {
-      //   // console.log('file 转 base64结果：' + reader.result)
-      //   this.userInforList[key][item] = [{url:reader.result,type:file.raw.type}];
-      //   // console.log('----',this.userInforList)
-      // }
-
-      this.compressImg(file.raw).then(data =>{
-        this.editData.userInforList[key][item] = [{url:data,type:file.raw.type,updataPhotoStatus:true}];
+      compressImg(file.raw).then(data =>{
+        this.userInforList[key][item] = [{url:data,type:file.raw.type,updataPhotoStatus:true}];
       })
     },
     Add_DZ(){
@@ -747,11 +945,11 @@ export default {
         arr_portrait_photo:[],
         arr_visa_photo:[],
       }
-      this.editData.userInforList.push(this.dzmodel)
-      console.log('====',this.editData.userInforList)
+      this.userInforList.push(this.dzmodel)
+      console.log('====',this.userInforList)
     },
     deleteModel_DZ(ind){
-      this.editData.userInforList.splice(ind,1)
+      this.userInforList.splice(ind,1)
     },
     //==============================新增=========================
     xzFnc(){
@@ -773,9 +971,14 @@ export default {
         if(!canSumit) return;
         this.xzData.token = this.$store.state.token;
         this.$api.post(this.Global.aport3+'/issueDataAddress/addIssueDataAddress',this.xzData,r=>{
-          console.log(r);
-          // this.getList(this.CurrentPage,this.pageSize,this.pd, 1)
-          // this.xzDialogVisible=false;
+          if(r.success){
+            this.$message({
+              message:r.data.message,
+              type: 'success'
+            });
+            this.getList(this.CurrentPage,this.pageSize,this.pd, 1)
+            this.xzDialogVisible=false;
+          }
         })
       })
     },
@@ -799,81 +1002,34 @@ export default {
     //导入
     importFnc(){},
     //导出
-    exportFnc(){},
-    selectfn(a, b) {
-      this.multipleSelection = a;
-      this.dataSelection();
-    },
-    dataSelection() {
-      // console.log('this.multipleSelection',this.multipleSelection)
-      this.selectionReal.splice(
-        this.CurrentPage - 1,
-        1,
-        this.multipleSelection
-      );
-      // console.log('this.selectionReal',this.selectionReal);
-      this.selectionAll = [];
-      for (var i = 0; i < this.selectionReal.length; i++) {
-        if (this.selectionReal[i]) {
-          for (var j = 0; j < this.selectionReal[i].length; j++) {
-            this.selectionAll.push(this.selectionReal[i][j]);
-          }
-        }
-      }
-      // console.log('this.selectionAll',this.selectionAll);
-    },
-    download() {
-      if (this.tableData.length == 0) {
+    exportFnc(){
+       if (this.tableData.length == 0) {
         this.$message.error("无可导出数据！");
         return;
       }
       let p = {};
-      this.pd = Object.assign({}, this.pd, this.areaPd);
-      if (this.selectionAll.length == 0) {
-        //全部导出
-        p = {
-          pd: this.pd,
-          userCode: this.userCode,
-          userName: this.userName,
-          orgJB: this.juState,
-          orgCode: this.orgCode,
-          token: this.token
-          // "orderBy":'BJSJ',
-          // "orderType":'DESC'
-        };
+      if (this.selectionAll.length == 0) {//全部导出
+        p=this.expData
       } else {
         //导出选中
-        this.yuid = [];
-        for (var i in this.selectionAll) {
-          this.yuid.push(this.selectionAll[i].YJID);
-        }
-        this.pd.YJID = this.yuid;
         p = {
-          pd: this.pd,
+          pd: {serialList:this.serialList},
           userCode: this.userCode,
           userName: this.userName,
           orgJB: this.juState,
           orgCode: this.orgCode,
           token: this.token
-          // "orderBy":'BJSJ',
-          // "orderType":'DESC',
         };
       }
-      this.$api.post(
-        this.Global.aport4 + "/warningInfoController/exportByMxLx",
-        p,
-        r => {
+      this.$api.post(this.Global.aport3 + "/issueDataAddress/exportIssueDataAddress",p,r => {
           this.downloadM(r);
           this.selectionAll = [];
           this.multipleSelection = [];
+          this.dataSelection();
           this.getList(this.CurrentPage, this.pageSize, this.pd, 1);
-        },
-        e => {},
-        {},
-        "blob"
-      );
+        },e => {},{},"blob")
     },
-    downloadM(data) {
+     downloadM(data) {
       if (!data) {
         return;
       }
@@ -883,15 +1039,31 @@ export default {
       let link = document.createElement("a");
       link.style.display = "none";
       link.href = url;
-      link.setAttribute(
-        "download",
-        "教育厅招生预警报表" +
-          this.format(new Date(), "yyyyMMddhhmmss") +
-          ".xls"
-      );
+      link.setAttribute("download","地址走访表" +this.format(new Date(), "yyyyMMddhhmmss") +".xls");
       document.body.appendChild(link);
       link.click();
     },
+    selectfn(a, b) {
+      this.multipleSelection = a;
+      this.dataSelection();
+    },
+    dataSelection() {
+      // console.log('this.multipleSelection',this.multipleSelection)
+      this.selectionReal.splice(this.CurrentPage - 1,1,this.multipleSelection);
+      // console.log('this.selectionReal',this.selectionReal);
+      this.selectionAll = [];
+      for (var i = 0; i < this.selectionReal.length; i++) {
+        if (this.selectionReal[i]) {
+          for (var j = 0; j < this.selectionReal[i].length; j++) {
+            this.selectionAll.push(this.selectionReal[i][j]);
+          }
+        }
+      }
+      this.serialList=this.selectionAll.map(item => item.serial)
+      this.officeArr=this.selectionAll.map(item => item.suboffice)
+      console.log('this.selectionAll',this.selectionAll,this.serialList);
+    },
+   
     pageSizeChange(val) {
       this.pageSize = val;
       this.getList(this.CurrentPage, val, this.pd);
@@ -904,13 +1076,14 @@ export default {
       this.areaPd = val;
     },
     getList(currentPage, showCount, pd, type) {
-      if (pd.hasOwnProperty("YJID")) {
-        delete pd["YJID"];
+      if (pd.hasOwnProperty("serial")) {
+        delete pd["serial"];
       }
       if (type == 1) {
         this.selectionAll = [];
         this.multipleSelection = [];
         this.selectionReal = [];
+        this.dataSelection();
       }
       let p = {
         currentPage: currentPage,
@@ -922,6 +1095,7 @@ export default {
       p.pd.cljg = this.pageTab;
       p.pd.bmbh = this.orgCode;
       p.pd.jb = this.juState;
+      this.expData=p;
       this.$api.post(
         this.Global.aport3 + "/issueDataAddress/getIssueDataAddressPage",p,r => {
           this.tableData = r.data.resultList;
@@ -936,11 +1110,8 @@ export default {
             this.multipleSelection = [];
             for (var i = 0; i < this.tableData.length; i++) {
               for (var j = 0; j < this.selectionAll.length; j++) {
-                if (this.tableData[i].YJID == this.selectionAll[j].YJID) {
-                  this.$refs.multipleTable.toggleRowSelection(
-                    this.tableData[i],
-                    true
-                  );
+                if (this.tableData[i].serial == this.selectionAll[j].serial) {
+                  this.$refs.multipleTable.toggleRowSelection(this.tableData[i],true);
                 }
               }
             }

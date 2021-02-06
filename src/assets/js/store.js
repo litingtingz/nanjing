@@ -784,9 +784,9 @@ var store = new Vuex.Store({
     },
     aGetBackstatus(context, payload) {
       return new Promise((resolve) => {
-        api.post(global_.aport3 + '/dm/getDmList', { tableName: 'dm_zfztb', sjly: payload }, r => {
-          context.commit('getBackstatus', r)
-          resolve(r)
+        api.get(global_.aport1 + global_.backstatus,null, r => {
+          context.commit('getBackstatus',ToArray(r.data))
+          resolve(payload)
         })
       })
     },

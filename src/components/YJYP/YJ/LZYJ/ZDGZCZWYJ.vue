@@ -109,7 +109,7 @@
     </div>
     <div class="yycontent">
        <div class="yylbt mb-15">甄别信息列表</div>
-       <COUNT :ccPd="ccPd" :random="new Date().getTime()" :typeCount="true"></COUNT>
+       <COUNT :ccPd="ccPd" :random="new Date().getTime()" :typeCount="true" :state="'CZW'"></COUNT>
        <!-- 简表按钮 -->
        <el-row class="mb-15">
          <el-button type="primary"  size="small" @click="jbFnc" style="float:right;margin-top:-35px">简表</el-button>
@@ -457,11 +457,12 @@ export default {
     },
     getArea(val){
       this.areaPd = val;
-    },
-    getList(currentPage, showCount, pd,type) {
       this.ccPd.MXLX="CZW_ZDGZYJ";
       this.ccPd.FJ=this.areaPd.FJ;
       this.ccPd.PCS=this.areaPd.PCS;
+    },
+    getList(currentPage, showCount, pd,type) {
+      
       pd.MXLX='CZW_ZDGZYJ';
       pd.ZSRQ_DateRange.begin=this.pd0.beginZSRQ;
       pd.ZSRQ_DateRange.end=this.pd0.endZSRQ;
@@ -480,18 +481,16 @@ export default {
         "currentPage": currentPage,
         "showCount": showCount,
         "pd": pd,
-        "orderBy":'BJSJ',
-        "orderType":'DESC',
         userCode:this.userCode,
         userName:this.userName,
         orgJB:this.juState,
         orgCode:this.orgCode,
         token:this.token
       };
-      this.$api.post(this.Global.aport4+'/fangWuWarningInfoController/getInfoListByMxLx', p,
+      this.$api.post(this.Global.aport4+'/api/roomController/listCzw', p,
         r => {
-          this.tableData = r.data.resultList;
-          this.TotalResult = r.data.totalResult;
+          this.tableData = r.data.dataList;
+          this.TotalResult = r.data.totalSize;
           if(this.selectionReal.length==0){//声明一个数组对象
             this.selectionReal=new Array(Math.ceil(this.TotalResult/showCount))
           }

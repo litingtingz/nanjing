@@ -82,7 +82,7 @@ export   function getServerDate(){
         var date = xhr.getResponseHeader("Date");
         console.log(formatDate(new Date(date),"yyyy-MM-dd"));
         return formatDate(new Date(date),"yyyy-MM-dd");
-    }
+}
 
 //压缩图片
 export function compressImg(file){
