@@ -905,3 +905,7 @@ position: absolute;
   /* pointer-events: none; */
   max-height: fit-content!important;
 }
+.t-tabs-btn{
+  position: absolute;
+  right: 0px;
+}

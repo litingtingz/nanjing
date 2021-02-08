@@ -913,7 +913,7 @@ export default new Router({
         {
           path: 'DZXSPC',
           name: 'DZXSPC',
-          meta:{title:['日常管理','临住信息','地址线索排查']},
+          meta:{title:['日常管理','临住信息','地址走访']},
           component: resolve => require(['@/components/YWCZ/LZXX/DZXSPC'], resolve),
         },
         {
