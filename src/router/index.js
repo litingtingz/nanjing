@@ -182,16 +182,30 @@ export default new Router({
           meta:{title:['日常管理','涉外单位信用评定','涉外单位评分日志查询信息']},
           component: resolve => require(['@/components/XTGL/SWXYPD/SWDWPFRZCXXX'], resolve),
         },
+        //==============================重点关注出租屋===========================================
         {
           path: 'ZDGZCZWYJ',
           name: 'ZDGZCZWYJ',
           meta:{title:['日常管理','临住信息','重点关注出租屋']},
+          component: resolve => require(['@/components/YJYP/YJ/LZYJ/ZDGZCZWYJTJ'], resolve),
+        },
+        {
+          path: 'ZDGZCZWYJTJ',
+          name: 'ZDGZCZWYJTJ',
+          meta:{title:['日常管理','临住信息','重点关注出租屋'],father:'ZDGZCZWYJ'},
           component: resolve => require(['@/components/YJYP/YJ/LZYJ/ZDGZCZWYJ'], resolve),
         },
+        
+        // {
+        //   path: 'ZDGZCZWYJ',
+        //   name: 'ZDGZCZWYJ',
+        //   meta:{title:['日常管理','临住信息','重点关注出租屋']},
+        //   component: resolve => require(['@/components/YJYP/YJ/LZYJ/ZDGZCZWYJ'], resolve),
+        // },
         {
           path: 'CZFWYHYJ_XQ',
           name: 'CZFWYHYJ_XQ',
-          meta:{title:['日常管理','临住信息','新增出租房屋提醒'],father:'ZDGZCZWYJ'},
+          meta:{title:['日常管理','临住信息','新增出租房屋提醒'],father:'ZDGZCZWYJTJ'},
           component: resolve => require(['@/components/YJYP/YJ/LZYJ/CZFWYHYJ_XQ'], resolve),
         },
         {
@@ -218,16 +232,29 @@ export default new Router({
           meta:{title:['日常管理','临住信息','重点国家境外人员统计'],father:'GJYWWYLZYJ'},
           component: resolve => require(['@/components/YJYP/YJ/LZYJ/GJYWWYLZYJ_LB'], resolve),
         },
-        {
+        //==============================新增出租房屋预警================================================
+        {//父页
           path: 'CZFWYHYJ',
           name: 'CZFWYHYJ',
           meta:{title:['日常管理','临住信息','新增出租房屋提醒']},
+          component: resolve => require(['@/components/YJYP/YJ/LZYJ/CZFWYHYJTJ'], resolve),
+        },
+        {//子页
+          path: 'CZFWYHYJTJ',
+          name: 'CZFWYHYJTJ',
+          meta:{title:['日常管理','临住信息','新增出租房屋提醒']},
           component: resolve => require(['@/components/YJYP/YJ/LZYJ/CZFWYHYJ'], resolve),
         },
+        // {
+        //   path: 'CZFWYHYJ',
+        //   name: 'CZFWYHYJ',
+        //   meta:{title:['日常管理','临住信息','新增出租房屋提醒']},
+        //   component: resolve => require(['@/components/YJYP/YJ/LZYJ/CZFWYHYJ'], resolve),
+        // },
         {
           path: 'XZCZFWYHYJ_XQ',
           name: 'XZCZFWYHYJ_XQ',
-          meta:{title:['日常管理','临住信息','新增出租房屋提醒'],father:'CZFWYHYJ'},
+          meta:{title:['日常管理','临住信息','新增出租房屋提醒'],father:'CZFWYHYJTJ'},
           component: resolve => require(['@/components/YJYP/YJ/LZYJ/XZCZFWYHYJ_XQ'], resolve),
         },
         {
@@ -279,6 +306,14 @@ export default new Router({
           meta:{title:['日常管理','常住信息','留学生录取未报到核查']},
           component: resolve => require(['@/components/YJYP/YJ/LXSYJ/LXSWBDHC'], resolve),
         },
+        //=========================内控人员管理==================================================
+        {
+          path: 'InternalControlPersonnel',
+          name: 'InternalControlPersonnel',
+          meta:{title:['日常管理','常住信息','内控人员管理']},
+          component: resolve => require(['@/components/YJYP/YJ/LXSYJ/InternalControlPersonnel'], resolve),
+        },
+        
         // {
         //   path: 'LXSWBDYJ_X',
         //   name: 'LXSWBDYJ_X',
@@ -312,7 +347,7 @@ export default new Router({
         {
           path: 'LXSCRJYJ',
           name: 'LXSCRJYJ',
-          meta:{title:['预警研判','预警信息','留学生出入境预警']},
+          meta:{title:['预警研判','预警信息','留学生频繁出入境预警']},
           component: resolve => require(['@/components/YJYP/YJ/LXSYJ/LXSCRJYJ'], resolve),
         },
         {
@@ -408,7 +443,7 @@ export default new Router({
         {
           path: 'NMXQPHZYJ_XQ',
           name: 'NMXQPHZYJ_XQ',
-          meta:{title:['日常管理','常住信息','难民和需求庇护者预警详情']},
+          meta:{title:['日常管理','常住信息','难民和寻求庇护者预警详情']},
           component: resolve => require(['@/components/YJYP/YJ/CZYJ/NMXQPHZYJ_XQ'], resolve),
         },
         {
@@ -428,6 +463,7 @@ export default new Router({
           name: 'DQQZFFJYYJ_XQ',
           meta:{title:['预警研判','预警信息','偷越国边境预警详情']},
           component: resolve => require(['@/components/GYZJ/ASJXQ'], resolve),
+          // component: resolve => require(['@/components/YJYP/YJ/ASJYJ/YjDetail'], resolve),
         },
         {
           path: 'WGRFFJLYJ',
@@ -913,7 +949,7 @@ export default new Router({
         {
           path: 'DZXSPC',
           name: 'DZXSPC',
-          meta:{title:['日常管理','临住信息','地址线索排查']},
+          meta:{title:['日常管理','临住信息','地址走访']},
           component: resolve => require(['@/components/YWCZ/LZXX/DZXSPC'], resolve),
         },
         {

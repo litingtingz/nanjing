@@ -87,7 +87,7 @@
     </div>
     <!--===================表格======================-->
     <div class="yycontent">
-       <div class="yylbt mb-15">地址线索排查列表</div>
+       <div class="yylbt mb-15">地址走访列表</div>
        <div class="ak-tabs">
           <div class="ak-tab-item hand" :class="{'ak-checked':page==1}" @click="page=1;pageTab='2';ATabFnc(page)">
             未走访
@@ -218,22 +218,22 @@
                 <span class="input-text">详细地址：</span>
                 <el-input size="mini" v-model="editData.address"  class="input-input" :disabled="true"></el-input>
               </el-col>
-              <el-col :span="24" class="input-item">
+              <!-- <el-col :span="24" class="input-item">
                 <span class="input-text">住宿人数：</span>
                 <el-input size="mini" v-model="editData.live_number"  class="input-input" :disabled="true"></el-input>
-              </el-col>
+              </el-col> -->
               <el-col :span="20" class="form-line">
                 <span class="divider-text">数据基础信息</span>
                 <el-divider></el-divider>
               </el-col>
-              <el-col :span="24" class="input-item">
+              <!-- <el-col :span="24" class="input-item">
                 <span class="input-text">采集人：</span>
                 <el-input size="mini" v-model="editData.create_userid"  class="input-input" :disabled="true"></el-input>
               </el-col>
               <el-col :span="24" class="input-item">
                 <span class="input-text">数据来源：</span>
                 <el-input size="mini" v-model="editData.datasources_desc"  class="input-input" :disabled="true"></el-input>
-              </el-col>
+              </el-col> -->
               <el-col :span="24" class="input-item">
                 <span class="input-text">标题：</span>
                 <el-input size="mini" v-model="editData.title"  class="input-input" :disabled="true"></el-input>
@@ -278,12 +278,12 @@
                 <el-row type="flex">
                   <el-col :span="22">
                     <el-col :span="24" class="input-item">
-                      <span class="input-text">境外人员证件号码：</span>
+                      <span class="input-text"><font class="redx">*</font>境外人员证件号码：</span>
                       <el-input size="mini" v-model="all.passportno"  class="input-input" 
                       :disabled="editData.backstatus=='zfzt_1'||editData.backstatus=='zfzt_3'||!editData.backstatus||joinZf"></el-input>
                     </el-col>
                     <el-col :span="24" class="input-item">
-                      <span class="input-text">境外人员国家地区：</span>
+                      <span class="input-text"><font class="redx">*</font>境外人员国家地区：</span>
                       <el-select v-model="all.nationality" filterable clearable default-first-option placeholder="请选择"  
                       :disabled="editData.backstatus=='zfzt_1'||editData.backstatus=='zfzt_3'||!editData.backstatus||joinZf" size="mini" class="input-input">
                         <el-option
@@ -295,7 +295,7 @@
                       </el-select>
                     </el-col>
                     <el-col :span="24" class="input-item">
-                      <span class="input-text">手机号码：</span>
+                      <span class="input-text"><font class="redx">*</font>手机号码：</span>
                       <el-input size="mini" v-model="all.phone"  class="input-input" 
                       :disabled="editData.backstatus=='zfzt_1'||editData.backstatus=='zfzt_3'||!editData.backstatus||joinZf"></el-input>
                     </el-col>
@@ -485,8 +485,19 @@
       </div>
     </el-dialog>
     <!--===================导入======================-->
-    <el-dialog title="新增" :visible.sync="drDialogVisible" width="800px">
-
+    <el-dialog title="导入" :visible.sync="drDialogVisible" width="800px">
+      <el-upload
+        ref="upload"
+        action
+        :multiple="false"
+        :auto-upload="false"
+        :http-request="uploadFile">
+        <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+        <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
+      </el-upload>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="drDialogVisible = false" size="small">取 消</el-button>
+      </div>
     </el-dialog>
     <div id="big-img-box" v-dragOnly v-if="isimgclick">
       <el-image-viewer :on-close="()=>{isimgclick=false}" :url-list="imgList" />
@@ -525,10 +536,10 @@ export default {
           dm: "policestation_desc",
           width: "280"
         },
-        {
-          cm: "接收时间",
-          dm: "turnoutarea_receive_time"
-        },
+        // {
+        //   cm: "接收时间",
+        //   dm: "turnoutarea_receive_time"
+        // },
         {
           cm: "市局下发时间",
           dm: "issuedate"
@@ -537,10 +548,10 @@ export default {
           cm: "分局下发时间",
           dm: "suboffice_issue_time"
         },
-        {
-          cm: "派出所下发时间",
-          dm: "policestation_issue_time"
-        },
+        // {
+        //   cm: "派出所下发时间",
+        //   dm: "policestation_issue_time"
+        // },
         {
           cm: "标题",
           dm: "title"
@@ -549,14 +560,14 @@ export default {
           cm: "备注",
           dm: "remarks"
         },
-        {
-          cm: "采集人",
-          dm: "create_userid"
-        },
-        {
-          cm: "数据来源",
-          dm: "datasources_desc"
-        }
+        // {
+        //   cm: "采集人",
+        //   dm: "create_userid"
+        // },
+        // {
+        //   cm: "数据来源",
+        //   dm: "datasources_desc"
+        // }
       ],
       lbData: [], //列表简表动态加载数据====简表选中项
       //简表结束
@@ -601,7 +612,8 @@ export default {
       xsData:{},
       singDialogVisible:false,
       sxGetPCS:[],
-      cxData:{"2021-02-03":[{"CZSJ":"2021-02-03 19:21:18","XM":"测试用户","BZ":"23","CZRQ":"2021-02-03","XTYHBMMC":"江苏省苏州市公安局","CZZT":"下发"}],"2020-12-07":[{"CZSJ":"2020-12-07 19:30:03","XM":"郑晓东","BZ":"23","CZRQ":"2020-12-07","XTYHBMMC":"江苏省苏州市公安局苏州高新区分局横塘派出所","CZZT":"上报","ZFZT":"有境外人员"},{"CZSJ":"2020-12-07 19:28:54","XM":"郑晓东","BZ":"23","CZRQ":"2020-12-07","XTYHBMMC":"江苏省苏州市公安局苏州高新区分局横塘派出所","CZZT":"上报","ZFZT":"有境外人员"},{"CZSJ":"2020-12-07 19:28:17","XM":"郑晓东","BZ":"23","CZRQ":"2020-12-07","XTYHBMMC":"江苏省苏州市公安局苏州高新区分局横塘派出所","CZZT":"上报","ZFZT":"有境外人员"},{"CZSJ":"2020-12-07 19:27:54","XM":"郑晓东","BZ":"2","CZRQ":"2020-12-07","XTYHBMMC":"江苏省苏州市公安局苏州高新区分局横塘派出所","CZZT":"上报","ZFZT":"有境外人员"},{"CZSJ":"2020-12-07 19:27:42","XM":"郑晓东","BZ":"2","CZRQ":"2020-12-07","XTYHBMMC":"江苏省苏州市公安局苏州高新区分局横塘派出所","CZZT":"上报","ZFZT":"无境外人员"},{"CZSJ":"2020-12-07 19:27:35","XM":"郑晓东","BZ":"2","CZRQ":"2020-12-07","XTYHBMMC":"江苏省苏州市公安局苏州高新区分局横塘派出所","CZZT":"上报","ZFZT":"无效地址"},{"CZSJ":"2020-12-07 18:45:42","BZ":"2","CZRQ":"2020-12-07","CZZT":"系统自动下发"}]},
+      cxData:{},
+      // {"2021-02-03":[{"CZSJ":"2021-02-03 19:21:18","XM":"测试用户","BZ":"23","CZRQ":"2021-02-03","XTYHBMMC":"江苏省苏州市公安局","CZZT":"下发"}],"2020-12-07":[{"CZSJ":"2020-12-07 19:30:03","XM":"郑晓东","BZ":"23","CZRQ":"2020-12-07","XTYHBMMC":"江苏省苏州市公安局苏州高新区分局横塘派出所","CZZT":"上报","ZFZT":"有境外人员"},{"CZSJ":"2020-12-07 19:28:54","XM":"郑晓东","BZ":"23","CZRQ":"2020-12-07","XTYHBMMC":"江苏省苏州市公安局苏州高新区分局横塘派出所","CZZT":"上报","ZFZT":"有境外人员"},{"CZSJ":"2020-12-07 19:28:17","XM":"郑晓东","BZ":"23","CZRQ":"2020-12-07","XTYHBMMC":"江苏省苏州市公安局苏州高新区分局横塘派出所","CZZT":"上报","ZFZT":"有境外人员"},{"CZSJ":"2020-12-07 19:27:54","XM":"郑晓东","BZ":"2","CZRQ":"2020-12-07","XTYHBMMC":"江苏省苏州市公安局苏州高新区分局横塘派出所","CZZT":"上报","ZFZT":"有境外人员"},{"CZSJ":"2020-12-07 19:27:42","XM":"郑晓东","BZ":"2","CZRQ":"2020-12-07","XTYHBMMC":"江苏省苏州市公安局苏州高新区分局横塘派出所","CZZT":"上报","ZFZT":"无境外人员"},{"CZSJ":"2020-12-07 19:27:35","XM":"郑晓东","BZ":"2","CZRQ":"2020-12-07","XTYHBMMC":"江苏省苏州市公安局苏州高新区分局横塘派出所","CZZT":"上报","ZFZT":"无效地址"},{"CZSJ":"2020-12-07 18:45:42","BZ":"2","CZRQ":"2020-12-07","CZZT":"系统自动下发"}]},
       //处理弹窗结束
       //新增弹窗开始
       xzDialogVisible:false,
@@ -609,6 +621,7 @@ export default {
       //新增弹窗结束
       //导入
       drDialogVisible:false,
+      fileData: null,
 
       xfDialogType:'',
       expData:{},
@@ -745,7 +758,7 @@ export default {
     //时间轴
     getTimeData(serial){
       this.$api.post(this.Global.aport3+'/issueDataZfjl/getIssueDataZfjlList',{serial:serial,token:this.token},r=>{
-        this.cxData = r;
+        this.cxData = r.data;
       })
     },
     editFnc(data){
@@ -757,7 +770,7 @@ export default {
         this.joinZf = false
       }
       this.$store.dispatch("aGetBackstatus")
-      // this.getTimeData(data.serial)//时间轴
+      this.getTimeData(data.serial)//时间轴
       this.$api.post(this.Global.aport3+'/issueDataAddress/getIssueDataAddressInfor',{ADDRESS_SERIAL:data.serial,token:this.token},r=>{
         if(r.data.length==0){
           this.userInforList=[{
@@ -785,6 +798,39 @@ export default {
       }
       console.log('this.editData===',this.editData)
       //自定义部分校验不能为空
+      if(this.editData.backstatus=="zfzt_2"){
+        let arr = this.userInforList
+        for(let i=0;i<arr.length;i++){
+          if(arr[i].passportno == ''){
+            this.$message({
+              message: '境外人员证件号码不能为空！',
+              type: "warning"
+            });
+            return
+          }
+          if(arr[i].nationality == ''){
+            this.$message({
+              message: '境外人员国家地区不能为空！',
+              type: "warning"
+            });
+            return
+          }
+          if(arr[i].phone == ''){
+            this.$message({
+              message: '手机号码不能为空！',
+              type: "warning"
+            });
+            return
+          }
+          if(arr[i].arr_passport_photo.length == 0){
+            this.$message({
+              message: '护照资料页照片不能为空！',
+              type: "warning"
+            });
+            return
+          }
+        }
+      }
       let p=this.editData;
       p.token=this.token;
       p.pageData = {
@@ -917,8 +963,8 @@ export default {
     },
     //模板下载
     templateDownload(){
-      // window.location.href = window.IPConfig.IP +"/"+this.Global.aport3 + '/webapp/templateFile/地址线索排查导入模板.xlsx'
-      window.location.href = this.Global.aport3 + '/webapp/templateFile/地址线索排查导入模板.xlsx'
+      window.location.href = window.IPConfig.IP +"/"+this.Global.aport3 + '/webapp/templateFile/地址走访导入模板.xlsx'
+      // window.location.href = this.Global.aport3 + '/webapp/templateFile/地址走访导入模板.xlsx'
     },
     radioChange(){},
     //放大查看图片
@@ -1000,7 +1046,62 @@ export default {
       })
     },
     //导入
-    importFnc(){},
+    clearFile() {
+      if (this.$refs.upload) {
+        this.$refs.upload.clearFiles();
+      }
+    },
+    uploadFile(file) {
+      console.log('file===',file);
+      this.fileData.append("file", file.file);
+    },
+    submitUpload(){
+      if (this.$refs.upload.uploadFiles.length == 0) {
+        this.$message({
+          message: "请先选择文件！",
+          type: "warning",
+          duration: 8000,
+          showClose: true
+        });
+        return;
+      }
+      this.fileData = new FormData();
+      this.$refs.upload.submit();
+      this.fileData.append("token", this.token);
+      this.$api.post(this.Global.aport3+'/issueDataAddress/readExcel',this.fileData,r=>{
+        if(r.success){
+          if (r.data.errList.length != 0) {
+            this.$confirm(r.data.message + "！是否导出错误信息?", "提示", {
+              confirmButtonText: "确定",
+              cancelButtonText: "取消",
+              type: "warning"
+            }).then(() => {
+                this.$api.post(this.Global.aport3+'/issueDataAddress/exportErrData',{ errList: r.data.errList },r =>{
+                    this.downloadM(r,'地址走访错误数据导出');
+                  },e=>{},{},'blob');
+              }).catch(() => {
+                this.$message({
+                  type: "info",
+                  message: "已取消导出"
+                });
+              });
+          } else {
+            this.$message({
+              message: r.data.message,
+              type: "success",
+            });
+          }
+          this.drDialogVisible=false;
+          this.getList(this.CurrentPage, this.pageSize, this.pd, 1);
+        }else{
+          // this.$message.error(r.message);
+        }
+      })
+    },
+    importFnc(){
+      this.drDialogVisible = true;
+      this.clearFile();
+    },
     //导出
     exportFnc(){
        if (this.tableData.length == 0) {
@@ -1022,14 +1123,14 @@ export default {
         };
       }
       this.$api.post(this.Global.aport3 + "/issueDataAddress/exportIssueDataAddress",p,r => {
-          this.downloadM(r);
+          this.downloadM(r,"地址走访表");
           this.selectionAll = [];
           this.multipleSelection = [];
           this.dataSelection();
           this.getList(this.CurrentPage, this.pageSize, this.pd, 1);
         },e => {},{},"blob")
     },
-     downloadM(data) {
+     downloadM(data,title) {
       if (!data) {
         return;
       }
@@ -1039,7 +1140,7 @@ export default {
       let link = document.createElement("a");
       link.style.display = "none";
       link.href = url;
-      link.setAttribute("download","地址走访表" +this.format(new Date(), "yyyyMMddhhmmss") +".xls");
+      link.setAttribute("download",title+this.format(new Date(), "yyyyMMddhhmmss") +".xls");
       document.body.appendChild(link);
       link.click();
     },

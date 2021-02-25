@@ -21,19 +21,23 @@
       </el-row>
     </div>
     <div class="yycontent">
-      <div class="ak-tabs">
+      <div class="ak-tabs yzform">
         <div class="ak-tab-item hand" :class="{'ak-checked':page=='1'}" @click="page='1';tabFnc(page)">
           已启用
         </div>
         <div class="ak-tab-item hand" :class="{'ak-checked':page=='0'}" @click="page='0';tabFnc(page)">
           已停用
         </div>
+        <div class="t-tabs-btn">
+          <el-button type="primary"  size="mini" @click="from={};adds(0,'');">新增</el-button>
+          <el-button type="primary"  size="mini" @click="jbFnc">简表</el-button>
+        </div>
       </div>
       <div class="ak-tab-pane">
-        <el-row class="mb-15">
+        <!-- <el-row class="mb-15">
           <el-button type="primary"  size="small" @click="from={};adds(0,'');">新增</el-button>
           <el-button type="primary"  size="small" @click="jbFnc">简表</el-button>
-        </el-row>
+        </el-row> -->
         <el-table
           :data="tableData"
           border

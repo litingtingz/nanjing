@@ -37,8 +37,22 @@
 .text-center {
   text-align: center;
 }
+.float-right{
+  float: right;
+}
 .position-re{
   position: relative;
+}
+.ellipsis{
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.wh-center-btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 html,body{
   /* height: 100%; */
