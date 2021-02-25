@@ -909,3 +909,41 @@ position: absolute;
   position: absolute;
   right: 0px;
 }
+/* 预警详情 */
+.t-content{
+  background-color: #fff;
+  padding:20px;
+}
+.yj-title{
+  font-size: 16px;
+  font-weight: bold;
+  color: #2e9de7;
+}
+.basic-box{
+  display: inline-flex;
+  justify-content: space-between;
+  border-top: 1px solid #D9F0FE;
+  height: 30px!important;
+}
+.basic-key{
+  width: 100px;
+  padding:6px 5px;
+  background-color: #E8F5FE;
+  font-size: 12px;
+  margin-right: 2px;
+  color: #72757A;
+}
+.basic-value-box{
+  
+}
+.basic-value{
+  width: 70%;
+  background-color: #F0F9FF;
+  margin-right: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 6px 5px;
+  white-space: nowrap;
+  font-weight: bold;
+  font-size: 14px;
+}

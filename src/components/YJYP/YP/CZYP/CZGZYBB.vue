@@ -46,16 +46,22 @@
           工作月报表
         </div>
         <div class="ak-tab-item hand" :class="{'ak-checked':page==1}" @click="page=1;getList1();getTu1()">
-          来宁事由
+          入境事由
         </div>
         <div class="ak-tab-item hand" :class="{'ak-checked':page==2}" @click="page=2;getList2();getTu2()">
-          境外人员分布
+          境外人员身份
         </div>
         <div class="ak-tab-item hand" :class="{'ak-checked':page==3}" @click="page=3;getList3(),getTu3()">
           前五国家/地区
         </div>
         <div class="ak-tab-item hand" :class="{'ak-checked':page==4}" @click="page=4;getList4(),getTu4()">
           涉恐31国常住人数
+        </div>
+        <div class="ak-tab-item hand" :class="{'ak-checked':page==5}" @click="page=5;getList5(),getTu5()">
+          防回流10国
+        </div>
+        <div class="ak-tab-item hand" :class="{'ak-checked':page==6}" @click="page=6;getList6()">
+          综合常住人员分析
         </div>
       </div>
       <div class="ak-tab-pane">
@@ -142,7 +148,23 @@
         <div v-show="page==1">
           <el-row>
             <el-col :span="12">
-              <table cellspacing="0" class="t-table">
+              <el-table
+                :data="tableData1"
+                stripe
+                style="width: 100%">
+                <el-table-column
+                  prop="mc"
+                  label="入境事由">
+                </el-table-column>
+                <el-table-column
+                  prop="count"
+                  label="数量">
+                  <template slot-scope="scope">
+                    <span @click="getListD(CurrentPage,pageSize,scope.row.dm)" class="hand tc-b">{{ scope.row.count }}</span>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <!-- <table cellspacing="0" class="t-table">
                 <tr class="th1">
                   <th>来宁事由</th>
                   <th>数量</th>
@@ -167,7 +189,7 @@
                   <td>其余各类事由</td>
                   <td @click="getListD(CurrentPage,pageSize,'qt')" class="hand tc-b">{{tableData1['qt']}}</td>
                 </tr>
-              </table>
+              </table> -->
             </el-col>
             <el-col :span="12">
               <div class = "chart" style="width:100%">
@@ -179,7 +201,23 @@
         <div v-show="page==2">
           <el-row>
             <el-col :span="12">
-              <table cellspacing="0" class="t-table">
+              <el-table
+                :data="tableData2"
+                stripe
+                style="width: 100%">
+                <el-table-column
+                  prop="mc"
+                  label="类型">
+                </el-table-column>
+                <el-table-column
+                  prop="count"
+                  label="常住境外人员身份分布">
+                  <template slot-scope="scope">
+                    <span @click="getListD(CurrentPage,pageSize,scope.row.dm)" class="hand tc-b">{{ scope.row.count }}</span>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <!-- <table cellspacing="0" class="t-table">
                 <tr class="th1">
                   <th>类型</th>
                   <th>常住境外人员身份分布</th>
@@ -204,7 +242,7 @@
                   <td>其他</td>
                   <td @click="getListD(CurrentPage,pageSize,'05')" class="hand tc-b">{{tableData2['05']}}</td>
                 </tr>
-              </table>
+              </table> -->
             </el-col>
             <el-col :span="12">
               <div class = "chart" style="width:100%">
@@ -267,6 +305,96 @@
             </el-col>
           </el-row>
         </div>
+        <div v-show="page==5">
+          <el-row>
+            <el-col :span="12">
+              <el-table
+                :data="tableData5"
+                stripe
+                style="width: 100%">
+                <el-table-column
+                  prop="GJDQ_DESC"
+                  label="国家">
+                </el-table-column>
+                <el-table-column
+                  prop="count"
+                  label="防回流10国人数">
+                  <div slot-scope="scope">
+                    <span @click="getListD(CurrentPage,pageSize,scope.row.GJDQ)" class="hand tc-b">{{ scope.row.count }}</span>
+                  </div>
+                </el-table-column>
+              </el-table>
+            </el-col>
+            <el-col :span="12">
+              <div class = "chart" style="width:100%">
+                <div id = "echartspiefh" style = "width: 100%;height: 400px"></div>
+              </div>
+            </el-col>
+          </el-row>
+        </div>
+        <div v-show="page==6">
+          <el-row :gutter="30">
+            <el-col :span="24">
+              <div class="yylbt mb-15">综合常住人员</div>
+              <el-table
+                :data="tableData6_1"
+                stripe
+                style="width: 100%">
+                <div v-for="(lb,ind) in lbData1">
+                  <el-table-column
+                    :prop="lb.dm"
+                    :label="lb.cm">
+                    <div slot-scope="scope">
+                      <span @click="getListD(CurrentPage,pageSize,scope.row[lb.dm])" class="hand tc-b">{{ scope.row[lb.dm] }}</span>
+                    </div>
+                  </el-table-column>
+                </div>
+              </el-table>
+            </el-col>
+            <el-col :span="12">
+              <div class="yylbt mb-15">分区分布</div>
+              <el-table
+                :data="tableData6_2"
+                stripe
+                style="width: 100%">
+                <el-table-column
+                  prop="GJDQ_DESC"
+                  label="区域">
+                </el-table-column>
+                <div v-for="(lb,ind) in lbData2">
+                  <el-table-column
+                    :prop="lb.dm"
+                    :label="lb.cm">
+                    <div slot-scope="scope">
+                      <span @click="getListD(CurrentPage,pageSize,scope.row[lb.dm])" class="hand tc-b">{{ scope.row[lb.dm] }}</span>
+                    </div>
+                  </el-table-column>
+                </div>
+              </el-table>
+            </el-col>
+            <el-col :span="12">
+              <div class="yylbt mb-15">国家前十分布</div>
+              <el-table
+                :data="tableData6_3"
+                stripe
+                style="width: 100%">
+                <el-table-column
+                  prop="GJDQ_DESC"
+                  label="国家">
+                </el-table-column>
+                <div v-for="(lb,ind) in lbData2">
+                  <el-table-column
+                    :prop="lb.dm"
+                    :label="lb.cm">
+                    <div slot-scope="scope">
+                      <span @click="getListD(CurrentPage,pageSize,scope.row[lb.dm])" class="hand tc-b">{{ scope.row[lb.dm] }}</span>
+                    </div>
+                  </el-table-column>
+                </div>
+              </el-table>
+            </el-col>
+          </el-row>
+        </div>
       </div>
     </div>
     <el-dialog title="列表" :visible.sync="listDialogVisible"  width="1100px">
@@ -311,9 +439,9 @@
          <el-table-column
            label="操作"
            width="70">
-           <template slot-scope="scope">
+           <div slot-scope="scope">
              <el-button type="text"  class="a-btn" title="详情" size="mini" icon="el-icon-tickets" @click="details(scope.row)"></el-button>
-           </template>
+           </div>
          </el-table-column>
        </el-table>
        <div class="middle-foot">
@@ -429,10 +557,86 @@ import CZXX from '../../../common/czxx_xq'
           "06": "0"
         }
       },
-      tableData1:{},
-      tableData2:{},
+      tableData1:[],
+      tableData2:[],
       tableData3:[],
       tableData4:[],
+      tableData5:[],
+      tableData6_1:[],
+      lbData1:[
+        {
+          dm:'',
+          cm:'常住总人员'
+        },
+        {
+          dm:'',
+          cm:'境内总人员'
+        },
+        {
+          dm:'',
+          cm:'境外总人员'
+        },
+        {
+          dm:'',
+          cm:'留学生总人数'
+        },
+        {
+          dm:'',
+          cm:'留学生境内'
+        },
+        {
+          dm:'',
+          cm:'留学生境外'
+        },
+        {
+          dm:'',
+          cm:'工作人员总人数'
+        },
+        {
+          dm:'',
+          cm:'工作人员境内'
+        },
+        {
+          dm:'',
+          cm:'工作人员境外'
+        },
+        {
+          dm:'',
+          cm:'家属总人数'
+        },
+        {
+          dm:'',
+          cm:'家属境内'
+        },
+        {
+          dm:'',
+          cm:'家属境外'
+        },
+        {
+          dm:'',
+          cm:'其他总人数'
+        },
+        {
+          dm:'',
+          cm:'其他境内'
+        },
+        {
+          dm:'',
+          cm:'其他境外'
+        },
+      ],
+      tableData6_2:[],
+      lbData2:[
+        {
+          dm:'',
+          cm:'入境'
+        },
+        {
+          dm:'',
+          cm:'出境'
+        },
+      ],
+      tableData6_3:[],
       pieChart:null,
       barChart:null,
 
@@ -463,6 +667,7 @@ import CZXX from '../../../common/czxx_xq'
       pdKey2:{},
       pdKey3:{},
       pdKey4:{},
+      pdKey5:{},
       pdAll:{},
 
       userCode:'',
@@ -568,6 +773,19 @@ import CZXX from '../../../common/czxx_xq'
            }
          })
       }
+      if(this.page==5){
+        this.pdKey5.GJDQ = val;
+        this.pdAll = Object.assign({},this.pd,this.pdKey5)
+        p.pd=this.pdAll;
+        this.$api.post(this.Global.aport2+'/gzybb/czpmq5gjdqryxx',p,
+         r =>{
+           if(r.success){
+              this.tableDataD = r.data.resultList;
+              this.TotalResult=r.data.totalResult;
+              this.listDialogVisible=true;
+           }
+         })
+      }
     },
     details(i){
       this.xid=i.RGUID;
@@ -624,6 +842,9 @@ import CZXX from '../../../common/czxx_xq'
       }else if(this.page==4){
         this.getList4();
         this.getTu4();
+      }else if(this.page==5){
+        this.getList5();
+        this.getTu5();
       }
     },
     changeTime(time,timeReal){
@@ -709,6 +930,18 @@ import CZXX from '../../../common/czxx_xq'
          }
        })
     },
+    getList5(){//防回流
+      this.getPd();
+      this.$api.post(this.Global.aport2+'/gzybb/getsk10',{pd:this.pd,userCode:this.userCode,userName:this.userName,orgJB:this.juState,orgCode:this.orgCode,token:this.token},
+       r =>{
+         if(r.success){
+           this.tableData5=r.data;
+         }
+       })
+    },
+    getList6(){//综合
+
+    },
     getTu1(){//来宁事由图表
       this.getPd();
       this.$api.post(this.Global.aport2+'/gzybb/czlnsychart',{pd:this.pd,userCode:this.userCode,userName:this.userName,orgJB:this.juState,orgCode:this.orgCode,token:this.token},
@@ -745,81 +978,90 @@ import CZXX from '../../../common/czxx_xq'
           }
         })
     },
+    getTu5(){//防回流
+      this.getPd();
+      this.$api.post(this.Global.aport2+'/gzybb/getsk10chart',{pd:this.pd,userCode:this.userCode,userName:this.userName,orgJB:this.juState,orgCode:this.orgCode,token:this.token},
+        r =>{
+          if(r.success){
+            this.drawBar(r.data.title.text,r.data.xAxis,r.data.series,'echartspiefh')
+          }
+        })
+    },
     //折线图
     drawPie(legend,series,id){
       this.pieChart = echarts.init(document.getElementById(id));
       window.onresize = echarts.init(document.getElementById(id)).resize;
       let that = this;
       var colors = ['#5793f3', '#d14a61', '#675bba'];
-              // 折线图初始化
-       that.pieChart.setOption({
-          color: colors,
-          tooltip: {
-              trigger: 'item',
-              formatter: "{a} <br/>{b} : {c} ({d}%)"
-          },
-          grid:{y:100},
-          legend:legend,
-          series: [{
-            type:series[0].type,
-            name:series[0].name,
-            data:series[0].data,
-            radius: [0, '70%'],
-            center:['50%','55%'],
-            itemStyle:{
-            normal:{
-                  label:{
-                    show: true,
-                    formatter: '{b} : {c} ({d}%)'
-                  },
-                  labelLine :{show:true}
-                }
+      // 折线图初始化
+      that.pieChart.setOption({
+        color: colors,
+        tooltip: {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        grid:{y:100},
+        legend:legend,
+        series: [{
+          type:series[0].type,
+          name:series[0].name,
+          data:series[0].data,
+          radius: [0, '70%'],
+          center:['50%','55%'],
+          itemStyle:{
+          normal:{
+                label:{
+                  show: true,
+                  formatter: '{b} : {c} ({d}%)'
+                },
+                labelLine :{show:true}
+              }
+          }
+        }]
+      })
+    },
+    drawBar(title,xdata,series,id){
+      this.barChart = echarts.init(document.getElementById(id));
+      window.onresize = echarts.init(document.getElementById(id)).resize;
+      let that = this;
+      // var colors = ['#5793f3', '#d14a61', '#675bba'];
+      that.barChart.setOption({
+        // color:colors,
+        tooltip : {
+            trigger: 'axis',
+            axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
             }
-          }]
-       })
-      },
-      drawBar(title,xdata,series,id){
-        this.barChart = echarts.init(document.getElementById(id));
-        window.onresize = echarts.init(document.getElementById(id)).resize;
-        let that = this;
-        // var colors = ['#5793f3', '#d14a61', '#675bba'];
-        that.barChart.setOption({
-          // color:colors,
-          tooltip : {
-             trigger: 'axis',
-             axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-                 type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-             }
-          },
-          title:{
-            text:title,
-            left:'center',
-            textStyle:{
-              color: '#606266',
-            }
-          },
-          grid:{y2:150},
-          xAxis: {
-              type: 'category',
-              dataZoom: [{
-                startValue: '0'    //只需要将这一项设置为0即可
-              }],
-              axisLabel:{
-                interval:0,  //类目全显
-                // rotate:-90   //顺时针旋转45度
-                formatter:function(value)
-                {
-                    return value.split("").join("\n");
-                }
-              },
-              data: xdata[0].data
-          },
-          yAxis: {
-              type: 'value'
-          },
-          series:series
-        })
-      }
+        },
+        title:{
+          text:title,
+          left:'center',
+          textStyle:{
+            color: '#606266',
+          }
+        },
+        grid:{y2:150},
+        xAxis: {
+            type: 'category',
+            dataZoom: [{
+              startValue: '0'    //只需要将这一项设置为0即可
+            }],
+            axisLabel:{
+              interval:0,  //类目全显
+              // rotate:-90   //顺时针旋转45度
+              formatter:function(value)
+              {
+                  return value.split("").join("\n");
+              }
+            },
+            data: xdata[0].data
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series:series
+      })
+    }
   }
 }
 </script>

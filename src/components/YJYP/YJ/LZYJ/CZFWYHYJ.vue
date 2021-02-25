@@ -61,7 +61,7 @@
                       </el-option>
                     </el-select>
                 </el-col> -->
-                <AREA @getArea="getArea"></AREA>
+                <AREA @getArea="getArea" :key="areaKey" :turnData="turnData"></AREA>
                 <el-col  :sm="24" :md="12" :lg="8"   class="input-item">
                    <span class="input-text">街道名称：</span>
                    <el-input placeholder="请输入内容" size="small" v-model="pd.JLXMC_Like" class="input-input"></el-input>
@@ -130,10 +130,11 @@
     </div>
     <div class="yycontent">
        <div class="yylbt mb-15">甄别信息列表</div>
-       <COUNT :ccPd="ccPd" :random="random" :typeCount="true" :state="'CZW'"></COUNT>
+       <!-- <COUNT :ccPd="ccPd" :random="random" :typeCount="true" :state="'CZW'"></COUNT> -->
       <!-- 简表按钮 -->
-       <el-row class="mb-15">
-         <el-button type="primary"  size="small" @click="jbFnc" style="float:right;margin-top:-35px">简表</el-button>
+       <el-row class="mb-15 float-right">
+         <el-button type="primary"  size="small" @click="jbFnc">简表</el-button>
+         <el-button type="primary"  size="small" @click="$router.go(-1)">返回</el-button>
        </el-row>
        <!-- 简表按钮 -->
       <el-table
@@ -315,42 +316,44 @@ export default {
       juState:'',
       ccPd:{},
       random:0,
+      areaKey:0,
+      turnData:{},
       //简表开始
-          timer:'',
-          jbDialogVisible:false,
-          pointData:[],//选中项
-          lbDataAll:[//列表总数据===简表数据源
-            {
-              dm:'FJ_DESC',
-              cm:'所属分局'
-            },
-            {
-              dm:'PCS_DESC',
-              cm:'派出所',
-            },
-            {
-              dm:'JWZRQ',
-              cm:'责任区'
-            },
-            {
-              dm:'JLXMC',
-              cm:'街道名称',
-            },
-            {
-              dm:'ZSRQ',
-              cm:'入住时间',
-            },
-            {
-              dm:'BJSJ',
-              cm:'预警时间'
-            },
-            {
-              dm:'CLZT_DESC',
-              cm:'处理状态',
-            },
-          ],
-          lbData:[],//列表简表动态加载数据====简表选中项
-          //简表结束
+      timer:'',
+      jbDialogVisible:false,
+      pointData:[],//选中项
+      lbDataAll:[//列表总数据===简表数据源
+        {
+          dm:'FJ_DESC',
+          cm:'所属分局'
+        },
+        {
+          dm:'PCS_DESC',
+          cm:'派出所',
+        },
+        {
+          dm:'JWZRQ',
+          cm:'责任区'
+        },
+        {
+          dm:'JLXMC',
+          cm:'街道名称',
+        },
+        {
+          dm:'ZSRQ',
+          cm:'入住时间',
+        },
+        {
+          dm:'BJSJ',
+          cm:'预警时间'
+        },
+        {
+          dm:'CLZT_DESC',
+          cm:'处理状态',
+        },
+      ],
+      lbData:[],//列表简表动态加载数据====简表选中项
+      //简表结束
     }
   },
   activated(){
@@ -362,6 +365,12 @@ export default {
       this.pd.FJ = this.$store.state.pcsToju;
       this.getPSC(this.pd.FJ);
       this.pd.PCS = this.orgCode;
+    }
+    if(this.$route.query.row.CLZT){
+      this.areaKey=new Date().getTime();
+      this.turnData=this.$route.query.row;
+      this.pd.CLZT = this.$route.query.row.CLZT
+      this.queryPd = this.$route.query.row;
     }
     let _this = this;
     setTimeout(function(){

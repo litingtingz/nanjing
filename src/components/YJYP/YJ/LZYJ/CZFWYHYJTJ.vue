@@ -98,8 +98,6 @@ export default {
           begin:'',
           end:'',
         },
-        SSFJ:'',
-        PCS:'',
       },
       areaPd:{},
       deepCli:{
@@ -159,7 +157,6 @@ export default {
     },
     getArea(val){
       this.areaPd = val;
-      console.log('==',this.areaPd)
     },
     getList(pd,deepCli,type) {
       let p={};
@@ -179,7 +176,7 @@ export default {
         };
         p.pd.level=deepCli.level+'';
         // p.pd.SSFJ=deepCli.dwbm;
-        p.pd.MXLX='CZW_ZDCZWYJ'
+        p.pd.MXLX='CZW_FWYHYJ'
       }else{//点击列表嵌入
          p = {
           pd:pd,
@@ -191,7 +188,7 @@ export default {
         };
         p.pd.level=deepCli.level+'';
         // p.pd.SSFJ=deepCli.dwbm?deepCli.dwbm:'';
-        p.pd.MXLX='CZW_ZDCZWYJ'
+        p.pd.MXLX='CZW_FWYHYJ'
         this.levelSave = deepCli.level+'';
       }
       // if(this.levelSave=='2'){this.levelTwo.dwbm = deepCli.dwbm;this.levelTwo.list = deepCli.hjList;this.levelTwo.type = deepCli.type;this.levelTwo.level = deepCli.level;};
@@ -228,16 +225,16 @@ export default {
           if(deepCli.dwmc=='合计'){
             p.FJ=''
           }
-          this.$router.push({name:'ZDCZWYJ',query:{row:p}});
+          this.$router.push({name:'CZFWYHYJTJ',query:{row:p}});
         }else if(deepCli.level=='2'){
           p.PCS=deepCli.dwbm
           if(deepCli.ssfj){
             p.FJ=deepCli.ssfj
-            this.$router.push({name:'ZDCZWYJ',query:{row:p}});
+            this.$router.push({name:'CZFWYHYJTJ',query:{row:p}});
           }else if(deepCli.dwmc=='合计'){
             p.PCS='';
             p.FJ='';
-            this.$router.push({name:'ZDCZWYJ',query:{row:p}});
+            this.$router.push({name:'CZFWYHYJTJ',query:{row:p}});
           }else{
             let data={
               currentPage: 1,
@@ -247,7 +244,7 @@ export default {
             this.$api.post(this.Global.aport4 + "/LRDWController/getAllParentByChildDW",data,r=>{
               if(r.success){
                 p.FJ = r.data.FJDM
-                this.$router.push({name:'ZDCZWYJ',query:{row:p}});
+                this.$router.push({name:'CZFWYHYJTJ',query:{row:p}});
               }
             })
           }
@@ -270,7 +267,7 @@ export default {
       p.pd.SSFJ=deepCli.dwbm;
       this.$api.post(this.Global.aport4+'/api/roomController/exportAggRoomInfo',p,
         r =>{
-          this.downloadM(r,'重点出租屋预警统计列表');
+          this.downloadM(r,'新增出租房屋提醒统计列表');
         },e=>{},{},'blob')
     },
     downloadM (data,name) {
