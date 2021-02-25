@@ -10,38 +10,57 @@
             <!-- <el-col :span="4" style=""> -->
             <el-card shadow="hover">
               <!-- <div class="photo-content"> -->
+              <!-- 标签开始 -->
+
+              <el-popover
+                placement="right-start"
+                width="646px"
+                trigger="click"
+                >
+                  <div
+                    :visible.sync="drawer"
+                    class="bqq"
+                  >
+                  <!-- 初始标签显示样式 -->
+                  <el-button style="margin-left:92%;margin-top:-10px" size="mini" round @click="getvq()">分类</el-button>
+                    <div class="hexagon" style="margin:-10px auto 10px;" v-if="cvb">
+                      <ul v-model="nums" @change="handleChange">
+                        <li
+                          :title="i"
+                          v-for="(p,i) of labs"
+                          :key="i"
+                          :name="1+''"
+                          class="aaaa"
+                        >
+                          <span :class="i%2?'warning1':'success1'" v-for="(ele,i) of p" :key="i" >{{ele.tagMc}}</span>
+                        </li>
+                      </ul>
+                    </div>
+                    <!-- 标签分类贴换显示 -->
+                    <div class="hexagon1" v-if="avb">
+                      <el-main style="height:260px">
+                        <el-collapse v-model="nums" @change="handleChange" >
+                          <el-collapse-item
+                            :title="i"
+                            v-for="(p,i) of labs"
+                            :key="i"
+                            :name="1+''"
+                            class="aaaa"
+                          >
+                            <span :class="i%2?'warning1':'success1'" v-for="(ele,i) of p" :key="i" >{{ele.tagMc}}</span>
+                          </el-collapse-item>
+                        </el-collapse>
+                      </el-main>
+                    </div>
+                  </div>
+                  <el-tag slot="reference" @click="getLable()" size="small" round style="margin-left:78%;border-radius:50px" class="w-grbq">个人标签</el-tag>              
+              </el-popover>
+              <!-- 标签结束 -->
               <img :src="imgdm"
                 style="height:120px;width:120px;margin-left:25.5%;margin-bottom:5px;border-radius:50%;border:1px solid #ccc"/>
                 <div style="wight:100%;height:30px;line-height:30px;font-size:17px;font-weight:bold;text-align:center;">{{baseinfo.zwxm}}</div>
                 <div style="wight:100%;height:20px;line-height:20px;font-size:13px;color:#859396;text-align:center;">{{baseinfo.ywxm}}</div>
-              <el-button
-                @click="getLable()"
-                type="text"
-                style="margin-left:38%;"
-                class="w-grbq"
-              >
-                个人标签
-              </el-button>
-              <el-drawer
-                title="个人标签"
-                :visible.sync="drawer"
-                class="bqq"
-              >
-                <el-collapse v-model="nums" @change="handleChange">
-                  <el-collapse-item
-                    :title="i"
-                    v-for="(p,i) of labs"
-                    :key="i"
-                    :name="1+''"
-                    class="aaaa"
-                  >
-                    <el-tag :type="i%2?'warning':'success'" v-for="(ele,i) of p" :key="i" >{{ele.tagMc}}</el-tag>
-                  </el-collapse-item>
-                </el-collapse>
-              </el-drawer>
-              <div
-                style="height:1px;width:80;margin:20px auto;background-color:#ccc"
-              ></div>
+              <div style="height:1px;width:80;margin:20px auto;background-color:#ccc"></div>
               <el-row>
                 <el-col class="t1">
                   性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别：<span>{{baseinfo.xb_desc}}</span>
@@ -108,11 +127,11 @@
                   <!-- 表格内容开始 -->
                   <!-- 1.出入境记录 -->
                   <el-col :span="12" :offset="0" class="tab-list">
-                    <div class="t_crj" style="width:99%;height:190px;background-color:#fff;">
-                      <div style="font-size:15px;float:left;margin-top:7px;margin-bottom:7px;color:#818181;font-weight:bold">&nbsp;&nbsp;&nbsp;出入境记录</div>
+                    <div class="t_crj" style="width:100%;height:190px;background-color:#fff;">
+                      <div style="font-size:15px;float:left;margin-top:7px;margin-bottom:7px;color:#818181;font-weight:bold;font-family:'微软雅黑'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;出入境记录</div>
                           <el-button type="primary"  size="mini" round class="ztys">{{this.crjzt}}</el-button>
                           <el-button type="text" size="mini" @click="dialog1 = true" style="float:right;margin-right:10px">更多</el-button>
-                          <el-table class="w-jb"  width="80%"  :header-cell-style="{color:'#1c6cb4',}"
+                          <el-table class="w-jb"  width="80%"  :header-cell-style="{color:'#3a3e42',fontFamily:'微软雅黑'}"
                               :data="tableData1.length==0?tableData1:tableData1.slice((CurrentPage1-1)*pageSize1,CurrentPage1*pageSize1)"
                           >
                             <el-table-column
@@ -132,10 +151,10 @@
                   </el-col>
                   <!-- 2.临住信息 -->
                   <el-col :span="12" :offset="0" class="tab-list">
-                    <div class="t_crj" style="width:99%;height:190px;background-color:#fff;">
-                      <div style="font-size:15px;float:left;margin-top:7px;margin-bottom:7px;color:#818181;font-weight:bold">&nbsp;&nbsp;&nbsp;临住信息</div>
+                    <div class="t_crj" style="width:97.5%;margin-left:12px;height:190px;background-color:#fff;">
+                      <div style="font-size:15px;float:left;margin-top:7px;margin-bottom:7px;color:#818181;font-weight:bold;font-family:'微软雅黑'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;临住信息</div>
                           <el-button type="text" size="mini" @click="dialog2 = true" style="float:right;margin-right:10px">更多</el-button>
-                          <el-table class="w-jb" :header-cell-style="{color:'#1c6cb4'}"
+                          <el-table class="w-jb" :header-cell-style="{color:'#3a3e42',fontFamily:'微软雅黑'}"
                                 :data="tableData2.length==0?tableData2:tableData2.slice((CurrentPage2-1)*pageSize2,CurrentPage2*pageSize2)">
                             <el-table-column
                                 prop="resideTime"
@@ -150,11 +169,11 @@
                   </el-col>
                   <!-- 3.常住信息 -->
                   <el-col :span="12" :offset="0" class="tab-list">
-                    <div class="t_crj" style="width:99%;height:190px;background-color:#fff;">
-                      <div style="font-size:15px;float:left;margin-top:7px;margin-bottom:7px;color:#818181;font-weight:bold">&nbsp;&nbsp;&nbsp;常住信息</div>
+                    <div class="t_crj" style="width:100%;height:190px;background-color:#fff;">
+                      <div style="font-size:15px;float:left;margin-top:7px;margin-bottom:7px;color:#818181;font-weight:bold;font-family:'微软雅黑'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;常住信息</div>
                           <el-button type="success"  size="mini" round class="ztys">{{this.czjl}}</el-button>
                           <el-button type="text" size="mini" @click="dialog3 = true" style="float:right;margin-right:10px">更多</el-button>
-                          <el-table class="w-jb" :header-cell-style="{color:'#1c6cb4'}"
+                          <el-table class="w-jb" :header-cell-style="{color:'#3a3e42',fontFamily:'微软雅黑'}"
                               :data="tableData3.length==0?tableData3:tableData3.slice((CurrentPage3-1)*pageSize3,CurrentPage3*pageSize3)">
                             <el-table-column
                                 prop="residePermitExpiredDay"
@@ -169,10 +188,10 @@
                   </el-col>
                   <!-- 4.案事件记录 -->
                   <el-col :span="12" :offset="0" class="tab-list">
-                    <div class="t_crj" style="width:99%;height:190px;background-color:#fff;">
-                      <div style="font-size:15px;float:left;margin-top:7px;margin-bottom:7px;color:#818181;font-weight:bold">&nbsp;&nbsp;&nbsp;案事件记录</div>
+                    <div class="t_crj" style="width:97.5%;margin-left:12px;height:190px;background-color:#fff;">
+                      <div style="font-size:15px;float:left;margin-top:7px;margin-bottom:7px;color:#818181;font-weight:bold;font-family:'微软雅黑'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;案事件记录</div>
                           <el-button type="text" size="mini" @click="dialog4 = true" style="float:right;margin-right:10px">更多</el-button>
-                          <el-table class="w-jb" :header-cell-style="{color:'#1c6cb4'}"
+                          <el-table class="w-jb" :header-cell-style="{color:'#3a3e42',fontFamily:'微软雅黑'}"
                               :data="tableData4.length==0?tableData4:tableData4.slice((CurrentPage4-1)*pageSize4,CurrentPage4*pageSize4)">
                             <el-table-column
                                   prop="caseTime"
@@ -187,10 +206,10 @@
                   </el-col>
                   <!-- 5.明航进出港信息 -->
                   <el-col :span="12" :offset="0" class="tab-list">
-                    <div class="t_crj" style="width:99%;height:190px;background-color:#fff;">
-                      <div style="font-size:15px;float:left;margin-top:7px;margin-bottom:7px;color:#818181;font-weight:bold">&nbsp;&nbsp;&nbsp;民航进出港信息</div>
+                    <div class="t_crj" style="width:100%;height:190px;background-color:#fff;">
+                      <div style="font-size:15px;float:left;margin-top:7px;margin-bottom:7px;color:#818181;font-weight:bold;font-family:'微软雅黑'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;民航进出港信息</div>
                           <el-button type="text" size="mini" @click="dialog5 = true" style="float:right;margin-right:10px">更多</el-button>
-                          <el-table class="w-jb" :header-cell-style="{color:'#1c6cb4'}" 
+                          <el-table class="w-jb" :header-cell-style="{color:'#3a3e42',fontFamily:'微软雅黑'}" 
                             :data="tableData5.length==0?tableData5:tableData5.slice((CurrentPage5-1)*pageSize5,CurrentPage5*pageSize5)">
                             <el-table-column
                               prop="STA_ARVETM"
@@ -209,10 +228,10 @@
                   </el-col>
                   <!-- 6.单位信息  -->
                   <el-col :span="12" :offset="0" class="tab-list">
-                    <div class="t_crj" style="width:99%;height:190px;background-color:#fff;">
-                      <div style="font-size:15px;float:left;margin-top:7px;margin-bottom:7px;color:#818181;font-weight:bold">&nbsp;&nbsp;&nbsp;单位信息</div>
+                    <div class="t_crj" style="width:97.5%;margin-left:12px;height:190px;background-color:#fff;">
+                      <div style="font-size:15px;float:left;margin-top:7px;margin-bottom:7px;color:#818181;font-weight:bold;font-family:'微软雅黑'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;单位信息</div>
                           <el-button type="text" size="mini" @click="dialog6 = true" style="float:right;margin-right:10px">更多</el-button>
-                          <el-table class="w-jb" :header-cell-style="{color:'#1c6cb4'}"
+                          <el-table class="w-jb" :header-cell-style="{color:'#3a3e42',fontFamily:'微软雅黑'}"
                                 :data="tableData6.length==0?tableData6:tableData6.slice((CurrentPage6-1)*pageSize6,CurrentPage6*pageSize6)">
                             <el-table-column
                               prop="GZD_MC"
@@ -227,10 +246,10 @@
                   </el-col>
                   <!-- 7.留学生信息--申请信息 -->
                   <el-col :span="12" :offset="0" class="tab-list">
-                    <div class="t_crj" style="width:99%;height:190px;background-color:#fff;">
-                      <div style="font-size:15px;float:left;margin-top:7px;margin-bottom:7px;color:#818181;font-weight:bold">&nbsp;&nbsp;&nbsp;留学生信息-申请信息</div>
+                    <div class="t_crj" style="width:100%;height:190px;background-color:#fff;">
+                      <div style="font-size:15px;float:left;margin-top:7px;margin-bottom:7px;color:#818181;font-weight:bold;font-family:'微软雅黑'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;留学生信息-申请信息</div>
                           <el-button type="text" size="mini" @click="dialog7 = true" style="float:right;margin-right:10px">更多</el-button>
-                          <el-table class="w-jb" :header-cell-style="{color:'#1c6cb4'}"
+                          <el-table class="w-jb" :header-cell-style="{color:'#3a3e42',fontFamily:'微软雅黑'}"
                               :data="tableData7.length==0?tableData7:tableData7.slice((CurrentPage7-1)*pageSize7,CurrentPage7*pageSize7)">
                             <el-table-column
                                 prop="STAREPORTS"
@@ -245,10 +264,10 @@
                   </el-col>
                   <!-- 8.留学生信息--在校信息 -->
                   <el-col :span="12" :offset="0" class="tab-list">
-                    <div class="t_crj" style="width:99%;height:190px;background-color:#fff;">
-                      <div style="font-size:15px;float:left;margin-top:7px;margin-bottom:7px;color:#818181;font-weight:bold">&nbsp;&nbsp;&nbsp;留学生信息-在校信息</div>
+                    <div class="t_crj" style="width:97.5%;margin-left:12px;height:190px;background-color:#fff;">
+                      <div style="font-size:15px;float:left;margin-top:7px;margin-bottom:7px;color:#818181;font-weight:bold;font-family:'微软雅黑'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;留学生信息-在校信息</div>
                           <el-button type="text" size="mini" @click="dialog8 = true" style="float:right;margin-right:10px">更多</el-button>
-                          <el-table class="w-jb" :header-cell-style="{color:'#1c6cb4'}"
+                          <el-table class="w-jb" :header-cell-style="{color:'#3a3e42',fontFamily:'微软雅黑'}"
                               :data="tableData8.length==0?tableData8:tableData8.slice((CurrentPage8-1)*pageSize8,CurrentPage8*pageSize8)">
                             <el-table-column
                                 prop="SIGNUPDATE"
@@ -263,10 +282,10 @@
                   </el-col>
                   <!-- 9.通报人员 -->
                   <el-col :span="12" :offset="0" class="tab-list">
-                    <div class="t_crj" style="width:99%;height:190px;background-color:#fff;">
-                      <div style="font-size:15px;float:left;margin-top:7px;margin-bottom:7px;color:#818181;font-weight:bold">&nbsp;&nbsp;&nbsp;通报人员信息</div>
+                    <div class="t_crj" style="width:100%;height:190px;background-color:#fff;">
+                      <div style="font-size:15px;float:left;margin-top:7px;margin-bottom:7px;color:#818181;font-weight:bold;font-family:'微软雅黑'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;通报人员信息</div>
                           <el-button type="text" size="mini" @click="dialog9 = true" style="float:right;margin-right:10px">更多</el-button>
-                          <el-table class="w-jb" :header-cell-style="{color:'#1c6cb4'}"
+                          <el-table class="w-jb" :header-cell-style="{color:'#3a3e42',fontFamily:'微软雅黑'}"
                               :data="tableData9.length==0?tableData9:tableData9.slice((CurrentPage9-1)*pageSize9,CurrentPage9*pageSize9)">
                             <el-table-column
                                 prop="TBRYZL_DESC"
@@ -287,10 +306,11 @@
           </el-main>
           <!-- 右侧面板结束 -->
         </el-container>
+      </div>
         <!-- 底部时间轴开始 -->
-        <el-container style="width:99%">
-            <el-row :gutter="20"  style="background-color:#fff;height:350px;width:100%;margin-left:0px;margin-top:6px" class="axis">
-              <div style="width:80%;height:30px;font-weight:bold;font-size:16px;margin-top:5px;margin-left:5px;color:#818181">人员入住信息</div>
+        <el-container style="width:100%">
+            <el-row  style="background-color:#CBE5FC;height:350px;width:100%;margin-left:0px;margin-top:6px" class="axis">
+              <div style="width:80%;height:30px;font-weight:bold;font-size:16px;margin-top:20px;margin-left:20px;color:#191B1E">人员入住信息</div>
               <el-col :span="24" class="time-box">
                 <div class="ul_box" :style="{ width: timeLineList.length * 250 + 50 + 'px' }">
                   <ul style="margin-left: 10px;"  >
@@ -304,6 +324,7 @@
                       <div class="my_timeline_item_line" v-if="index !== timeLineList.length - 1"></div>
                       <!-- 控制节点下面的字样式 -->
                       <div class="my_timeline_item_content"
+                        :class="{'color1':index%9 <=2,'color2':index%9>2 && index%9<=5,'color3':index%9>5}"
                         :style="{
                           color: item.color,
                           fontSize: item.fontsize + 'px',
@@ -314,8 +335,8 @@
                       <!-- 描述的线 -->
                       <div :class="index%2 ? 'content-line-top' : 'content-line-bottom'"></div>
                       <!-- 内容显示区 -->
-                      <div :class="index%2 ? 'content-top' : 'content-bottom'">
-                        <!-- <el-main class="time-main"> -->
+                      <!--<div :class="index%2 ? 'content-top' : 'content-bottom'"> -->
+                      <div :class="{'content-top':index%2===1,'content-bottom':index%2===0,'color1':index%9 <=2,'color2':index%9>2 && index%9<=5,'color3':index%9>5}" >                     <!-- <el-main class="time-main"> -->
                             <div v-for="(p,i) of item.trackDataList" :key="i" class="time_content">
                                   <p style="margin:2px 10px;line-height:18px;">{{p.colComment}}：{{p.colVal}}</p>
                             </div>
@@ -328,7 +349,6 @@
             </el-row>
         </el-container>
         <!-- 底部时间轴结束 -->
-      </div>
     </div>
     <!-- 弹出的表格开始 -->
     <!-- 1.出入境记录 -->
@@ -661,7 +681,7 @@
     </el-dialog>    
    <!--7.留学生基本信息--申请信息  -->
     <el-dialog title="留学生申请基本信息列表" :visible.sync="dialog7" class="xcc">
-       <el-table class="w-jb"  width="80%"  :header-cell-style="{color:'#1c6cb4',}"
+       <el-table class="w-jb"  width="80%"  :header-cell-style="{color:'#737373',}"
               :data="tableData7.length==0?tableData7:tableData7.slice((CurrentPage7-1)*pageSize77,CurrentPage7*pageSize77)">
           <el-table-column
             prop="STAREPORTS"
@@ -892,6 +912,8 @@ export default {
   data() {
     return {
       drawer: false,
+      cvb:true,
+      avb:false,
       activeNames: ["1", "2", "3", "4"],
       color:["#90C8F9","#46B1E7","#42C6DF","#F0C078","#A8D9DE","#32B6CF"],
       btmc1:["出入境记录","临住记录","常住记录","案事件记录","民航进出港信息","单位信息"],
@@ -1144,6 +1166,15 @@ export default {
     this.show();
   },
   methods: {
+    getvq(){
+      if(this.cvb){
+        this.cvb=false
+        this.avb=true
+      }else{
+        this.cvb=true
+        this.avb=false
+      }
+    },
     //1、出入境
     getCrj(currentPage,showCount,pd){
       let p={
@@ -1610,6 +1641,15 @@ export default {
   left: -7%;
   /* overflow-y: scroll; */
 }
+.color1{
+  background-color: #43B3E5  !important;
+}
+.color2{
+  background-color: #42C6DF  !important;
+}
+.color3{
+  background-color: #0D9BEF  !important;
+}
 /* .content-top::after{
   content: " ";
   display: block;
@@ -1666,7 +1706,7 @@ export default {
 .t1 span{
   font-size:15px;
   font-weight: bold;
-  color: #122557;
+  color: #191B1E;
 }
 .list {
   padding: 0 10px;
@@ -1705,10 +1745,10 @@ export default {
     /* margin-left:-130px; */
   }
   .ci {
-    font-size: 15px;
+    font-size: 13px;
     color: #fff;
-    margin-left: 21px;
-    margin-top: -16px;
+    margin-left: 18px;
+    margin-top: -17px;
   }
 }
 /* 大屏样式结束 */
@@ -1746,11 +1786,10 @@ export default {
     /* margin-left:px; */
   }
   .ci {
-    /* display: inline-block; */
     font-size: 13px;
     color: #fff;
-    margin-left: 15px;
-    margin-top: -13px;
+    margin-left: 18px;
+    margin-top: -17px;
   }
 }
 /* 中瓶样式结束 */
@@ -1788,11 +1827,10 @@ export default {
     /* margin-left:px; */
   }
   .ci {
-    /* display: inline-block; */
     font-size: 13px;
     color: #fff;
-    margin-left: 15px;
-    margin-top: -13px;
+    margin-left: 18px;
+    margin-top: -17px;
   }
   .table {
     width: 100% !important;
@@ -1867,14 +1905,54 @@ th .el-table_1_column_1 .is-leaf{
 }
 .middle-foot{ margin-top: 10px;}
 .w-grbq{
-  padding: 2px 0px  !important;
+  /* padding: 2px 0px  !important; */
+  margin-top: -100px;
  }
+.hexagon{
+   width:490px;
+   height: 250px;
+   /* background-color: rgb(207, 244, 245); */
+   padding-right: 10px;
+   text-align: center;
+   line-height:20px;
+   /* line-height: 250px; */
+   border-radius: 250px/125px;
+ }
+ .hexagon1{
+   width: 99%;
+   height:280px;
+ }
+		/* .hexagon:before {
+			content: "";
+			width: 0;
+			height: 0;
+			position: absolute;
+			top: -70px;
+			left: 0;
+			border-left: 250px solid transparent;
+			border-right: 250px solid transparent;
+			border-bottom:70px solid rgb(207, 244, 245);
+		}
+		.hexagon:after {
+			content: "";
+			width: 0;
+			height: 0;
+			position: absolute;
+			bottom: -70px;
+			left: 0;
+			border-left: 250px solid transparent;
+			border-right: 250px solid transparent;
+			border-top: 70px solid rgb(207, 244, 245);
+    } */
 </style>
 <style>
 /* 控制表头的样式 */
  .w-jb .el-table__header-wrapper th{
-   background: #C9E3F7 !important;
+   background: #e9f5fe !important;
    height: 26px !important;
+ }
+ .w-jb tbody .cell{
+   color:#7a7a7a;
  }
  .w-jb{
    width: 96%;
@@ -1909,17 +1987,15 @@ th .el-table_1_column_1 .is-leaf{
   margin-top: 8px;
 }
 .aaaa .el-collapse-item__header{
-  font-size: 16px;
-  margin: 5px 10px;
+  color: #191b1e;
+  font-family: '微软雅黑';
+  font-size: 15px;
   font-weight: bold;
-  height:25px;
-  line-height: 20px;
-  color: #818181;
 }
 .aaaa .el-collapse-item__content{
   margin-left: 20px;
 }
-.bqq .el-drawer__header{
+/* .bqq .el-drawer__header{
   padding:0px;
   margin: 20px;
   color: #122557;
@@ -1927,6 +2003,35 @@ th .el-table_1_column_1 .is-leaf{
   line-height: 25px;
   font-size: 25px;
   font-family: Georgia, 'Times New Roman', Times, serif;
+  font-weight: bold;
+} */
+/* 控制弹出标签的位置样式 */
+.el-popover,.el-popper{
+    width: 648px !important;
+    height:285px;
+    position: absolute;
+    top: 137px !important;
+    left: 500px;
+    transform-origin: left center;
+    z-index: 2016;
+}
+.warning1{
+  color: #F2A953;
+  font-size: 13px;
+  /* display: block; */
+  /* float: left; */
+  margin-left: 10px;
+  font-family: "微软雅黑";
+  font-weight: bold;
+  /* padding-right:10px */
+}
+.success1{
+  color: #5FB9C4;
+  font-size: 15px;
+  /* display: block; */
+  /* float: left; */
+  margin-left: 10px;
+  font-family: "微软雅黑";
   font-weight: bold;
 }
 </style>
