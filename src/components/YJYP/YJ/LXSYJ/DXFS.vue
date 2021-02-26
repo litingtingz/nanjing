@@ -107,12 +107,11 @@
          </el-col>
         <el-col :span="2" class="down-btn-area">
           <el-button type="success" size="small"  class="mb-15" @click="CurrentPage=1;getList(CurrentPage,pageSize,pd)">查询</el-button>
-          <el-button type="primary" size="small"  class="t-ml0" @click="dialog=true;getDxfs()">短信预览</el-button>
+          <el-button type="primary" size="small"  class="t-ml0" @click="getDxfs()">短信预览</el-button>
         </el-col>
       </el-row>
     </div>
-    <el-dialog title="短信预览" :visible.sync="dialog">
-      <!-- <el-button></el-button> -->
+    <el-dialog title="短信预览" :visible.sync="dialog" :before-close="qdfs">
       <el-button type="text" @click="open()" style="margin-top:-10px;margin-left:95%;z-index:2300">添加</el-button>
       <!-- 添加页面开始 -->
       <!-- 常驻添加开始 -->
@@ -130,7 +129,7 @@
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="cztj = false">取 消</el-button>
-            <el-button type="primary" @click="cztj = false;tjsu('form1')">确 定</el-button>
+            <el-button type="primary" @click="tjsu('form1')">确 定</el-button>
           </div>
         </el-dialog>
         <!-- 临住添加开始 -->
@@ -148,7 +147,7 @@
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="lztj = false">取 消</el-button>
-            <el-button type="primary" @click="lztj = false;tjsu('form2')">确 定</el-button>
+            <el-button type="primary" @click="tjsu('form2')">确 定</el-button>
           </div>
         </el-dialog>
         <!-- 难民添加开始 -->
@@ -166,15 +165,15 @@
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="nmtj = false">取 消</el-button>
-            <el-button type="primary" @click="nmtj = false;tjsu('form3')">确 定</el-button>
+            <el-button type="primary" @click="tjsu('form3')">确 定</el-button>
           </div>
         </el-dialog>
       <!-- 添加页面结束 -->
-       <el-table class="w-jb"  width="80%" :data="tableData1" :header-cell-style="{color:'#d9eeff',}"           
+       <el-table  width="80%" :data="tableData1"          
           :highlight-current-row="true"
            style="width: 100%"
-           @select="selectfn"
-           @select-all="selectfn"
+           @select="selectfn1"
+           @select-all="selectfn1"
            @header-click="titleShow">
            <el-table-column
              type="selection"
@@ -231,7 +230,6 @@
         </div>
     </el-dialog>
     <div class="yycontent">
-       <!-- <div class="yylbt mb-15">数据列表 历史记录</div> -->
       <div class="ak-tabs">
         <div class="ak-tab-item hand" :class="{'ak-checked':page==1}" @click="page=1;">
           数据列表
@@ -303,9 +301,19 @@
                 >
               </el-table-column>
               <el-table-column
-                prop="GJDQ"
+                prop="GJDQ_DESC"
                 label="国家地区"
-                v-if="isNm1">
+                v-if="chgj">
+              </el-table-column>
+              <el-table-column
+                prop="AJBH"
+                label="案卷编号"
+                v-if="nmbh">
+              </el-table-column>
+              <el-table-column
+                prop="LSDWDZ"
+                label="住宿地址"
+                v-if="lzdz">
               </el-table-column>
               <el-table-column
                 prop="GJDQ_DESC"
@@ -469,12 +477,14 @@ export default {
       tableData2:[],
       page:1,
       multipleSelection:[],
+      multipleSelection1:[],
       lzdh:false,
       lzgj:false,
-      chdh:false,
+      chdh:true,
       lzzs:false,
       czzs:false,
       nmdh:false,
+      nmbh:false,
       // dialogFormVisible:false,
       formLabelWidth: '120px',
       fshm:[],
@@ -485,6 +495,8 @@ export default {
       nmtj:false,
       orgName:'',
       token:'',
+      chgj:false,
+      lzdz:false,
       form1:{
         // 常驻
         ZWXM:'',
@@ -517,6 +529,12 @@ export default {
     // this.getList(this.CurrentPage, this.pageSize, this.pd);
   },
   methods:{
+      //当弹窗关闭时发送短信电话号码数组清0
+      qdfs(){
+        this.dialog=false
+        this.multipleSelection1=[]
+        this.fshm=[]
+      },
       //获得短信发送历史记录 
       getList1(currentPage,showCount,pd){
         let p ={
@@ -581,10 +599,13 @@ export default {
           )
         }
       },
-      // 获得多选框选定的值
+      // 获得数据记录多选框选定的值
       getDxfs(){
+        this.dialog=true
         this.tableData1=this.multipleSelection
-        console.log(this.tableData1)
+        if(this.textarea!==''){
+          this.textarea=''
+        }
       },
       // 当某一列的表头被点击时会触发该事件
       titleShow(e,el){
@@ -592,12 +613,17 @@ export default {
       },
       // 当用户手动勾选数据行的 Checkbox 时触发的事件
       selectfn(a,b){
+        // console.log('aaaaaaa',a)
         this.multipleSelection = a;
         // this.dataSelection()
       },
+      // 当用户手动勾选数据行的 Checkbox 时触发的事件
+      selectfn1(a,b){
+        this.multipleSelection1 = a;
+        // console.log(this.multipleSelection)
+      },
       pageSizeChange(val) {
           this.pageSize=val;
-          // console.log(this.pageSize)
           this.getList(this.CurrentPage, this.pageSize, this.pd);
       },
       handleCurrentChange(val) {
@@ -619,30 +645,51 @@ export default {
           this.textarea.clearable=true
         }
       },
-      //根据类型值显示对于的模块添加发送手机号码
+      //点击添加按钮根据类型值显示对于的模块添加发送手机号码
       open(){
-        if(this.pd.TYPE=='1'){
+        if(this.pd.TYPE=='1'||!this.pd.TYPE){
           this.cztj=true
+          // 每次添加完成之后就将form表单情空
+          this.form1={}
         }else if(this.pd.TYPE=='2'){
           this.lztj=true
-        }else{
+          // 每次添加完成之后就将form表单情空
+          this.form2={}
+        }else if(this.pd.TYPE=='3'){
           this.nmtj=true
+          // 每次添加完成之后就将form表单情空
+          this.form3={}
         }
       },
-      // 短信添加成功
+      // form表单添加控制条件
       tjsu(type){
         if(type=="form1"){
-          if(this.form1.LXDH!==''){
+          if(this.form1.LXDH){
             this.tableData1.push(this.form1)
+            this.cztj=false
+          }else{
+            this.$message({
+              message: '请输入电话号码',
+            })
           }
         }else if(type=="form2"){
-          if(this.form2.BRLXDH!==''){
+          if(this.form2.BRLXDH){
             this.tableData1.push(this.form2)
+            this.lztj=false
+          }else{
+            this.$message({
+              message: '请输入电话号码',
+            })
           }
         }else if(type=="form3"){
-          if(this.form3.DHHM!==''){
-              this.tableData1.push(this.form3)
-            }
+          if(this.form3.DHHM){
+            this.tableData1.push(this.form3)
+            this.nmtj=false
+          }else{
+            this.$message({
+              message: '请输入电话号码',
+            })
+          }
         }
       },
       // 发送短信方法
@@ -651,12 +698,25 @@ export default {
                 this.$message({
                   message: '请输入短信内容',
                 });
+                return 
+        }
+        if(this.multipleSelection1.length==0){
+                this.$message({
+                  message: '请选择内容',
+                });
+                return 
         }
         if(this.textarea!==''){
-          // this.tableData1.LXDH
-          // var st=[];
-          for(var i=0;i<this.tableData1.length;i++){
-            this.fshm.push(this.tableData1[i].LXDH)  
+          for(var i=0;i<this.multipleSelection1.length;i++){
+            if(this.multipleSelection1[i].LXDH){
+                this.fshm.push(this.multipleSelection1[i].LXDH)
+            }
+            if(this.multipleSelection1[i].BRLXDH){
+                this.fshm.push(this.multipleSelection1[i].BRLXDH)
+            }
+            if(this.multipleSelection1[i].DHHM){
+                this.fshm.push(this.multipleSelection1[i].DHHM)
+            }
           }
           this.fshmsfc =this.fshm.join();
           let p={
@@ -668,6 +728,9 @@ export default {
           this.$api.post(this.Global.aport3+'/sendSms',p,
             r=>{
               if(r.status){
+                this.fshm=[];
+                this.multipleSelection1=[];
+                // console.log('111',this.multipleSelection1)
                 this.$message({
                   message: r.msg,
                 });
@@ -682,28 +745,52 @@ export default {
       },
       //根据下拉框的值显示对应的html片段
       bclxChange(selectValue){
+          //贴换类型清空表格
+          if(this.tableData!==[]){
+              this.tableData=[]
+          }
+          // 贴换类型清空字段
+          for(var key in this.pd){
+            if(key!== 'TYPE'){
+                this.pd[key] = ""
+              }
+          }
+          console.log('aaaabbb',this.tableData1)
+          if(this.tableData1!==[]){
+            this.tableData1=[]
+            this.multipleSelection=[]
+          }
+          console.log('aaaaccc',this.tableData1)
         //常驻分组
-        if(selectValue==1){
+        if(selectValue==1||!selectValue){
           this.isLzry1=false
           this.isLzry=true
           this.isCzry1=true 
           this.chdh=true
+          this.chgj=true
+          this.lzgj=true
         }else{
           this.isCzry1=false  
-          this.chdh=false  
+          this.chdh=false 
+          this.chgj=false 
+          this.lzgj=false 
         }
         //临住分组
         if(selectValue==2){
           this.isLzry1=true
           this.isLzry=false
           this.lzdh=true  
+          // this.chgj=false
           this.lzgj=true 
           this.lzzs=true
+          this.lzdz=true
         }else{
           this.lzdh=false
           this.lzzs=false
           this.isLzry=true
           this.lzgj=false
+          this.lzdz=false
+          // this.chgj=false
         }
         //难民分组
         if(selectValue==3){
@@ -714,12 +801,14 @@ export default {
           this.isNm=true
           this.isNm1=false
           this.nmdh=true
+          this.nmbh=true
         }else{
           this.xm=false
           this.isNm1=true
           this.isNm=false
           this.zwxm=true
           this.nmdh=false
+          this.nmbh=false
         }
       }
   }
