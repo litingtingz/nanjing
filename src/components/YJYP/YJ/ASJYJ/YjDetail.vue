@@ -40,7 +40,7 @@
             <el-col :span="6" class="basic-box">
               <span class="basic-key">预警时间：</span>
               <!-- <div class="basic-value-box"> -->
-                <span class="basic-value">2019/01/20 17:45:01</span>
+                <span title="2019/01/20 17:45:01" class="basic-value">2019/01/20 17:45:01</span>
               <!-- </div> -->
             </el-col>
           </el-row>
@@ -51,11 +51,136 @@
         </el-col>
       </el-row>
     </div>
+    <div class="mt-10">
+      <el-row class="yj-table-box" type="flex" justify="space-between" style="flex-wrap: wrap">
+        <el-col :span="12" class="t-content mb-5">
+          <div class="yj-title mb-15">出入境信息</div>
+          <el-table
+            :data="tdCrj"
+            border
+            style="width: 100%"
+            class="yj-table">
+            <el-table-column
+              prop="mc"
+              label="入境事由">
+            </el-table-column>
+            <el-table-column
+              prop="mc"
+              label="入境事由">
+            </el-table-column>
+            <el-table-column
+              prop="mc"
+              label="入境事由">
+            </el-table-column>
+            <el-table-column
+              prop="mc"
+              label="入境事由">
+            </el-table-column>
+            <el-table-column
+              prop="mc"
+              label="入境事由">
+            </el-table-column>
+            <el-table-column
+              prop="count"
+              label="数量">
+              <template slot-scope="scope">
+                <span class="hand tc-b">{{ scope.row.count }}</span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-col>
+        <el-col :span="12" class="t-content mb-5">
+          <div class="yj-title mb-15">临住信息</div>
+          <el-table
+            :data="tdCrj"
+            border
+            style="width: 100%"
+            class="yj-table">
+            <el-table-column
+              prop="mc"
+              label="入境事由">
+            </el-table-column>
+            <el-table-column
+              prop="mc"
+              label="入境事由">
+            </el-table-column>
+            <el-table-column
+              prop="mc"
+              label="入境事由">
+            </el-table-column>
+            <el-table-column
+              prop="mc"
+              label="入境事由">
+            </el-table-column>
+            <el-table-column
+              prop="mc"
+              label="入境事由">
+            </el-table-column>
+            <el-table-column
+              prop="count"
+              label="数量">
+              <template slot-scope="scope">
+                <span class="hand tc-b">{{ scope.row.count }}</span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-col>
+        <el-col :span="12" class="t-content mb-5">
+          <div class="yj-title mb-15">临住信息</div>
+          <el-table
+            :data="tdCrj"
+            border
+            style="width: 100%"
+            class="yj-table">
+            <el-table-column
+              prop="mc"
+              label="入境事由">
+            </el-table-column>
+            <el-table-column
+              prop="mc"
+              label="入境事由">
+            </el-table-column>
+            <el-table-column
+              prop="mc"
+              label="入境事由">
+            </el-table-column>
+            <el-table-column
+              prop="mc"
+              label="入境事由">
+            </el-table-column>
+            <el-table-column
+              prop="mc"
+              label="入境事由">
+            </el-table-column>
+            <el-table-column
+              prop="count"
+              label="数量">
+              <template slot-scope="scope">
+                <span class="hand tc-b">{{ scope.row.count }}</span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 <script>
 export default {
-  
+  data(){
+    return{
+      tdCrj:[
+        {
+          mc:'身份证',
+          count:100,
+        },
+        {
+          mc:'身份证',
+          count:100,
+        },
+      ],
+    }
+  }
 }
 </script>
 <style scoped>

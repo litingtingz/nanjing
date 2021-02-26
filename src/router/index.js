@@ -462,8 +462,8 @@ export default new Router({
           path: 'DQQZFFJYYJ_XQ',
           name: 'DQQZFFJYYJ_XQ',
           meta:{title:['预警研判','预警信息','偷越国边境预警详情']},
-          component: resolve => require(['@/components/GYZJ/ASJXQ'], resolve),
-          // component: resolve => require(['@/components/YJYP/YJ/ASJYJ/YjDetail'], resolve),
+          // component: resolve => require(['@/components/GYZJ/ASJXQ'], resolve),
+          component: resolve => require(['@/components/YJYP/YJ/ASJYJ/YjDetail'], resolve),
         },
         {
           path: 'WGRFFJLYJ',

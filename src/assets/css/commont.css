@@ -947,3 +947,21 @@ position: absolute;
   font-weight: bold;
   font-size: 14px;
 }
+.yj-table th{
+  background: #D9EEFF!important;
+  font-size: 12px!important;
+  color: #5E6F7F;
+  height: 26px!important;
+  border-right: 1px solid #BEE1FD!important;
+}
+.yj-table td{
+  height: 36px!important;
+  border-right: 1px solid #BEE1FD!important;
+  border-bottom: 1px solid #BEE1FD!important;
+}
+.yj-table tr{
+  border-left: 1px solid #BEE1FD!important;
+}
+.yj-table-box .el-col-12{
+  width: 49.7%!important;
+}

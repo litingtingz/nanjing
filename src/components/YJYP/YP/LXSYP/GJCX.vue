@@ -433,7 +433,7 @@
        </el-col>
        <el-col  :sm="24" :md="12" :lg="8"   class="input-item">
           <span class="input-text">案件性质：</span>
-          <el-select v-model="pdaj.ajxz" placeholder="请选择"   multiple collapse-tags filterable clearable default-first-option   size="small" class="input-input">
+          <el-select v-model="pdaj.ajxz" placeholder="请选择"   filterable clearable default-first-option   size="small" class="input-input">
             <el-option v-for="item in $store.state.ajxz"
              :key="item.dm"
              :label="item.dm+' - '+item.mc"
@@ -443,7 +443,7 @@
        </el-col>
        <el-col  :sm="24" :md="12" :lg="8"   class="input-item">
           <span class="input-text">案件类型：</span>
-          <el-select v-model="pdaj.ajlb" placeholder="请选择"   multiple collapse-tags filterable clearable default-first-option   size="small" class="input-input">
+          <el-select v-model="pdaj.ajlb" placeholder="请选择"   filterable clearable default-first-option   size="small" class="input-input">
             <el-option v-for="item in $store.state.ajlb"
              :key="item.dm"
              :label="item.dm+' - '+item.mc"
@@ -473,7 +473,7 @@
          </el-col>
          <el-col  :sm="24" :md="12" :lg="8"   class="input-item">
              <span class="input-text">所属责任区：</span>
-              <el-select v-model="pdaj.xgdw" placeholder="请选择"   multiple collapse-tags filterable clearable default-first-option   size="small" class="input-input">
+              <el-select v-model="pdaj.xgdw" placeholder="请选择"  filterable clearable default-first-option   size="small" class="input-input">
                 <el-option v-for="item in $store.state.sszrq"
                  :key="item.dm"
                  :label="item.dm+' - '+item.mc"

@@ -265,9 +265,9 @@
                 <el-table-column
                   prop="count"
                   label="数量">
-                  <template slot-scope="scope">
+                  <div slot-scope="scope">
                     <span @click="getListD(CurrentPage,pageSize,scope.row.GJDQ)" class="hand tc-b">{{ scope.row.count }}</span>
-                  </template>
+                  </div>
                 </el-table-column>
               </el-table>
             </el-col>
@@ -292,9 +292,9 @@
                 <el-table-column
                   prop="count"
                   label="涉恐31国常住人数">
-                  <template slot-scope="scope">
+                  <div slot-scope="scope">
                     <span @click="getListD(CurrentPage,pageSize,scope.row.GJDQ)" class="hand tc-b">{{ scope.row.count }}</span>
-                  </template>
+                  </div>
                 </el-table-column>
               </el-table>
             </el-col>
@@ -340,15 +340,14 @@
                 :data="tableData6_1"
                 stripe
                 style="width: 100%">
-                <div v-for="(lb,ind) in lbData1">
-                  <el-table-column
-                    :prop="lb.dm"
-                    :label="lb.cm">
-                    <div slot-scope="scope">
-                      <span @click="getListD(CurrentPage,pageSize,scope.row[lb.dm])" class="hand tc-b">{{ scope.row[lb.dm] }}</span>
-                    </div>
-                  </el-table-column>
-                </div>
+                <el-table-column
+                  v-for="(lb,ind) in lbData1" :key="ind"
+                  :prop="lb.dm"
+                  :label="lb.mc">
+                  <div slot-scope="scope">
+                    <span @click="getDetailZH(CurrentPage,pageSize,lb.dm,1)" class="hand tc-b">{{ scope.row[lb.dm] }}</span>
+                  </div>
+                </el-table-column>
               </el-table>
             </el-col>
             <el-col :span="12">
@@ -358,18 +357,18 @@
                 stripe
                 style="width: 100%">
                 <el-table-column
-                  prop="GJDQ_DESC"
+                  prop="mc"
                   label="区域">
                 </el-table-column>
-                <div v-for="(lb,ind) in lbData2">
-                  <el-table-column
-                    :prop="lb.dm"
-                    :label="lb.cm">
-                    <div slot-scope="scope">
-                      <span @click="getListD(CurrentPage,pageSize,scope.row[lb.dm])" class="hand tc-b">{{ scope.row[lb.dm] }}</span>
-                    </div>
-                  </el-table-column>
-                </div>
+                <el-table-column
+                  v-for="(lb,ind) in lbData2"
+                  :key="ind"
+                  :prop="lb.dm"
+                  :label="lb.cm">
+                  <div slot-scope="scope">
+                    <span @click="getDetailZH(CurrentPage,pageSize,scope.row.dm,2,lb.dm)" class="hand tc-b">{{ scope.row[lb.dm] }}</span>
+                  </div>
+                </el-table-column>
               </el-table>
             </el-col>
             <el-col :span="12">
@@ -379,25 +378,25 @@
                 stripe
                 style="width: 100%">
                 <el-table-column
-                  prop="GJDQ_DESC"
+                  prop="mc"
                   label="国家">
                 </el-table-column>
-                <div v-for="(lb,ind) in lbData2">
-                  <el-table-column
-                    :prop="lb.dm"
-                    :label="lb.cm">
-                    <div slot-scope="scope">
-                      <span @click="getListD(CurrentPage,pageSize,scope.row[lb.dm])" class="hand tc-b">{{ scope.row[lb.dm] }}</span>
-                    </div>
-                  </el-table-column>
-                </div>
+                <el-table-column
+                  v-for="(lb,ind) in lbData2"
+                  :key="ind"
+                  :prop="lb.dm"
+                  :label="lb.cm">
+                  <div slot-scope="scope">
+                    <span @click="getDetailZH(CurrentPage,pageSize,scope.row.dm,3,lb.dm)" class="hand tc-b">{{ scope.row[lb.dm] }}</span>
+                  </div>
+                </el-table-column>
               </el-table>
             </el-col>
           </el-row>
         </div>
       </div>
     </div>
-    <el-dialog title="列表" :visible.sync="listDialogVisible"  width="1100px">
+    <el-dialog title="列表" :visible.sync="listDialogVisible"  width="1100px" @close="closeDetail">
       <el-table
          :data="tableDataD"
          border
@@ -566,73 +565,73 @@ import CZXX from '../../../common/czxx_xq'
       lbData1:[
         {
           dm:'',
-          cm:'常住总人员'
+          mc:'常住总人员'
         },
         {
           dm:'',
-          cm:'境内总人员'
+          mc:'境内总人员'
         },
         {
           dm:'',
-          cm:'境外总人员'
+          mc:'境外总人员'
         },
         {
           dm:'',
-          cm:'留学生总人数'
+          mc:'留学生总人数'
         },
         {
           dm:'',
-          cm:'留学生境内'
+          mc:'留学生境内'
         },
         {
           dm:'',
-          cm:'留学生境外'
+          mc:'留学生境外'
         },
         {
           dm:'',
-          cm:'工作人员总人数'
+          mc:'工作人员总人数'
         },
         {
           dm:'',
-          cm:'工作人员境内'
+          mc:'工作人员境内'
         },
         {
           dm:'',
-          cm:'工作人员境外'
+          mc:'工作人员境外'
         },
         {
           dm:'',
-          cm:'家属总人数'
+          mc:'家属总人数'
         },
         {
           dm:'',
-          cm:'家属境内'
+          mc:'家属境内'
         },
         {
           dm:'',
-          cm:'家属境外'
+          mc:'家属境外'
         },
         {
           dm:'',
-          cm:'其他总人数'
+          mc:'其他总人数'
         },
         {
           dm:'',
-          cm:'其他境内'
+          mc:'其他境内'
         },
         {
           dm:'',
-          cm:'其他境外'
+          mc:'其他境外'
         },
       ],
       tableData6_2:[],
       lbData2:[
         {
-          dm:'',
+          dm:'rjCount',
           cm:'入境'
         },
         {
-          dm:'',
+          dm:'cjCount',
           cm:'出境'
         },
       ],
@@ -669,6 +668,10 @@ import CZXX from '../../../common/czxx_xq'
       pdKey4:{},
       pdKey5:{},
       pdAll:{},
+
+      zhDetailValue:'',
+      zhDetailType:'',
+      zhDetailFlag:'',
 
       userCode:'',
       userName:'',
@@ -787,6 +790,64 @@ import CZXX from '../../../common/czxx_xq'
          })
       }
     },
+    getDetailZH(currentPage,showCount,val,type,crjFlag){
+      this.getPd();
+      this.zhDetailValue=val;
+      this.zhDetailType=type;
+      this.zhDetailFlag=crjFlag;
+      let p={
+        currentPage:currentPage,
+        showCount:showCount,
+        userCode:this.userCode,
+        userName:this.userName,
+        orgJB:this.juState,
+        orgCode:this.orgCode,
+        token:this.token
+      }
+      if(type==1){
+        let para = {searchType:val}
+        p.pd = Object.assign({},this.pd,para)
+        this.$api.post(this.Global.aport2+'/api/czcrjanalyse/pageCzInfoSf',p,r=>{
+          if(r.success){
+            this.tableDataD = r.data.resultList;
+            this.TotalResult=r.data.totalResult;
+            this.listDialogVisible=true;
+          }
+        })
+      }
+      if(type==2){
+        let para = {
+          searchType:crjFlag=="rjCount"?'jn':'jw',
+          SSFJ:val=="all"?'':val
+        }
+        p.pd = Object.assign({},this.pd,para)
+        this.$api.post(this.Global.aport2+'/api/czcrjanalyse/pageCzInfoFj',p,r=>{
+          if(r.success){
+            this.tableDataD = r.data.resultList;
+            this.TotalResult=r.data.totalResult;
+            this.listDialogVisible=true;
+          }
+        })
+      }
+      if(type==3){
+        let gjArr=[];
+        gjArr = this.tableData6_3.map((item)=>item.dm)
+        gjArr.splice(gjArr.findIndex(item => item === 'all'), 1)
+        console.log('gjarr=',gjArr)
+        let para = {
+          searchType:crjFlag=="rjCount"?'jn':'jw',
+          GJDQ:val=="all"?gjArr:[val]
+        }
+        p.pd = Object.assign({},this.pd,para)
+        this.$api.post(this.Global.aport2+'/api/czcrjanalyse/pageCzInfoGj',p,r=>{
+          if(r.success){
+            this.tableDataD = r.data.resultList;
+            this.TotalResult=r.data.totalResult;
+            this.listDialogVisible=true;
+          }
+        })
+      }
+    },
     details(i){
       this.xid=i.RGUID;
       this.rybh=i.RYBH;
@@ -796,15 +857,26 @@ import CZXX from '../../../common/czxx_xq'
     pageSizeChange(val) {
       this.pageSize=val;
       this.getListD(this.CurrentPage,val,this.specialKey,this.keyOne);
+      this.getDetailZH(this.CurrentPage,val,this.zhDetailValue,this.zhDetailType,this.zhDetailFlag)
     },
     handleCurrentChange(val) {
       this.CurrentPage=val;
       this.getListD(val,this.pageSize,this.specialKey,this.keyOne);
+      this.getDetailZH(val,this.pageSize,this.zhDetailValue,this.zhDetailType,this.zhDetailFlag)
+    },
+    closeDetail(){
+      this.CurrentPage=1;
+      this.pageSize=10;
     },
     download(){
       this.getPd();
       if(this.page==0){
         this.$api.post(this.Global.aport2+'/gzybb/exportgzybb',{pd:this.pd,userCode:this.userCode,userName:this.userName,orgJB:this.juState,orgCode:this.orgCode,token:this.token},
+         r =>{
+           this.downloadM(r)
+         },e=>{},{},'blob')
+      }else if(this.page==6){
+        this.$api.post(this.Global.aport2+'/api/czcrjanalyse/exportCzZt',{pd:this.pd,userCode:this.userCode,userName:this.userName,orgJB:this.juState,orgCode:this.orgCode,token:this.token},
          r =>{
            this.downloadM(r)
          },e=>{},{},'blob')
@@ -845,6 +917,8 @@ import CZXX from '../../../common/czxx_xq'
       }else if(this.page==5){
         this.getList5();
         this.getTu5();
+      }else if(this.page==6){
+        this.getList6();
       }
     },
     changeTime(time,timeReal){
@@ -940,7 +1014,43 @@ import CZXX from '../../../common/czxx_xq'
        })
     },
     getList6(){//综合
-
+      this.getListZH();
+      this.getListFJ();
+      this.getListGj();
+    },
+    getListZH(){
+      this.getPd();
+      this.$api.post(this.Global.aport2+'/api/czcrjanalyse/aggCzZtSf',{pd:this.pd,userCode:this.userCode,userName:this.userName,orgJB:this.juState,orgCode:this.orgCode,token:this.token},
+       r =>{
+         if(r.success){
+           this.lbData1 = r.data.tabData;  
+           this.$nextTick(()=>{  
+             this.tableData6_1=[r.data.resultList];
+           })
+         }
+       })
+    },
+    getListFJ(){
+      this.getPd();
+      this.$api.post(this.Global.aport2+'/api/czcrjanalyse/aggCzZtFj',{pd:this.pd,userCode:this.userCode,userName:this.userName,orgJB:this.juState,orgCode:this.orgCode,token:this.token},
+       r =>{
+         if(r.success){
+           this.$nextTick(()=>{  
+             this.tableData6_2=r.data;
+           })
+         }
+       })
+    },
+    getListGj(){
+      this.getPd();
+      this.$api.post(this.Global.aport2+'/api/czcrjanalyse/aggCzZtGj',{pd:this.pd,userCode:this.userCode,userName:this.userName,orgJB:this.juState,orgCode:this.orgCode,token:this.token},
+       r =>{
+         if(r.success){
+           this.$nextTick(()=>{  
+             this.tableData6_3=r.data;
+           })
+         }
+       })
     },
     getTu1(){//来宁事由图表
       this.getPd();
