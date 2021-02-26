@@ -142,7 +142,7 @@
           </el-table>
           <div class="middle-foot mt-10">
             <div class="page-msg">
-              <div class="crrcolor">共{{TotalResult}}条记录</div>
+              <div class="crrcolor">共{{DetailTotalResult}}条记录</div>
             </div>
             <el-pagination
               background
