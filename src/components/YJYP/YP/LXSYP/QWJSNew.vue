@@ -378,7 +378,6 @@ export default {
       this.TotalResult=0;
       let p={
         "keywords":this.content,
-        
         "pageSize":showCount,
         "page":currentPage,
         "token":this.$store.state.token,

@@ -177,7 +177,7 @@
     </div>
     <div class="yycontent">
        <div class="yylbt mb-15">预警信息列表</div>
-       <COUNT :ccPd="ccPd" :random="new Date().getTime()" state='LN'></COUNT>
+       <COUNT :ccPd="ccPd" :random="random" state='LN'></COUNT>
       <el-row class="mb-15">
          <el-button type="primary"  size="small" @click="jbFnc" style="float:right;margin-top:-35px">简表</el-button>
        </el-row>
@@ -340,12 +340,10 @@
            </el-table-column> -->
            <el-table-column
              label="操作" width="70">
-             <template slot-scope="scope">
-               <div>
-                 <el-button type="text"  class="a-btn"  title="编辑"  icon="el-icon-edit-outline" @click="getEdit(scope.row)"></el-button>
-                 <!-- <el-button type="text"  class="a-btn"  title="设为关注人员"  icon="el-icon-user" @click="adds(scope.row);form={};"></el-button> -->
-               </div>
-             </template>
+             <div slot-scope="scope">
+                <el-button type="text"  class="a-btn"  title="编辑"  icon="el-icon-edit-outline" @click="getEdit(scope.row)"></el-button>
+                <!-- <el-button type="text"  class="a-btn"  title="设为关注人员"  icon="el-icon-user" @click="adds(scope.row);form={};"></el-button> -->
+             </div>
            </el-table-column>
          </el-table>
      <div class="middle-foot">
@@ -448,6 +446,7 @@ export default {
       token:'',
       form:{},
       addlg:{},
+      random:0,
       // getallfj:[],
       // PSC:[],
 
@@ -770,11 +769,13 @@ export default {
     },
     getArea(val){
       this.areaPd = val;
-    },
-    getList(currentPage, showCount, pd,type) {
       // this.ccPd.MXLX="BKYJ";
       this.ccPd.FJ=this.areaPd.FJ;
       this.ccPd.PCS=this.areaPd.PCS;
+      this.random = new Date().getTime();
+    },
+    getList(currentPage, showCount, pd,type) {
+      
       if(pd.hasOwnProperty('DTID')){
         delete pd['DTID']
       }
@@ -823,7 +824,7 @@ export default {
       }
     },
     getEdit(n){
-      this.$router.push({name:'JTLN_XQ',query:{yjType:15,row:n}});
+      this.$router.push({name:'JTLN_XQ',query:{yjType:15,row:n,mark:'jtln',yjEdit:['crj','lz','cz','jt']}});
     },
     getXM(zw,yw){
       if(zw!=undefined && yw!=undefined){

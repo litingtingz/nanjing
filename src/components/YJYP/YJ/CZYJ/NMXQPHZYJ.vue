@@ -726,7 +726,7 @@ export default {
       }
     },
     getEdit(n){
-      this.$router.push({name:'NMXQPHZYJ_XQ',query:{row:n}});
+      this.$router.push({name:'NMXQPHZYJ_XQ',query:{row:n,mark:"nmbh",yjEdit:['asj','cz','lz','crj','jzsj']}});
     },
     getXM(zw,yw){
 

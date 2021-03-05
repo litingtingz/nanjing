@@ -16,6 +16,7 @@
                 placement="right-start"
                 width="646px"
                 trigger="click"
+                :popper-class="'person-tag'"
                 >
                   <div
                     :visible.sync="drawer"
@@ -53,7 +54,7 @@
                       </el-main>
                     </div>
                   </div>
-                  <el-tag slot="reference" @click="getLable()" size="small" round style="margin-left:78%;border-radius:50px" class="w-grbq">个人标签</el-tag>              
+                  <el-tag slot="reference" @click="getLable()" size="small" round style="margin-left:78%;border-radius:50px" class="w-grbq hand">个人标签</el-tag>              
               </el-popover>
               <!-- 标签结束 -->
               <img :src="imgdm"
@@ -2006,7 +2007,7 @@ th .el-table_1_column_1 .is-leaf{
   font-weight: bold;
 } */
 /* 控制弹出标签的位置样式 */
-.el-popover,.el-popper{
+.person-tag.el-popover.el-popper{
     width: 648px !important;
     height:285px;
     position: absolute;

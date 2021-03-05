@@ -104,8 +104,8 @@
                 <div class="t-el-content del-pb"><div class="t-el-text">证件号码：</div><div class="t-el-sub fw600">{{zxxinfo.ZJHM}}</div></div>
                 <div class="t-el-content del-pb"><div class="t-el-text">签证种类：</div><div class="t-el-sub fw600">{{zxxinfo.QZZL_DESC}}</div></div>
                 <div class="t-el-content del-pb"><div class="t-el-text">停留有效期：</div><div class="t-el-sub fw600">{{zxxinfo.TLYXQ_DESC}}</div></div>
-                <div class="t-el-content del-pb"><div class="t-el-text">婚姻状态：</div><div class="t-el-sub fw600">{{zxxinfo.HYZT}}</div></div>
-                <div class="t-el-content del-pb"><div class="t-el-text">宗教信仰：</div><div class="t-el-sub fw600">{{zxxinfo.ZJXY}}</div></div>
+                <div class="t-el-content del-pb"><div class="t-el-text">婚姻状态：</div><div class="t-el-sub fw600">{{zxxinfo.HYZT_DESC}}</div></div>
+                <div class="t-el-content del-pb"><div class="t-el-text">宗教信仰：</div><div class="t-el-sub fw600">{{zxxinfo.ZJXY_DESC}}</div></div>
                 <div class="t-el-content del-pb"><div class="t-el-text">学历：</div><div class="t-el-sub fw600">{{zxxinfo.XL}}</div></div>
                 <div class="t-el-content del-pb"><div class="t-el-text">职业资格：</div><div class="t-el-sub fw600">{{zxxinfo.ZYZG}}</div></div>
                 <div class="t-el-content del-pb"><div class="t-el-text">授课课程：</div><div class="t-el-sub fw600">{{zxxinfo.SKKC}}</div></div>

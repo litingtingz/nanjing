@@ -1986,7 +1986,7 @@ export default {
     },
     getList(currentPage,showCount, url, type) {
 
-      if(type==0){
+      if(type==0){//基本信息是YJID
         if(this.row.YJID!=undefined){
           this.cdt={};
           this.cdt.YJID=this.row.YJID;

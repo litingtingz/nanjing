@@ -784,7 +784,7 @@ export default {
       }
     },
     getEdit(n){
-      this.$router.push({name:'LXSXXGLYJ_XQ',query:{row:n}});
+      this.$router.push({name:'LXSXXGLYJ_XQ',query:{row:n,mark:'bk'}});
     },
     getXM(zw,yw){
       if(zw!=undefined && yw!=undefined){

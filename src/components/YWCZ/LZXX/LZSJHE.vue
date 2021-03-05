@@ -247,12 +247,20 @@
                 <el-col :span="12">
                   <span class="yy-input-text">出生日期：</span>
                   <el-tooltip class="item" effect="dark" :disabled="!form.csrq_t" :content="form.csrq_xgq" placement="top-start">
-                    <el-date-picker :class="{'yy-input-input yyinput':form.csrq_t == true,'yy-input-input':form.csrq_t== false}"
-                       v-model="form.csrq" format="yyyy-MM-dd"
-                       type="date" size="small" value-format="yyyyMMdd"
-                       placeholder="选择日期"
-                       :disabled="!edit">
-                    </el-date-picker>
+                    <div @keydown="dateKeyDown('csrq',form.csrq)" class="t-date-change" :class="{'yy-input-input yyinput':form.csrq_t == true,'yy-input-input':form.csrq_t== false}">
+
+                      <el-date-picker 
+                        v-model="form.csrq"
+                        type="date" 
+                        size="small" 
+                        value-format="yyyyMMdd"
+                        placeholder="选择日期"
+                        :disabled="!edit"
+                        :format="dateChange.csrq"
+                        @blur="dataHand('csrq',form.csrq)"
+                        @focus="dateKeyDown('csrq')">
+                      </el-date-picker>
+                    </div>               
                   </el-tooltip>
                 </el-col>
                 <el-col :span="12">
@@ -303,22 +311,32 @@
                 </el-col>
                 <el-col :span="12" >
                   <span class="yy-input-text" title="签证(注)有效期至">停留有效期至：</span>
-                  <el-date-picker class="yy-input-input"
-                     v-model="form.tlyxqz" format="yyyy-MM-dd"
-                     type="date" size="small" value-format="yyyyMMdd"
-                     placeholder="选择日期"
-                     :disabled="!edit">
-                  </el-date-picker>
+                  <div @keydown="dateKeyDown('tlyxqz')" class="t-date-change yy-input-input">
+                    <el-date-picker
+                      v-model="form.tlyxqz" 
+                      :format="dateChange.tlyxqz"
+                      type="date" size="small" value-format="yyyyMMdd"
+                      placeholder="选择日期"
+                      @blur="dataHand('tlyxqz')"
+                      @focus="dateKeyDown('tlyxqz')"
+                      :disabled="!edit">
+                    </el-date-picker>
+                  </div>
                 </el-col>
               </el-row>
               <el-col :span="12">
                 <span class="yy-input-text" title="签证签发日期：">签证签发日期：</span>
-                <el-date-picker class="yy-input-input"
-                   v-model="form.qfrq" format="yyyy-MM-dd"
-                   type="date" size="small" value-format="yyyyMMdd"
-                   placeholder="选择日期"
-                   :disabled="!edit">
-                </el-date-picker>
+                <div @keydown="dateKeyDown('qfrq')" class="t-date-change yy-input-input">
+                  <el-date-picker
+                    v-model="form.qfrq" 
+                    :format="dateChange.qfrq"
+                    type="date" size="small" value-format="yyyyMMdd"
+                    placeholder="选择日期"
+                    @blur="dataHand('qfrq')"
+                    @focus="dateKeyDown('qfrq')"
+                    :disabled="!edit">
+                  </el-date-picker>
+                </div>
               </el-col>
               <el-col :span="12">
                 <span class="yy-input-text" title="与境外联系人员">与境外联系人员：</span>
@@ -376,12 +394,17 @@
               <el-col :span="8">
                 <span class="yy-input-text">入境日期：</span>
                   <el-tooltip class="item" effect="dark" :disabled="!form.rjrq_t" :content="form.rjrq_xgq" placement="top-start">
-                    <el-date-picker :class="{'yy-input-input yyinput':form.rjrq_t == true,'yy-input-input':form.rjrq_t== false}"
-                       v-model="form.rjrq" format="yyyy-MM-dd"
-                       type="date" size="small" value-format="yyyyMMdd"
-                       placeholder="选择日期"
-                       :disabled="!edit">
-                    </el-date-picker>
+                    <div @keydown="dateKeyDown('rjrq')" class="t-date-change" :class="{'yy-input-input yyinput':form.rjrq_t == true,'yy-input-input':form.rjrq_t== false}">
+                      <el-date-picker 
+                        v-model="form.rjrq" 
+                        :format="dateChange.rjrq"
+                        type="date" size="small" value-format="yyyyMMdd"
+                        placeholder="选择日期"
+                        @blur="dataHand('rjrq')"
+                        @focus="dateKeyDown('rjrq')"
+                        :disabled="!edit">
+                      </el-date-picker>
+                    </div>
                 </el-tooltip>
               </el-col>
               <el-col :span="8">
@@ -453,22 +476,35 @@
               <el-col :span="8">
                 <span class="yy-input-text">入住日期：</span>
                 <el-tooltip class="item" effect="dark" :disabled="!form.zsrq_t" :content="form.zsrq_xgq" placement="top-start">
-                  <el-date-picker class="yy-input-input" :class="{'yy-input-input yyinput':form.zsrq_t == true,'yy-input-input':form.zsrq_t== false}"
-                     v-model="form.zsrq" format="yyyy-MM-dd"
-                     type="date" size="small" value-format="yyyyMMdd"
-                     placeholder="选择日期"
-                     :disabled="!edit">
-                  </el-date-picker>
+                  <div @keydown="dateKeyDown('zsrq')" class="t-date-change" :class="{'yy-input-input yyinput':form.zsrq_t == true,'yy-input-input':form.zsrq_t== false}">
+                    <el-date-picker 
+                      class="yy-input-input" 
+                      v-model="form.zsrq" 
+                      :format="dateChange.zsrq"
+                      type="date" size="small" 
+                      value-format="yyyyMMdd"
+                      placeholder="选择日期"
+                      @blur="dataHand('zsrq')"
+                      @focus="dateKeyDown('zsrq')"
+                      :disabled="!edit">
+                    </el-date-picker>
+                  </div>
                 </el-tooltip>
               </el-col>
               <el-col :span="8">
                 <span class="yy-input-text" title="拟离开日期">拟离开日期：</span>
-                <el-date-picker class="yy-input-input"
-                   v-model="form.nlkrq" format="yyyy-MM-dd"
-                   type="date" size="small" value-format="yyyyMMdd"
-                   placeholder="选择日期"
-                   :disabled="!edit">
-                </el-date-picker>
+                <div @keydown="dateKeyDown('nlkrq')" class="t-date-change yy-input-input">
+                  <el-date-picker
+                    v-model="form.nlkrq" 
+                    :format="dateChange.nlkrq"
+                    type="date" size="small" 
+                    value-format="yyyyMMdd"
+                    placeholder="选择日期"
+                    @blur="dataHand('nlkrq')"
+                    @focus="dateKeyDown('nlkrq')"
+                    :disabled="!edit">
+                  </el-date-picker>
+                </div>
               </el-col>
             </el-row>
             <el-row :gutter="3" >
@@ -707,6 +743,8 @@ export default {
       xg2:false,
       xg3:false,
       yx:false,
+
+      dateChange:{},
     }
   },
   activated() {
@@ -743,6 +781,17 @@ export default {
     this.getAll();
   },
   methods: {
+    //日期转换格式查询
+    dataHand(val,data){
+      this.$set(this.dateChange,val,'yyyy-MM-dd')
+      // console.log('valblur==',val,data)
+    },
+    dateKeyDown(val,data){     
+      this.$nextTick(()=>{
+        this.$set(this.dateChange,val,'yyyyMMdd')
+        // console.log('valdown==',val,data)
+      })
+    },
     // 旋转
    rotate(){
        this.deg += 90;

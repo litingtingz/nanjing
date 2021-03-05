@@ -1360,8 +1360,11 @@ export default {
           }
         }
       }
+      
+      console.log('==',this.seriesData[0])
       let _this = this;
       _this.mapCenter.setOption({
+        color:['#56e4c1','#409AFE','#FE9554','#ff5b60'],
         xAxis: {
           type: "category",
           data: [
@@ -1451,7 +1454,7 @@ export default {
         series: [
           {
             //六合
-            name: name["liuhe"],
+            name: _this.seriesData[0][0][9],
             data: _this.seriesData[0],
             symbolSize: function(v) {
               return v[4];

@@ -933,9 +933,6 @@ position: absolute;
   margin-right: 2px;
   color: #72757A;
 }
-.basic-value-box{
-  
-}
 .basic-value{
   width: 70%;
   background-color: #F0F9FF;
@@ -964,4 +961,40 @@ position: absolute;
 }
 .yj-table-box .el-col-12{
   width: 49.7%!important;
+}
+.yjyi-box{
+  display: inline-flex;
+  justify-content: flex-start;
+  height: 30px!important;
+  margin-bottom: 10px;
+}
+.yjyi-key{
+  width: 100px;
+  padding:6px 5px;
+  background-color: #E8F5FE;
+  font-size: 12px;
+  margin-right: 2px;
+  color: #72757A;
+  border-top: 1px solid #D9F0FE;
+}
+.yjyi-value{
+  width: 60%;
+  background-color: #F0F9FF;
+  margin-right: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 6px 5px;
+  white-space: nowrap;
+  font-weight: bold;
+  font-size: 14px;
+  border-top: 1px solid #D9F0FE;
+}
+.dialog-none-lineHeight .el-dialog__body{
+  line-height: normal!important;
+}
+.t-date-change{
+  display: inline-block;
+}
+.t-date-change .el-input{
+  width: 100%!important;
 }

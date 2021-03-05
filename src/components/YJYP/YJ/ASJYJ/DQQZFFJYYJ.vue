@@ -283,7 +283,7 @@
              label="操作" width="70">
              <!-- <template slot-scope="scope"> -->
                <div slot-scope="scope">
-                  <el-button type="text"  class="a-btn"  title="编辑"  icon="el-icon-edit-outline" @click="$router.push({name:'DQQZFFJYYJ_XQ',query:{yjType:2,row:scope.row}})"></el-button>
+                  <el-button type="text"  class="a-btn"  title="编辑"  icon="el-icon-edit-outline" @click="$router.push({name:'DQQZFFJYYJ_XQ',query:{yjType:2,row:scope.row,yjEdit:['qz','crj','lz']}})"></el-button>
                   <el-button type="text"  class="a-btn"  title="设为关注人员"  icon="el-icon-user" @click="adds(scope.row);form={};"></el-button>
                </div>
              <!-- </template> -->
@@ -619,6 +619,7 @@ export default {
       }
       this.$api.post(this.Global.aport4+'/warningInfoController/exportByMxLx',p,
         r =>{
+          console.log('===',r)
           this.downloadM(r)
           this.selectionAll=[];
           this.multipleSelection=[];

@@ -123,91 +123,27 @@
 <script>
 export default {
   name:'FFJL',
-  props:['type','xid'],
+  props:['rowData'],
   data(){
     return{
       jlinfo:{},
-      page:this.type,
-      id:this.xid,
-      pp:{},
     }
   },
   mounted(){
-      this.initData();
-   },
-  watch:{
-      type: function(val){
-        this.page=val;
-      },
-      xid:{
-        handler(val){
-        this.id=val;
-        this.initData()
-      },
-      immediate: true
-      },
-    },
-
+    this.jlinfo = this.rowData
+  },
+  watch:{},
   methods:{
-    initData(){
-      switch (this.page) {
-        case 1://预警
-            this.getData1();
-            break;
-        default:
-      }
-    },
-    getData1(){
-      this.pp.RGUID=this.id;
-      let p = {
-        "pd": this.pp
-      };
-       this.$api.post(this.Global.aport4+'/eS_CRJJLBController/getEntityByRGUID', p,
-        r => {
-          this.jlinfo=r.data.resultList;
-      })
-    },
-
+    // getData1(){
+    //   this.pp.RGUID=this.id;
+    //   let p = {
+    //     "pd": this.pp
+    //   };
+    //    this.$api.post(this.Global.aport4+'/eS_CRJJLBController/getEntityByRGUID', p,
+    //     r => {
+    //       this.jlinfo=r.data.resultList;
+    //   })
+    // },
   },
 }
 </script>
-<style scoped>
-.el-carousel__item h3 {
-  color: #475669;
-  font-size: 14px;
-  opacity: 0.75;
-  line-height: 150px;
-  margin: 0;
-}
-
-.el-carousel__item img {
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-}
-
-.el-carousel__item:nth-child(2n) {
-  /* background: url(../../../assets/img/t1.png); */
-  background-size: 100% 100%;
-}
-
-.el-carousel__item:nth-child(2n+1) {
-  background-color: #d3dce6;
-}
-
-.crcolor {
-  background: #EFF3F6;padding:0 10px;
-}
-.yy-input-text {
-  text-align: left !important;
-}
-</style>
-<style>
-  .el-button+.el-button{margin-left: 0!important;}
-  .yycontent .el-checkbox{margin-left: 20px!important; line-height: 30px;}
-  .yycontent .el-checkbox+.el-checkbox{margin-left: 20px!important;}
-  .bj .el-dialog__wrapper {
-    background: #000;
-    background: rgba(0, 0, 0, 0.3);
-  }
-</style>

@@ -844,7 +844,7 @@
   </div>
 <!-- 非法居留 -->
     <el-dialog title="非法居留信息详情" :visible.sync="ffjlDialogVisible"  width="900px">
-          <el-form    ref="jlinfo">
+          <el-form  ref="jlinfo">
             <el-row :gutter="2"  class="mb-6">
                 <el-col :span="12" class="input-item">
                   <span class="input-text">姓名：</span>
