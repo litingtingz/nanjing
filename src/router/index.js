@@ -107,6 +107,7 @@ export default new Router({
           name: 'ZBKYJ_XQ',
           meta:{title:['预警研判','预警信息','临住布控预警详情'],father:'ZBKYJ'},
           component: resolve => require(['@/components/GYZJ/ASJXQ'], resolve),
+          // component: resolve => require(['@/components/YJYP/YJ/ASJYJ/YjDetail'], resolve),
         },
         {
           path: 'YJCLXQ',
@@ -343,6 +344,7 @@ export default new Router({
           name: 'LXSXXGLYJ_XQ',
           meta:{title:['预警研判','预警信息','预警详情']},
           component: resolve => require(['@/components/YJYP/YJ/LXSYJ/LXSXXGLYJ_XQ'], resolve),
+          // component: resolve => require(['@/components/YJYP/YJ/ASJYJ/YjDetail'], resolve),
         },
         {
           path: 'LXSCRJYJ',
@@ -421,7 +423,6 @@ export default new Router({
           name: 'JTLN_XQ',
           meta:{title:['预警研判','预警信息','外国人交通来宁预警详情']},
           component: resolve => require(['@/components/GYZJ/ASJXQ'], resolve),
-          // component: resolve => require(['@/components/YJYP/YJ/ASJYJ/YjDetail'], resolve),
         },
         {
           path: 'CFRYWBZYJ',
@@ -478,6 +479,7 @@ export default new Router({
           name: 'WGRFFJLYJ_XQ',
           meta:{title:['预警研判','预警信息','外国人非法居留预警详情']},
           component: resolve => require(['@/components/GYZJ/ASJXQ'], resolve),
+          // component: resolve => require(['@/components/YJYP/YJ/ASJYJ/YjDetail'], resolve),
         },
         {
           path: 'CQQZFFJYYJ',
@@ -502,6 +504,7 @@ export default new Router({
           name: 'WLYPYJ_XQ',
           meta:{title:['预警研判','预警信息','违临预判预警详情']},
           component: resolve => require(['@/components/GYZJ/ASJXQ'], resolve),
+          // component: resolve => require(['@/components/YJYP/YJ/ASJYJ/YjDetail'], resolve),
         },
         {
           path: 'ZDYQGJYJ',
@@ -514,6 +517,7 @@ export default new Router({
           name: 'ZDYQGJYJ_XQ',
           meta:{title:['预警研判','预警信息','重点疫情国家人员来宁预警详情']},
           component: resolve => require(['@/components/GYZJ/ASJXQ'], resolve),
+          // component: resolve => require(['@/components/YJYP/YJ/ASJYJ/YjDetail'], resolve),
         },
         // {
         //   path: 'SKGJRYXXYJ_X',
@@ -594,6 +598,7 @@ export default new Router({
           name: 'SLQFXXYJ_XQ',
           meta:{title:['预警研判','预警信息','受理、签发信息核查预警详情']},
           component: resolve => require(['@/components/YJYP/YJ/LXSYJ/LXSXXGLYJ_XQ'], resolve),
+          // component: resolve => require(['@/components/YJYP/YJ/ASJYJ/YjDetail'], resolve),
         },
         {
           path: 'SLQFXXYJ',
@@ -607,6 +612,7 @@ export default new Router({
           name: 'GWHZYJ_XQ',
           meta:{title:['预警研判','预警信息','公务护照预警详情']},
           component: resolve => require(['@/components/GYZJ/ASJXQ'], resolve),
+          // component: resolve => require(['@/components/YJYP/YJ/ASJYJ/YjDetail'], resolve),
         },
         {
           path: 'GWHZYJ',

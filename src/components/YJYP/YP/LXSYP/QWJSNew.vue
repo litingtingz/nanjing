@@ -197,11 +197,11 @@ export default {
           mc:'所属派出所',
           dm:'sspcsmc'
         },
-        {
-          mc:'所属责任区',
-          dm:'sszrqmc',
-          col:24
-        },
+        // {
+        //   mc:'所属责任区',
+        //   dm:'sszrqmc',
+        //   col:24
+        // },
       ],
       ajData:[
         {
@@ -310,7 +310,7 @@ export default {
         this.DetailPd={
           paramMap:{
             dwdz:data.dwdz,
-            dzzwmc:data.dzzwmc
+            dwzwmc:data.dwzwmc
           }
         }
       }else if(this.type == 'aj'){

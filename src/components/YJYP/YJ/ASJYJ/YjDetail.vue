@@ -213,11 +213,15 @@
       <CRJXX v-if="DetailType=='crj'" :type="type" :xid="xid" :random="random"></CRJXX>
       <CZXX v-if="DetailType=='cz'" :type="type" :xid="xid" :rybh="rybh" :row="allData" :random="random"></CZXX>
       <QZ v-if="DetailType=='qz'" :xid="xid" :random="random"></QZ>
-      <TBRY v-if="DetailType=='tb'" :type="type" :xid="xid" :rybh="rybh" :random="random"></TBRY>
+      <TBRY v-if="DetailType=='tbry'" :type="type" :xid="xid" :rybh="rybh" :random="random"></TBRY>
       <FFJL v-if="DetailType=='ffjl'" :rowData="allData" :key="random"></FFJL>
       <JZXX v-if="DetailType=='jzxx'" :rowData="allData" :key="random"></JZXX>
       <NMXX v-if="DetailType=='nmxx'" :rowData="allData" :key="random"></NMXX>
-      <ANSJ v-if="DetailType=='asj'" :type="type" :xid="xid"></ANSJ>
+      <ANSJ v-if="DetailType=='aj'" :type="type" :xid="xid"></ANSJ>
+      <TLDP v-if="DetailType=='tl'" :rowData="allData" :key="random"></TLDP>
+      <MHJG v-if="DetailType=='mhjg'" :rowData="allData" :key="random"></MHJG>
+      <MHDP v-if="DetailType=='mhdp'" :rowData="allData" :key="random"></MHDP>
+      <KY v-if="DetailType=='ky'" :rowData="allData" :key="random"></KY>
       <div slot="footer" class="dialog-footer">
           <el-button @click="innerDetailDialogVisible = false" size="small">取 消</el-button>
         </div>
@@ -234,8 +238,13 @@ import FFJL from '../../../common/ffjl_xq'
 import JZXX from '../../../common/jzxx_xq'
 import NMXX from '../../../common/nmxx_xq'
 import ANSJ from '../../../common/ansj_xq'
+
+import TLDP from '../../../common/tldp_xq'
+import MHJG from '../../../common/mhjg_xq'
+import MHDP from '../../../common/mhdp_xq'
+import KY from '../../../common/ky_xq'
 export default {
-  components:{LZXX,CZXX,CRJXX,QZ,TBRY,FFJL,JZXX,NMXX,ANSJ},
+  components:{LZXX,CZXX,CRJXX,QZ,TBRY,FFJL,JZXX,NMXX,ANSJ,TLDP,MHJG,MHDP,KY},
   data(){
     return{
       tdCrj:[
@@ -458,6 +467,24 @@ export default {
           mc:'签发地',
         },
       ],
+      sqqzLbData:[
+        {
+          dm:'XCQZZL_DESC',
+          mc:'现持签证种类',
+        },
+        {
+          dm:'XCQZHM',
+          mc:'现持签证号码',
+        },
+        {
+          dm:'XCQZYXQZ',
+          mc:'现持签证有效期至',
+        },
+        {
+          dm:'QFJG_DESC',
+          mc:'签发地',
+        },
+      ],
       tbLbData:[
         {
           dm:'TBRYZL',
@@ -555,7 +582,7 @@ export default {
         },
       ],
       //难民和寻求庇护
-      asjLbData:[//案事件信息
+      ajLbData:[//案事件信息
         {
           dm:'ASJBH',
           mc:'案事件编号',
@@ -577,7 +604,7 @@ export default {
           mc:'发现时间',
         },
       ],
-      jzsjLbData:[//警综涉警信息
+      sjLbData:[//警综涉警信息
         {
           dm:'SJRYDJDWMC',
           mc:'涉警人员登记单位名称',
@@ -595,6 +622,102 @@ export default {
           mc:'涉警人员修改单位',
         },
       ],
+      //铁路信息
+      tlLbData:[
+        {
+          dm:'XM_CRJ',
+          mc:'姓名'
+        },
+        {
+          dm:'ZJHM_CRJ',
+          mc:'证件号码'
+        },
+        {
+          dm:'TRAIN_NO',
+          mc:'列车车次'
+        },
+        {
+          dm:'CFSJ',
+          mc:'发车时间'
+        },
+        {
+          dm:'CFCS',
+          mc:'发车车站'
+        },
+      ],
+      //民航进港信息
+      mhjgLbData:[
+        {
+          dm:'FLT_NUMBER',
+          mc:'航班号'
+        },
+        {
+          dm:'FLT_DATE',
+          mc:'航班日期'
+        },
+        {
+          dm:'CFCSMC',
+          mc:'起飞航站'
+        },
+        {
+          dm:'DDCSMC',
+          mc:'到达航站'
+        },
+        {
+          dm:'XM_CRJ',
+          mc:'旅客名'
+        },
+      ],
+      //民航订票信息
+      mhdpLbData:[
+        {
+          dm:'AIR_SEG_FLT_NBR',
+          mc:'航班号'
+        },
+        {
+          dm:'CFRQ',
+          mc:'发车日期'
+        },
+        {
+          dm:'CFSJ',
+          mc:'发车时间'
+        },
+        {
+          dm:'DDRQ',
+          mc:'到达日期'
+        },
+        {
+          dm:'DDSJ',
+          mc:'到达时间'
+        },
+        {
+          dm:'PAS_CHN_NM',
+          mc:'旅客中文名'
+        },
+      ],
+      //客运信息
+      kyLbData:[
+        {
+          dm:'XM_CRJ',
+          mc:'姓名'
+        },
+        {
+          dm:'BCH',
+          mc:'车牌号'
+        },
+        {
+          dm:'CFRQ',
+          mc:'发车日期'
+        },
+        {
+          dm:'CFCS',
+          mc:'上车站点名称'
+        },
+        {
+          dm:'DDCS',
+          mc:'达到站点名称'
+        },
+      ],
       yjDataAll:[
         {
           dm:'qz',
@@ -602,6 +725,15 @@ export default {
           titlePre:'',
           titleEnd:'',
           url:'/eS_FNVISASController/getResultListByParams',
+          yjRule:'',
+          count:100,
+        },
+        {
+          dm:'sqqz',
+          mc:'申请签证信息',
+          titlePre:'',
+          titleEnd:'',
+          url:'',
           yjRule:'',
           count:100,
         },
@@ -637,7 +769,7 @@ export default {
           count:100,
         },
         {
-          dm:'tb',
+          dm:'tbry',
           mc:'通报人员信息',
           titlePre:'',
           titleEnd:'',
@@ -685,7 +817,7 @@ export default {
         },
         //难民和寻求庇护
         {
-          dm:'asj',
+          dm:'aj',
           mc:'案事件信息',
           titlePre:'',
           titleEnd:'',
@@ -694,7 +826,7 @@ export default {
           count:100,
         },
         {
-          dm:'jzsj',
+          dm:'sj',
           mc:'警综涉警信息',
           titlePre:'',
           titleEnd:'',
@@ -704,9 +836,52 @@ export default {
           yjRule:'',
           count:100,
         },
+        {
+          dm:'tl',
+          mc:'铁路信息',
+          titlePre:'',
+          titleEnd:'',
+          url:'',
+          orderBy:{},
+          orderType:"DESC",
+          yjRule:'',
+          count:100,
+        },
+        {
+          dm:'mhjg',
+          mc:'民航进港信息',
+          titlePre:'',
+          titleEnd:'',
+          url:'',
+          orderBy:{},
+          orderType:"DESC",
+          yjRule:'',
+          count:100,
+        },
+        {
+          dm:'mhdp',
+          mc:'民航订票信息',
+          titlePre:'',
+          titleEnd:'',
+          url:'',
+          orderBy:{},
+          orderType:"DESC",
+          yjRule:'',
+          count:100,
+        },
+        {
+          dm:'ky',
+          mc:'客运信息',
+          titlePre:'',
+          titleEnd:'',
+          url:'',
+          orderBy:{},
+          orderType:"DESC",
+          yjRule:'',
+          count:100,
+        },
       ],
       yjData:[],
-
       //时间轴
       timeLineList: [],
       timez:[],
@@ -770,7 +945,10 @@ export default {
     this.orgCode=this.$store.state.orgid;
     this.juState=this.$store.state.juState;
     this.token=this.$store.state.token;
-    this.row = this.$route.query.row;
+    // this.$nextTick(()=>{
+      this.row = this.$route.query.row;
+      console.log('===row',this.row)
+    // })
     this.org=this.$store.state.orgid;
     this.yjData=[];
     // this.getJB();
@@ -820,10 +998,6 @@ export default {
   },
   methods:{
     getInit(){
-      // switch(this.yjMark){
-      //   case 'tygbj': this.yjEdit=['qz','crj','lz'];break;
-      //   case 'bk': this.yjEdit=['lz','crj','tb'];break;
-      // }
       let p={
         pd:{
           id:this.row.YJID,
@@ -1120,7 +1294,7 @@ export default {
         this.allData = data;
       }else if(this.DetailType=='qz'){
         this.xid = data.RGUID;
-      }else if(this.DetailType=='tb'){
+      }else if(this.DetailType=='tbry'){
         this.xid = data.RGUID;
         this.rybh = data.RYBH;
       }else if(this.DetailType=='ffjl'){
@@ -1129,9 +1303,11 @@ export default {
         this.allData = data;
       }else if(this.DetailType=='nmxx'){
         this.allData = data;
-      }else if(this.DetailType=='asj'){
+      }else if(this.DetailType=='aj'){
         this.xid = data.RGUID+','+data.DTID;
         //type 看起来没有用处
+      }else if(this.DetailType=='tl'||this.DetailType=='mhjg'||this.DetailType=='mhdp'||this.DetailType=='ky'){
+        this.allData = data;
       }
       this.random = new Date().getTime();
       this.innerDetailDialogVisible=true;
